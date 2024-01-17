@@ -51,7 +51,12 @@ if [ "$(whoami)" != "root" ]; then
     fi
 
     #  Providing some env variables that are needed to be kept in the sudo
-    sudo AOK_DIR="$AOK_DIR" TMPDIR="$TMPDIR" "$app" "$@"
+    #  Use either doas or sudo
+    if [ -n "$(command -v doas)" ]; then
+        doas sh -c "{ AOK_DIR=\"$AOK_DIR\"; TMPDIR=\"$TMPDIR\"; \"$app\" $*; }"
+    else
+        sudo AOK_DIR="$AOK_DIR" TMPDIR="$TMPDIR" "$app" "$@"
+    fi
     exit_code="$?"
 
     #  terminate the user initiated instance of the script
