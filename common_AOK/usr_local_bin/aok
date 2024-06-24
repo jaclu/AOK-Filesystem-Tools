@@ -4,7 +4,7 @@
 #
 #  License: MIT
 #
-#  Copyright (c) 2022,2023: Jacob.Lundqvist@gmail.com
+#  Copyright (c) 2022-2024: Jacob.Lundqvist@gmail.com
 #
 #  Script to do various things related to the configuration of ish
 #
@@ -283,12 +283,52 @@ aok_suffix_display() {
 
 console_mode_change() {
     use_console="$1"
+    f_rc_conf=/etc/rc.conf
     [ -z "$use_console" ] && {
         error_msg "console_mode_change() - no param given, options are on/off"
     }
     case "$use_console" in
-    "on") touch "$f_pts_0_as_console" ;;
-    "off") rm -f "$f_pts_0_as_console" ;;
+    "on")
+        touch "$f_pts_0_as_console"
+        [ -f "$f_rc_conf" ] && {
+            if grep -q "rc_logger=" "$f_rc_conf"; then
+                sed -i '/^[[:space:]]*#*[[:space:]]*rc_logger=/c\rc_logger="YES"' \
+                    "$f_rc_conf" || {
+
+                    error_msg "Failed to enable rc_logger in $f_rc_conf"
+                }
+            else
+                # If it wasnt pressent, add it
+                echo 'rc_logger="YES"' >>"$f_rc_conf"
+            fi
+            if grep -q "rc_log_path=" "$f_rc_conf"; then
+                sed -i '/^[[:space:]]*#*[[:space:]]*rc_log_path=/c\rc_log_path="/var/log/rc.log"' \
+                    "$f_rc_conf" || {
+
+                    error_msg "Failed to enable rc_log_path in $f_rc_conf"
+                }
+            else
+                # If it wasnt pressent, add it
+                echo 'rc_log_path="/var/log/rc.log"' >>"$f_rc_conf"
+            fi
+        }
+        ;;
+    "off")
+        rm -f "$f_pts_0_as_console"
+        # if /dev/console is not used and rc_logger=YES openrc gets stuck
+        [ -f "$f_rc_conf" ] && {
+            sed -i '/^[[:space:]]*#*[[:space:]]*rc_logger=/c\#rc_logger="NO"' \
+                "$f_rc_conf" || {
+
+                error_msg "Failed to disable rc_logger in $f_rc_conf"
+            }
+            sed -i '/^[[:space:]]*#*[[:space:]]*rc_log_path=/c\#rc_log_path="/var/log/rc.log"' \
+                "$f_rc_conf" || {
+
+                error_msg "Failed to disable rc_log_path in $f_rc_conf"
+            }
+        }
+        ;;
     *)
         error_msg "console_mode_change() - options are on/off"
         ;;
