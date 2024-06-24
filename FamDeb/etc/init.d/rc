@@ -1,5 +1,12 @@
 #!/bin/sh
-# Wrapper of OpenRC called from inittab
+#
+#  Part of https://github.com/jaclu/AOK-Filesystem-Tools
+#
+#  License: MIT
+#
+#  Copyright (c) 2022-2024: Jacob.Lundqvist@gmail.com
+#
+#  Wrapper of OpenRC called from inittab
 
 #
 #  AOK-FS change:  handles rlvl 0 - shutdown
@@ -7,14 +14,15 @@
 set -e
 
 [ -f "/etc/opt/AOK/recovery-mode" ] && {
-	echo "$(date +"%Y-%m-%d %H:%M:%S") Skipped /etc/init.d/rc $1" >>/var/log/recovery-mode.log
+	echo "$(date +"%Y-%m-%d %H:%M:%S") Skipped /etc/init.d/rc $1" \
+		>>/var/log/recovery-mode.log
 	exit 0
 }
 
 # map numbered to named runlevel
 case $1 in
 0)
-	# /sbin/openrc off && /sbin/openrc shutdown && \
+	/sbin/openrc off && /sbin/openrc shutdown
 	# 	/etc/init.d/halt stop
 	/usr/local/bin/shutdown now
 	;;
