@@ -6,22 +6,29 @@
 #
 #  Copyright (c) 2023-2024: Jacob.Lundqvist@gmail.com
 #
-#  Halts the system, as nicely as possible, to minimize risk of getting
-#  a crash popup
+#  Terminates the system, as nicely as possible,
+#  to minimize risk of getting a crash popup
 #
 
 do_shutdown() {
     pids="$(echo "$key_pids" | tr '\n' ' ')"
-    msg="Will kill based on: $1 pids[$pids]"
+    msg="Will shutdown, by killing based on: $1 - pids: $pids"
     echo
     echo "$msg"
     echo
-    /usr/local/bin/logger "shutdown" "$msg"
+    /usr/local/bin/logger "$prog_name" "$msg"
+
+    #
+    #  sync & sleep probably not needed on iSH, but its supposed to be
+    #  done now :)
+    #
     sync
-    sleep 3
+    sync
+    sleep 1
+
     echo "$pids" | xargs -r kill
-    sleep 10
-    echo "><> Still alive!"
+    sleep 15
+    /usr/local/bin/logger "$prog_name" "ERROR: Still alive after kills"
     exit
 }
 
@@ -30,6 +37,8 @@ do_shutdown() {
 #   Main
 #
 #===============================================================
+
+prog_name=$(basename "$0")
 
 # execute again as root
 if [ "$(whoami)" != "root" ]; then

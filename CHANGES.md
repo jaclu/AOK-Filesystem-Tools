@@ -4,6 +4,8 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in main branch
 
+- currently at v0.16.4
+- rework of shutdown procedures
 - currently at v0.16.3
 - Refactored bootup and shutdown of aok_launcher and related tools
 - Added start hint to allow console monitoring before inittab starts
