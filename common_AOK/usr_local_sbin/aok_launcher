@@ -533,7 +533,7 @@ handle_logins() {
                 /usr/local/bin/shutdown now
                 _s="ERROR: Returned from shutdown - should NOT happen!"
                 print_log "$_s"
-                echo "><> sleeping 30"
+                echo "sleeping 30"
                 sleep 30
             else
                 print_log "Terminating vterm $(tty)"
