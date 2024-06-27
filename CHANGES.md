@@ -4,6 +4,14 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in main branch
 
+- currently at v0.16.3
+- Refactored bootup and shutdown of aok_launcher and related tools
+- Added start hint to allow console monitoring before inittab starts
+- Improvements to shutdown
+- Added some checks
+- Debian console restart
+- added warning when mixing default launcher and console mode
+- made error_msg state file with issue
 - aok_launcher - console mode tails all log files, hit Ctrl-C to re-read
 in case something is added/removed
 
