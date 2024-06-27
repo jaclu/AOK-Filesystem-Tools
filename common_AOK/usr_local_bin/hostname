@@ -185,11 +185,13 @@ while [ -n "$1" ]; do
         }
         echo "$sync_file" | sudo tee "$f_hostname_source_fname" >/dev/null
         read_syncfile
+        /usr/local/bin/logger hostname "set to: $(cat /etc/hostname)"
         ;;
 
     "-U" | "--update")
         sudo_check
         read_syncfile
+        /usr/local/bin/logger hostname "set to: $(cat /etc/hostname)"
         exit 0
         ;;
 
