@@ -20,4 +20,14 @@ if [ "$(whoami)" != "root" ]; then
     exit
 fi
 
-pgrep -f 'tail -n 0 -f /var/log/' | xargs -r kill
+#
+# Updated by /usr/local/sbin/aok_launcher
+# during bootup on Debian FS
+#
+_f=/usr/local/sbin/kill_tail_logging
+if [ -x "$_f" ]; then
+    $_f
+else
+    echo "ERROR: script missing or not runable: $_f"
+    echo "       should have been updated by aok_launcher during bootup"
+fi
