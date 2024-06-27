@@ -10,9 +10,9 @@
 #
 #  For normall shutdown, do: shutdown
 #
-#  This is the second stage, actual shutdown, it will be called with &
-#  from shutdown, in order to handle the shutdown process getting lost
-#  on network disconnect
+#  This is the second stage, actual shutdown, it will be called with
+#  exec from shutdown, in order to make sure any services stopping
+#  will not interrupt this script
 #
 
 display_msg() {
@@ -20,7 +20,7 @@ display_msg() {
 
     echo "$dm_msg"
     echo "$dm_msg" >/dev/console
-    /usr/local/bin/logger shutdown "$dm_msg"
+    /usr/local/bin/logger do-shutdown "$dm_msg"
     unset dm_msg
 }
 
@@ -46,9 +46,8 @@ if [ -f /etc/alpine-release ]; then
     display_msg "Will do openrc shutdown"
     openrc shutdown
     display_msg "Completed openrc shutdown"
+    display_msg "Will shutdown system"
+    /sbin/halt
 elif [ -f /etc/debian_version ]; then
     init 0
 fi
-
-display_msg "Will halt system"
-/usr/local/sbin/halt

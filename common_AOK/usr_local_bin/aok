@@ -311,7 +311,6 @@ console_mode_change() {
             #  Disabled for now
             #  TODO: Investigate
             #
-            echo "><> enabling rc_log in $f_rc_conf"
             [ -f "$f_rc_conf" ] && {
                 if grep -q "rc_logger=" "$f_rc_conf"; then
                     sed -i '/^[[:space:]]*#*[[:space:]]*rc_logger=/c\rc_logger="YES"' \
@@ -334,8 +333,6 @@ console_mode_change() {
                     echo 'rc_log_path="/var/log/rc.log"' >>"$f_rc_conf"
                 fi
             }
-        else
-            echo "><> This is not Alpine, not activating rc_log"
         fi
 
         [ "$(get_launch_cmd)" = "$launch_cmd_default" ] && {

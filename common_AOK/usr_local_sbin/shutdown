@@ -112,15 +112,5 @@ fi
     exit 1
 }
 
-_f=/usr/local/sbin/do-shutdown
-
-#
-# use backgrounding to avoid shutdown getting dropped if ssh connection
-# is broken in shutdown procedured
-#
-$_f &
-
-while true; do
-    sleep 5
-    echo "shutdown waiting for $_f to complete..."
-done
+# exec disconnects from the tty so should be safe if run via ssh
+exec /usr/local/sbin/do-shutdown

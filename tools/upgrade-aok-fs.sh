@@ -71,10 +71,29 @@ is_obsolete_file_present() {
     [ -z "$f_name" ] && error_msg "is_obsolete_file_present() - no first param"
 
     if [ -f "$f_name" ]; then
-        msg_3 "Obsolete file found: $f_name"
+        echo "WARNING: Obsolete file found: $f_name"
     elif [ -e "$f_name" ]; then
-        msg_3 "Obsolete filename found, but was not file: $f_name"
+        echo "WARNING: Obsolete filename found, but was not file: $f_name"
     fi
+}
+
+should_be_softlink() {
+    f_name="$1"
+    f_linked_to="$2"
+    f_org_name="$3"
+    [ -z "$f_name" ] && error_msg "should_be_softlink() - no first param"
+    [ -z "$f_linked_to" ] && error_msg "should_be_softlink() - no 2nd param"
+
+    [ ! -f "$f_linked_to" ] && {
+        error_msg "source for sof link missing: $f_linked_to"
+    }
+    [ -L "$f_name" ] || error_msg "Should be softlink: $f_name"
+    [ "$(realpath "$f_name")" != "$f_linked_to" ] && {
+        error_msg "$f_name should be soft-linked to $f_linked_to"
+    }
+    [ -n "$f_org_name" ] && [ ! -f "$f_org_name" ] && {
+        error_msg "Org-name file missing: $f_org_name"
+    }
 }
 
 general_upgrade() {
@@ -213,6 +232,7 @@ obsolete_files() {
     is_obsolete_file_present /usr/local/bin/iphone_tmux
     is_obsolete_file_present /usr/local/bin/nav_keys.sh
     is_obsolete_file_present /usr/local/bin/network_check.sh
+    is_obsolete_file_present /usr/local/bin/shutdown
     is_obsolete_file_present /usr/local/bin/toggle_multicore
     is_obsolete_file_present /usr/local/bin/vnc_start
     is_obsolete_file_present /usr/local/bin/vnc_stop
@@ -224,10 +244,31 @@ obsolete_files() {
     is_obsolete_file_present /usr/local/sbin/do_shutdown
     is_obsolete_file_present /usr/local/sbin/ensure_hostname_in_host_file.sh
     is_obsolete_file_present /usr/local/sbin/ensure_hostname_in_host_file
+    is_obsolete_file_present /usr/local/sbin/poweroff
     is_obsolete_file_present /usr/local/sbin/hostname_sync.sh
     is_obsolete_file_present /usr/local/sbin/reset-run-dir.sh
     is_obsolete_file_present /usr/local/sbin/update_motd
     is_obsolete_file_present /usr/local/sbin/wait_for_console
+}
+
+check_softlinks() {
+    msg_2 "Checking that softlinked bins are setup"
+
+    if hostfs_is_alpine; then
+        d_hostname=/bin
+        f_org_halt=""     # was a softlink to busybox...
+        f_org_shutdown="" # not defined??
+    else
+        d_hostname=/usr/bin
+        f_org_halt="/sbin/ORG.halt"
+        f_org_shutdown="/sbin/ORG.shutdown"
+    fi
+    should_be_softlink "$d_hostname"/hostname \
+        /usr/local/bin/hostname "$d_hostname"/ORIG-hostname
+    should_be_softlink /sbin/halt /usr/local/sbin/halt "$f_org_halt"
+    should_be_softlink /sbin/poweroff /usr/local/sbin/halt
+    should_be_softlink /sbin/shutdown \
+        /usr/local/sbin/shutdown "$f_org_shutdown"
 }
 
 update_aok_release() {
@@ -312,3 +353,4 @@ update_etc_opt_references
 update_aok_release
 verify_launch_cmd
 obsolete_files
+check_softlinks

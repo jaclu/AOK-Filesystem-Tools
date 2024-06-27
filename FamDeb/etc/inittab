@@ -49,7 +49,7 @@ fx5::sysinit:/usr/local/sbin/R-check /usr/local/bin/hostname -U
 # /etc/init.d executes the S and K scripts upon change
 # of runlevel.
 #
-# Runlevel 0 is halt.
+# Runlevel 0 is poweroff.
 # Runlevel 1 is single-user.
 # Runlevels 2-5 are multi-user.
 # Runlevel 6 is reboot.
