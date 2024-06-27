@@ -4,7 +4,7 @@
 #
 #  License: MIT
 #
-#  Copyright (c) 2023: Jacob.Lundqvist@gmail.com
+#  Copyright (c) 2023-2024: Jacob.Lundqvist@gmail.com
 #
 #  Shuts dowwn openrc based systems
 #
@@ -18,13 +18,43 @@
 #  in the system shutdown notice
 #
 
+display_msg() {
+    dm_msg="$1"
+
+    echo "$dm_msg"
+    echo "$dm_msg" >/dev/console
+    /usr/local/bin/logger shutdown "$dm_msg"
+    unset dm_msg
+}
+
 # Define a function to handle Ctrl+C
 interrupt_handler() {
+    touch "$f_abort_shutdown"
     echo "Ctrl+C (SIGINT) received. Cancelling shutdown..."
 
     /usr/local/bin/wall -n "shutdown was canceled, the shutdown notice can be ignored"
-    exit 1
 }
+
+#===============================================================
+#
+#   Main
+#
+#===============================================================
+
+f_abort_shutdown=/tmp/abort_shutdown
+
+rm -f "$f_abort_shutdown" # remove leftover if any
+
+# execute again as root
+if [ "$(whoami)" != "root" ]; then
+    echo "Executing as root via sudo"
+    # using $0 instead of full path makes location not hardcoded
+    sudo "$0" "$@" || {
+        echo "ERROR: sudo failed"
+        exit 1
+    }
+    exit 0
+fi
 
 #
 #  Set the interrupt_handler function to be called when Ctrl+C is pressed
@@ -32,12 +62,6 @@ interrupt_handler() {
 #  to activate after the initial wall is made
 #
 trap interrupt_handler INT
-
-uid="$(id | awk -F'[(=]' '{print $2}')"
-if [ "$uid" -ne 0 ]; then
-    echo "ERROR: shutdown requires root privileges!"
-    exit 1
-fi
 
 if ! mount | grep -qw "/"; then
     echo "WARNING: No / mounted, this seems to be chrooted, aborting"
@@ -81,12 +105,22 @@ if [ "$hold_time" != "0" ]; then
     sleep "$hold_time"
 fi
 
-#
-#  If this is done via remote connection, the openrc shutdown
-#  step would most likely terminate the session, thereby pottentially
-#  aborting the shutdown script before it completes.
-#  Thus the actual shutdown is run in a separate backgrounded script
-#  that will ignore if the triggering session disapears
-#
+[ -f "$f_abort_shutdown" ] && {
+    echo
+    display_msg "Aborting shutdown"
+    rm -f "$f_abort_shutdown"
+    exit 1
+}
 
-/usr/local/sbin/do-shutdown nice &
+_f=/usr/local/sbin/do-shutdown
+
+#
+# use backgrounding to avoid shutdown getting dropped if ssh connection
+# is broken in shutdown procedured
+#
+$_f &
+
+while true; do
+    sleep 5
+    echo "shutdown waiting for $_f to complete..."
+done
