@@ -1,6 +1,6 @@
 #!/sbin/openrc-run
 #
-# Copyright (c) 2021-2023: Jacob.Lundqvist@gmail.com
+# Copyright (c) 2021-2024: Jacob.Lundqvist@gmail.com
 # License: MIT
 #
 #  This service reads the GPS and discards the output to /dev/null.
@@ -32,6 +32,13 @@ pidfile="/run/runbg.pid"
 #  after stoping.
 #
 log_file=/var/log/services.log
+
+log_daemon_msg() {
+    local msg="$1"
+    local service="$2"
+    echo " * $msg $service" >>/var/log/rc.log
+}
+
 log_it() {
     # if no supported loggers are found, fall back to a non-dependency solution
     f_logger=/usr/local/bin/logger
