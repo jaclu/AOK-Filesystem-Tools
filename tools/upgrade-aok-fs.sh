@@ -4,7 +4,7 @@
 #
 #  License: MIT
 #
-#  Copyright (c) 2023: Jacob.Lundqvist@gmail.com
+#  Copyright (c) 2022-2024: Jacob.Lundqvist@gmail.com
 #
 #  Upgrades an already installed iSH to be current with /optAOK content
 #  This is not equivallent to a fresh install, since dynamically generated
@@ -114,7 +114,9 @@ general_upgrade() {
         msg_3 "/usr/local/bin"
         rsync_chown "$distro_fam_prefix"/usr_local_bin/ /usr/local/bin
         msg_3 "/usr/local/sbin"
-        rsync_chown "$distro_fam_prefix"/usr_local_sbin/ /usr/local/sbin
+        # kill_tail_logging is updated on each boot by aok_launcher
+        _s="--exclude=kill_tail_logging $distro_fam_prefix/usr_local_sbin/"
+        rsync_chown "$_s" /usr/local/sbin
         if ! this_is_aok_kernel && ! this_fs_is_chrooted; then
             _f="/usr/bin/uptime"
             msg_3 "$_f"
@@ -218,12 +220,14 @@ obsolete_files() {
     is_obsolete_file_present /usr/local/sbin/aok-launcher
     is_obsolete_file_present /usr/local/sbin/bat_charge_leveld
     is_obsolete_file_present /usr/local/sbin/bat_monitord
+    is_obsolete_file_present /usr/local/sbin/custom_console_log.sh
     is_obsolete_file_present /usr/local/sbin/do_shutdown
     is_obsolete_file_present /usr/local/sbin/ensure_hostname_in_host_file.sh
     is_obsolete_file_present /usr/local/sbin/ensure_hostname_in_host_file
     is_obsolete_file_present /usr/local/sbin/hostname_sync.sh
     is_obsolete_file_present /usr/local/sbin/reset-run-dir.sh
     is_obsolete_file_present /usr/local/sbin/update_motd
+    is_obsolete_file_present /usr/local/sbin/wait_for_console
 }
 
 update_aok_release() {

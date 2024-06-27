@@ -1,0 +1,67 @@
+#!/bin/sh
+#
+#  Part of https://github.com/jaclu/AOK-Filesystem-Tools
+#
+#  License: MIT
+#
+#  Copyright (c) 2023-2024: Jacob.Lundqvist@gmail.com
+#
+#  Halts the system, as nicely as possible, to minimize risk of getting
+#  a crash popup
+#
+
+do_shutdown() {
+    pids="$(echo "$key_pids" | tr '\n' ' ')"
+    msg="Will kill based on: $1 pids[$pids]"
+    echo
+    echo "$msg"
+    echo
+    /usr/local/bin/logger "shutdown" "$msg"
+    sync
+    sleep 3
+    echo "$pids" | xargs -r kill
+    sleep 10
+    echo "><> Still alive!"
+    exit
+}
+
+#===============================================================
+#
+#   Main
+#
+#===============================================================
+
+# execute again as root
+if [ "$(whoami)" != "root" ]; then
+    echo "Executing as root via sudo"
+    # using $0 instead of full path makes location not hardcoded
+    sudo "$0" || {
+        echo "ERROR: sudo failed"
+        exit 1
+    }
+    exit 0
+fi
+
+#
+#  Halting the system, different methods in falling priorities
+#
+
+# kill aok_launcher
+key_pids="$(pgrep -f aok_launcher)"
+[ -n "$key_pids" ] && do_shutdown aok_launcher
+
+# a session on console
+key_pids="$(pgrep -t pts/0)"
+[ -n "$key_pids" ] && do_shutdown pts/0
+
+# login sessions
+key_pids="$(pgrep -f "login -f")"
+[ -n "$key_pids" ] && do_shutdown "'login -f'"
+
+# find init pid
+key_pids="$(pgrep -f "init ")"
+[ -n "$key_pids" ] && do_shutdown "init via pgrep"
+
+# assume init is pid 1
+key_pids="1"
+do_shutdown "pid 1"

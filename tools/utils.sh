@@ -31,7 +31,7 @@ error_msg() {
         exit 9
     fi
 
-    _em_msg="ERROR: $_em_msg"
+    _em_msg="ERROR[$0]: $_em_msg"
     echo
     echo "$_em_msg"
     echo

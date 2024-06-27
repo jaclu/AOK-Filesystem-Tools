@@ -4,7 +4,7 @@
 #
 #  License: MIT
 #
-#  Copyright (c) 2022,2023: Jacob.Lundqvist@gmail.com
+#  Copyright (c) 2022-2024: Jacob.Lundqvist@gmail.com
 #
 #  Script to do various things related to the configuration of ish
 #
@@ -197,8 +197,17 @@ launch_cmd_change() {
         error_msg "launch_cmd_change() - no param given, options are on/off"
     }
     case "$lnch_cmd" in
-    "default") set_launch_cmd "$launch_cmd_default" ;;
+    "default")
+        set_launch_cmd "$launch_cmd_default"
+        [ -f "$f_pts_0_as_console" ] && {
+            echo
+            echo "WARNING: With the default launcher, using console"
+            echo "         will not work great!"
+            echo
+        }
+        ;;
     "aok") set_launch_cmd "$launch_cmd_AOK" ;;
+
     *) launch_cmd_custom "$lnch_cmd" ;;
     esac
 }
@@ -283,12 +292,81 @@ aok_suffix_display() {
 
 console_mode_change() {
     use_console="$1"
+    f_rc_conf=/etc/rc.conf
     [ -z "$use_console" ] && {
         error_msg "console_mode_change() - no param given, options are on/off"
     }
     case "$use_console" in
-    "on") touch "$f_pts_0_as_console" ;;
-    "off") rm -f "$f_pts_0_as_console" ;;
+    "on")
+        touch "$f_pts_0_as_console"
+        [ "$(stat -c "%t %T" /dev/console)" != "88 0" ] && {
+            echo "Setting up /dev/pts/0 as console"
+            rm -f /dev/console && mknod -m 222 /dev/console c 136 0
+        }
+
+        if [ -f /etc/alpine-release ]; then
+            #
+            #  Activating logging in /etc/rc.conf leads to openrc getting
+            #  stuck on debian
+            #  Disabled for now
+            #  TODO: Investigate
+            #
+            echo "><> enabling rc_log in $f_rc_conf"
+            [ -f "$f_rc_conf" ] && {
+                if grep -q "rc_logger=" "$f_rc_conf"; then
+                    sed -i '/^[[:space:]]*#*[[:space:]]*rc_logger=/c\rc_logger="YES"' \
+                        "$f_rc_conf" || {
+
+                        error_msg "Failed to enable rc_logger in $f_rc_conf"
+                    }
+                else
+                    # If it wasnt pressent, add it
+                    echo 'rc_logger="YES"' >>"$f_rc_conf"
+                fi
+                if grep -q "rc_log_path=" "$f_rc_conf"; then
+                    sed -i '/^[[:space:]]*#*[[:space:]]*rc_log_path=/c\rc_log_path="/var/log/rc.log"' \
+                        "$f_rc_conf" || {
+
+                        error_msg "Failed to enable rc_log_path in $f_rc_conf"
+                    }
+                else
+                    # If it wasnt pressent, add it
+                    echo 'rc_log_path="/var/log/rc.log"' >>"$f_rc_conf"
+                fi
+            }
+        else
+            echo "><> This is not Alpine, not activating rc_log"
+        fi
+
+        [ "$(get_launch_cmd)" = "$launch_cmd_default" ] && {
+            echo
+            echo "WARNING: With the default launcher, using console"
+            echo "         will not work great!"
+            echo
+        }
+
+        ;;
+    "off")
+        rm -f "$f_pts_0_as_console"
+        [ "$(stat -c "%t %T" /dev/console)" != "5 1" ] && {
+            echo "Reverting console to normal mode"
+            rm -f /dev/console && mknod -m 666 /dev/console c 5 1
+        }
+
+        # if /dev/console is not used and rc_logger=YES openrc gets stuck
+        [ -f "$f_rc_conf" ] && {
+            sed -i '/^[[:space:]]*#*[[:space:]]*rc_logger=/c\#rc_logger="NO"' \
+                "$f_rc_conf" || {
+
+                error_msg "Failed to disable rc_logger in $f_rc_conf"
+            }
+            sed -i '/^[[:space:]]*#*[[:space:]]*rc_log_path=/c\#rc_log_path="/var/log/rc.log"' \
+                "$f_rc_conf" || {
+
+                error_msg "Failed to disable rc_log_path in $f_rc_conf"
+            }
+        }
+        ;;
     *)
         error_msg "console_mode_change() - options are on/off"
         ;;
