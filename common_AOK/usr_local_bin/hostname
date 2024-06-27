@@ -2,7 +2,7 @@
 #
 #  Part of https://github.com/jaclu/AOK-Filesystem-Tools
 #
-#  Copyright (c) 2023: Jacob.Lundqvist@gmail.com
+#  Copyright (c) 2023-2024: Jacob.Lundqvist@gmail.com
 #
 #  License: MIT
 #
@@ -75,7 +75,7 @@ All other options are ignored, for compatibility with the default hostnme"
 
 error_msg() {
     echo
-    echo "ERROR: $1"
+    echo "ERROR[$0]: $1"
     echo
 
     exit 1
