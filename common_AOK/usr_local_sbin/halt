@@ -40,16 +40,10 @@ do_shutdown() {
 
 prog_name=$(basename "$0")
 
-# execute again as root
-if [ "$(whoami)" != "root" ]; then
-    echo "Executing as root via sudo"
-    # using $0 instead of full path makes location not hardcoded
-    sudo "$0" || {
-        echo "ERROR: sudo failed"
-        exit 1
-    }
-    exit 0
-fi
+[ "$(whoami)" != "root" ] && {
+    echo "$prog_name must be run by root!"
+    exit 1
+}
 
 #
 #  Halting the system, different methods in falling priorities
