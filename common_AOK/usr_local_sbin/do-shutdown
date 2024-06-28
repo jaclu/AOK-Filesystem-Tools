@@ -30,8 +30,10 @@ display_msg() {
 #
 #===============================================================
 
+prog_name=$(basename "$0")
+
 [ "$(whoami)" != "root" ] && {
-    echo "$0 must be run by root!"
+    echo "$prog_name must be run by root!"
     exit 1
 }
 
