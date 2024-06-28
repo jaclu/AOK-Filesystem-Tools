@@ -90,8 +90,9 @@ hostname_fix() {
         msg_3 "Renaming original /bin/hostname -> $_f"
         mv /bin/hostname "$_f"
     else
-        rm -f /bin/hostname
+        rm -f /bin/hostname # dont overwrite ORIG file
     fi
+    ln -sf /usr/local/bin/hostname /bin
 
     _f=/bin/hostname
     [ -f "$_f" ] && [ ! -h "$_f" ] && {
@@ -106,7 +107,8 @@ hostname_fix() {
             error_msg "Failed to soure hostname"
         }
     elif this_fs_is_chrooted; then
-        echo "$orig_hostname" >/etc/hostname
+        # give the chrooted instance a name based on the host
+        echo "ish-$orig_hostname" >/etc/hostname
         hostname -S /etc/hostname
     fi
     #  Ensure hostname has been picked up, iSH-AOK also updates /bin/hostname
