@@ -167,13 +167,35 @@ setup_environment() {
         msg_2 "Disabling hostname service not working on iSH"
         mv -f "$hostn_service" /etc/init.d/NOT-hostname
     fi
-    if hostfs_is_debian || hostfs_is_devuan; then
+    if destfs_is_debian || destfs_is_devuan; then
         msg_3 "Removing hostname service files not meaningfull on iSH"
         rm -f /etc/init.d/hostname
         rm -f /etc/init.d/hostname.sh
         rm -f /etc/rcS.d/S01hostname.sh
         rm -f /etc/systemd/system/hostname.service
     fi
+
+    #
+    #  Shutdown, halt & poweroff replacements
+    #
+    f_shutdown=/sbin/shutdown
+    msg_2 "soft-linking $f_shutdown to /usr/local/sbin/shutdown"
+    [ -f "$f_shutdown" ] && [ ! -L "$f_shutdown" ] &&
+        mv "$f_shutdown" /sbin/ORG.shutdown
+
+    ln -sf /usr/local/sbin/shutdown /sbin
+
+    f_halt=/sbin/halt
+    msg_2 "soft-linking $f_halt to /usr/local/sbin/halt"
+    [ -f "$f_halt" ] && [ ! -L "$f_halt" ] &&
+        mv "$f_halt" /sbin/ORG.halt
+    ln -sf /usr/local/sbin/halt /sbin
+
+    f_poweroff=/sbin/poweroff
+    msg_2 "soft-linking $f_poweroff to /usr/local/sbin/halt"
+    [ -f "$f_poweroff" ] && [ ! -L "$f_poweroff" ] &&
+        mv "$f_poweroff" /sbin/ORG.poweroff
+    ln -sf /usr/local/sbin/halt /sbin/poweroff
 
     if [ -f /etc/ssh/sshd_config ]; then
         # Move sshd to port 1022 to avoid issues
