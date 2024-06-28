@@ -295,7 +295,7 @@ handle_custom_console_monitor() {
     #  can commence its run
     #
     echo "><> running $cmd_custom_console_monitor"
-    $cmd_custom_console_monitor "$boot_time"
+    $cmd_custom_console_monitor
     #
     #  Should not get here...
     #
@@ -644,8 +644,7 @@ else
 fi
 check_for_recovery_mode
 $this_is_pts0 && {
-    boot_time=$(date '+%Y-%m-%d %H:%M:%S')
-    echo "Booted at: $boot_time"
+    echo "$prog_name - Booted at: $(date '+%Y-%m-%d')$(uptime)"
 }
 
 verify_devs

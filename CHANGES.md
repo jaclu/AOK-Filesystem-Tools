@@ -4,6 +4,9 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in main branch
 
+- currently at v0.16.6
+- added uptime to Boot notation
+- simplified must be run by root msg
 - currently at v0.16.5
 - /sbin shutdown, halt & poweroff replacements
 - imrpoved hostname deploy
