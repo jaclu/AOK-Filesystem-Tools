@@ -343,7 +343,7 @@ fi
 
 d_new_etc_opt_prefix="/etc/opt/AOK"
 
-if [ "$update_configs" -eq 1 ]; then
+if [ "$update_configs" = "1" ]; then
     echo
     restore_configs
 fi
