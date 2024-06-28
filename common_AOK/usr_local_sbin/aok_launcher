@@ -22,6 +22,13 @@
 #  directly to set up the user session
 #
 
+error_msg() {
+    echo
+    echo "ERROR[$0]: $1"
+    echo
+    log_it "$1"
+}
+
 log_it() {
     # In recovery-mode, skip logging to minimize risk of issues
     [ -f "$f_recovery_mode" ] && return
@@ -53,27 +60,77 @@ print_log() {
 }
 
 fix_stdio_device() {
-    dev_src="$1"
-    dev_name="/dev/$2"
+    fsd_src="$1"
+    fsd_name="/dev/$2"
 
-    [ -c "$dev_name" ] || {
-        echo "Fixing $dev_name"
-        rm -f "$dev_name"
-        ln -sf "$dev_src" "$dev_name"
+    [ -z "$1" ] && error_msg "fix_stdio_device() - no param 1"
+    [ -z "$2" ] && error_msg "fix_stdio_device($fsd_src,) - no param 2"
+
+    [ -c "$fsd_name" ] || {
+        echo "Fixing $fsd_name"
+        rm -f "$fsd_name"
+        ln -sf "$fsd_src" "$fsd_name"
     }
     return 0
 }
 
-fix_stdio() {
+check_for_bad_null() {
+    bad_null="$1"
+    [ -z "$bad_null" ] && {
+        error_msg "call to check_for_bad_null() with no param"
+    }
+    [ -f "$bad_null" ] && {
+        echo
+        echo
+        echo "WARNING: $bad_null found - typo in /dev/null redirect?"
+        echo
+    }
+    return 0
+}
+
+verify_device() {
+    vd_dev_name="$1"
+    vd_maj="$2"
+    vd_min="$3"
+    [ -z "$vd_dev_name" ] && error_msg "verify_device() - no param 1"
+    [ -z "$vd_maj" ] && error_msg "verify_device($vd_dev_name,,) - no param 2"
+    [ -z "$vd_min" ] && error_msg "verify_device($vd_dev_name,$vd_maj,) - no param 3"
+
+    [ -c "$vd_dev_name" ] || {
+        rm -f "$vd_dev_name" && mknod -m 666 "$vd_dev_name" c "$vd_maj" "$vd_min"
+        echo "Fixed $vd_dev_name"
+    }
+    unset vd_dev_name
+    unset vd_maj
+    unset vd_min
+    return 0
+}
+
+verify_devs() {
     #
-    # on iSH stdio sometimes are missing, this ensures
-    # their pressence
+    #  Make sure all /dev entries are reasonable
     #
     [ ! -d /proc/ish ] && return # only do on ish
 
     fix_stdio_device /proc/self/fd/0 stdin
     fix_stdio_device /proc/self/fd/1 stdout
     fix_stdio_device /proc/self/fd/2 stderr
+
+    check_for_bad_null /dev/nul
+    check_for_bad_null /dev/nulll
+
+    verify_device /dev/clipboard 240 0
+    verify_device /dev/console 5 1
+    verify_device /dev/full 1 7
+    verify_device /dev/location 240 1
+    verify_device /dev/null 1 3
+    verify_device /dev/ptmx 5 2
+    verify_device /dev/random 1 8
+    verify_device /dev/tty 5 0
+    verify_device /dev/tty1 4 1
+    verify_device /dev/tty2 4 2
+    verify_device /dev/urandom 1 9
+    verify_device /dev/zero 1 5
 }
 
 update_deb_log_kill_cmd() {
@@ -119,7 +176,7 @@ check_for_recovery_mode() {
 
         f_recovery_mode_log=/var/log/recovery-mode.log
 
-        fix_stdio
+        verify_devs
         echo
         echo "===  recovery-mode selected  ==="
         echo "---  Starting rescue shell - on exit, App will terminate."
@@ -192,12 +249,12 @@ display_header() {
     echo "aok_launcher - AOK: $aok_vers - Filesystem: $fs_name"
     [ -f "$f_pts_0_as_console" ] && {
         echo "/dev/pts/0 is used as /dev/console - " \
-            "no session will be started in this vterm"
+            "no session will be started on this vterm"
     }
-    $this_is_pts0 && {
+    if $this_is_pts0 || [ -f "$f_this_is_chrooted" ]; then
         echo "Press 'r' during bootup for recovery-mode"
         echo
-    }
+    fi
 
     unset aok_vers
     unset fs_name
@@ -242,8 +299,8 @@ handle_custom_console_monitor() {
     #
     #  Should not get here...
     #
-    echo "ERROR: exited: $cmd_custom_console_monitor"
-    echo "       Will shut down in 30s"
+    error_msg "exited: $cmd_custom_console_monitor"
+    echo "Will shut down in 30s"
     sleep 30
     exit 1
 }
@@ -282,8 +339,8 @@ monitor_log_files() {
         sleep 1
     done
 
-    echo "ERROR: Exited console monitoring loop - shouldnt happen"
-    echo "       Will shut down in 30s"
+    error_msg "Exited console monitoring loop - shouldnt happen"
+    echo "Will shut down in 30s"
     sleep 30
     exit 1 # shouldnt get here, but just in case
 }
@@ -360,9 +417,7 @@ deploy_aok() {
     if /etc/profile; then
         /usr/local/bin/logger aok_launcher Deploy completed - "$da_depl_step"
     else
-        echo
-        echo "ERROR returned from the deploy procedure!"
-        echo
+        error_msg "returned from the deploy procedure!"
         echo "Since the File System probably is not fully deployed,"
         echo "it is impposisble to say if it is meaningfull to continue"
         echo "You have been warned..."
@@ -487,9 +542,7 @@ login_with_param_check() {
         print_log "Starting login with no params" noecho
         "$f_login_prog" || {
             _excode="$?"
-            echo
-            print_log "ERROR: login exited with: $_excode"
-            echo
+            error_msg "login exited with: $_excode"
         }
     fi
 }
@@ -505,8 +558,7 @@ handle_logins() {
         login_with_param_check
         login_ex_code="$?"
         [ "$login_ex_code" != "0" ] && {
-            echo
-            print_log "ERROR: $f_login_prog exited with: $login_ex_code"
+            error_msg "$f_login_prog exited with: $login_ex_code"
         }
 
         if [ -f "$f_this_is_chrooted" ]; then
@@ -530,11 +582,9 @@ handle_logins() {
                 # echo
                 # echo "Shutting down system..."
                 # echo
-                /usr/local/bin/shutdown now
-                _s="ERROR: Returned from shutdown - should NOT happen!"
-                print_log "$_s"
-                echo "sleeping 30"
-                sleep 30
+                /usr/local/sbin/shutdown now
+                sleep 30 # give shutdown plenty of time to complete
+                exit     # this will insta-kill iSH
             else
                 print_log "Terminating vterm $(tty)"
                 sleep 2
@@ -597,11 +647,11 @@ $this_is_pts0 && {
     boot_time=$(date '+%Y-%m-%d %H:%M:%S')
     echo "Booted at: $boot_time"
 }
-fix_stdio
+
+verify_devs
 [ -f "$f_rel_debian" ] && update_deb_log_kill_cmd
 check_for_recovery_mode
 display_header
-echo "aok_monitor tty [$(tty)]"
 
 #  If deploy has not completed - handle it
 if [ -f "$f_deploy_state" ]; then
@@ -614,4 +664,5 @@ else
     fi
 fi
 
+[ -f "$f_this_is_chrooted" ] && indicate_end_of_recovery_window
 handle_logins
