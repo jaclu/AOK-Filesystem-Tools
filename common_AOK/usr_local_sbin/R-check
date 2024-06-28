@@ -17,4 +17,5 @@ f_recovery_log_file=/var/log/recovery-mode.log
     exit 0
 }
 
+# run the intended task
 "${@}"
