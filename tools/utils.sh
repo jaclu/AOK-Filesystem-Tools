@@ -720,11 +720,11 @@ destfs_is_alpine() {
 }
 
 destfs_is_debian() {
-    test -f "$d_build_root"/etc/debian_version && ! destfs_is_devuan
+    test -f "$f_debian_version" && ! destfs_is_devuan
 }
 
 destfs_is_devuan() {
-    test -f "$d_build_root"/etc/devuan_version
+    test -f "$f_devuan_version"
 }
 
 destfs_is_select() {
@@ -1054,6 +1054,7 @@ fi
 #  Where to find native FS version
 f_alpine_release="$d_build_root"/etc/alpine-release
 f_debian_version="$d_build_root"/etc/debian_version
+f_devuan_version="$d_build_root"/etc/devuan_version
 
 #  Placeholder, to store what version of AOK that was used to build FS
 f_aok_fs_release="$d_build_root"/etc/aok-fs-release
