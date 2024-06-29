@@ -18,18 +18,7 @@ do_shutdown() {
     echo
     /usr/local/bin/logger "$prog_name" "$msg"
 
-    #
-    #  sync & sleep probably not needed on iSH, but its supposed to be
-    #  done now :)
-    #
-    sync
-    sync
-    sleep 1
-
-    echo "$pids" | xargs -r kill
-    sleep 15
-    /usr/local/bin/logger "$prog_name" "ERROR: Still alive after kills"
-    exit
+    echo "$pids" | xargs -r kill -9
 }
 
 #===============================================================
@@ -44,6 +33,14 @@ prog_name=$(basename "$0")
     echo "$prog_name must be run by root!"
     exit 1
 }
+
+#
+#  sync & sleep probably not needed on iSH, but its supposed to be
+#  done now :)
+#
+sync
+sync
+sleep 1
 
 #
 #  Halting the system, different methods in falling priorities
@@ -68,3 +65,5 @@ key_pids="$(pgrep -f "init ")"
 # assume init is pid 1
 key_pids="1"
 do_shutdown "pid 1"
+
+/usr/local/bin/logger "$prog_name" "ERROR: Still alive after kills"
