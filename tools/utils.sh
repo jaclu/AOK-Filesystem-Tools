@@ -933,7 +933,7 @@ replace_home_root() {
     [ -n "$HOME_DIR_ROOT" ] && {
         if [ -f "$HOME_DIR_ROOT" ]; then
             msg_2 "Replacing /root"
-            mv /root /root.ORIG
+            mv /root /ORG.root
             cd / || error_msg "Failed to cd into: /"
             untar_file "$HOME_DIR_ROOT" z # NO_EXIT_ON_ERROR
             touch "$f_home_root_replaced"

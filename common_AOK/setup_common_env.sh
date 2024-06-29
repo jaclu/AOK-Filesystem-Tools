@@ -157,6 +157,7 @@ setup_environment() {
         rc-update add runbg default
     else
         msg_2 "openrc not available - runbg not activated"
+        error_msg "><> openrc not available - runbg not activated"
     fi
 
     #
@@ -176,25 +177,39 @@ setup_environment() {
     fi
 
     #
-    #  Shutdown, halt & poweroff replacements
+    #  Replacing some stadard bins with AOK version
     #
-    f_shutdown=/sbin/shutdown
-    msg_2 "soft-linking $f_shutdown to /usr/local/sbin/shutdown"
-    [ -f "$f_shutdown" ] && [ ! -L "$f_shutdown" ] &&
-        mv "$f_shutdown" /sbin/ORG.shutdown
+    _f=/usr/bin/wall
+    msg_2 "soft-linking $_f to /usr/local/bin/wall"
+    [ -f "$_f" ] && [ ! -L "$_f" ] && {
+        msg_3 "Saving org $_f"
+        mv "$_f" /usr/bin/ORG.wall
+    }
+    ln -sf /usr/local/bin/wall /usr/bin
 
+    _f=/sbin/shutdown
+    msg_2 "soft-linking $_f to /usr/local/sbin/shutdown"
+    [ -f "$_f" ] && [ ! -L "$_f" ] && {
+        msg_3 "Saving org $_f"
+        mv "$_f" /sbin/ORG.shutdown
+    }
     ln -sf /usr/local/sbin/shutdown /sbin
 
-    f_halt=/sbin/halt
-    msg_2 "soft-linking $f_halt to /usr/local/sbin/halt"
-    [ -f "$f_halt" ] && [ ! -L "$f_halt" ] &&
-        mv "$f_halt" /sbin/ORG.halt
+    _f=/sbin/halt
+    msg_2 "soft-linking $_f to /usr/local/sbin/halt"
+    [ -f "$_f" ] && [ ! -L "$_f" ] && {
+        msg_3 "Saving org $_f"
+        mv "$_f" /sbin/ORG.halt
+    }
     ln -sf /usr/local/sbin/halt /sbin
 
-    f_poweroff=/sbin/poweroff
-    msg_2 "soft-linking $f_poweroff to /usr/local/sbin/halt"
-    [ -f "$f_poweroff" ] && [ ! -L "$f_poweroff" ] &&
-        mv "$f_poweroff" /sbin/ORG.poweroff
+    _f=/sbin/poweroff
+    msg_2 "soft-linking $_f to /usr/local/sbin/halt"
+    [ -f "$_f" ] && [ ! -L "$_f" ] && {
+        msg_3 "Saving org $_f"
+        mv "$_f" /sbin/ORG.poweroff
+    }
+
     ln -sf /usr/local/sbin/halt /sbin/poweroff
 
     if [ -f /etc/ssh/sshd_config ]; then
