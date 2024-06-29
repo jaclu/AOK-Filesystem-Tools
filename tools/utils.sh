@@ -278,7 +278,7 @@ manual_runbg() {
     #  shellcheck disable=SC2009
     if ! this_fs_is_chrooted && ! ps ax | grep -v grep | grep -qw cat; then
         cat /dev/location >/dev/null &
-        msg_1 "iSH now able to run in the background"
+        msg_1 "*****  iSH can now run in the background!  *****"
     fi
 }
 

@@ -91,7 +91,7 @@ fi
 
 display_installed_versions_if_prebuilt
 
-msg_1 "Setup complete!"
+msg_1 "Debian specific setup complete!"
 
 duration="$(($(date +%s) - tsd_start))"
 display_time_elapsed "$duration" "Setup Debian"

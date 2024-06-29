@@ -31,8 +31,10 @@ restore_to_aok_state() {
     src="$1"
     dst="$2"
     [ -z "$src" ] && error_msg "restore_to_aok_state() - no 1st param"
-    [ -z "$dst" ] && error_msg "restore_to_aok_state() - no 2nd param"
-    [ -e "$src" ] || error_msg "restore_to_aok_state() - src not found $src"
+    [ -z "$dst" ] && error_msg "restore_to_aok_state($src,) - no 2nd param"
+    [ -e "$src" ] || {
+        error_msg "restore_to_aok_state($src, $dst) - src not found $src"
+    }
     #[ -e "$dst" ] || error_msg "restore_to_aok_state() - dst not found $dst"
 
     msg_2 "Will restore $src -> $dst"
@@ -45,10 +47,21 @@ restore_configs() {
     #
     #  This covers config style files, that might overwrite user configs
     #
-    echo "===  Upgrade of configs is requested, will update /etc/inittab and similar configs"
+    _s="===  Upgrade of configs is requested, will update"
+    _s="$_s /etc/inittab and similar configs"
+    echo "$_s"
     restore_to_aok_state /opt/AOK/common_AOK/etc/environment /etc
     restore_to_aok_state /opt/AOK/common_AOK/etc/profile-hints /etc
+
     restore_to_aok_state /opt/AOK/common_AOK/etc/init.d/runbg /etc/init.d/runbg
+    _f=/etc/runlevels/default/runbg
+    [ ! -f "$_f" ] && {
+        msg_3 "Soft-linking $_f"
+        ln -sf /etc/init.d/runbg "$_f" || {
+            error_msg "soft-linking failed!"
+        }
+    }
+
     restore_to_aok_state /opt/AOK/common_AOK/etc/login.defs /etc/login.defs
     restore_to_aok_state "$distro_fam_prefix"/etc/inittab /etc/inittab
     restore_to_aok_state "$distro_fam_prefix"/etc/profile /etc/profile
@@ -264,11 +277,13 @@ check_softlinks() {
         f_org_shutdown="/sbin/ORG.shutdown"
     fi
     should_be_softlink "$d_hostname"/hostname \
-        /usr/local/bin/hostname "$d_hostname"/ORIG-hostname
+        /usr/local/bin/hostname "$d_hostname"/ORG.hostname
     should_be_softlink /sbin/halt /usr/local/sbin/halt "$f_org_halt"
-    should_be_softlink /sbin/poweroff /usr/local/sbin/halt
     should_be_softlink /sbin/shutdown \
         /usr/local/sbin/shutdown "$f_org_shutdown"
+
+    should_be_softlink /sbin/poweroff /usr/local/sbin/halt
+    should_be_softlink /usr/bin/wall /usr/local/bin/wall /usr/bin/ORG.wall
 }
 
 update_aok_release() {
