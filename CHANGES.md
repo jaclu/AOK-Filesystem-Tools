@@ -4,6 +4,15 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in main branch
 
+- currently at v0.16.7
+- aok_launcer - improved bootup notifications
+- Some deploy tweaks
+- runbg notifies all sessions incl /dev/console of state change
+- skel files handles Debian10 not able to display sysload
+- shutdown compatible with default params, can display help
+- halt will continue until it shuts system down
+- improved wall handling of /dev/console
+- made orignal file renames consistent
 - currently at v0.16.6
 - added uptime to Boot notation
 - simplified must be run by root msg

@@ -22,6 +22,15 @@ prepare_env_etc() {
     msg_3 "Disabling previous openrc runlevel tasks"
     rm /etc/runlevels/*/* -f
 
+    #  Ensure the one basic service AOK provides is present
+    _f=/etc/init.d/runbg
+    [ -f "$_f" ] && {
+        msg_4 "Enabling runbg service"
+        ln -sf "$_f" /etc/runlevels/default || {
+            error_msg "Failed to soft-link $_f"
+        }
+    }
+
     msg_3 "Adding env versions & AOK Logo to /etc/update-motd.d"
     mkdir -p /etc/update-motd.d
     rsync_chown /opt/AOK/FamDeb/etc/update-motd.d /etc

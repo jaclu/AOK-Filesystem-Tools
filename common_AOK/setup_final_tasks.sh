@@ -85,12 +85,12 @@ hostname_fix() {
         aok -s on
     }
 
-    _f=/bin/ORIG-hostname
+    _f=/bin/ORG.hostname
     if [ ! -f "$_f" ]; then
         msg_3 "Renaming original /bin/hostname -> $_f"
         mv /bin/hostname "$_f"
     else
-        rm -f /bin/hostname # dont overwrite ORIG file
+        rm -f /bin/hostname # dont overwrite ORG file
     fi
     ln -sf /usr/local/bin/hostname /bin
 

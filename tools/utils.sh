@@ -278,7 +278,7 @@ manual_runbg() {
     #  shellcheck disable=SC2009
     if ! this_fs_is_chrooted && ! ps ax | grep -v grep | grep -qw cat; then
         cat /dev/location >/dev/null &
-        msg_1 "iSH now able to run in the background"
+        msg_1 "*****  iSH can now run in the background!  *****"
     fi
 }
 
@@ -933,7 +933,7 @@ replace_home_root() {
     [ -n "$HOME_DIR_ROOT" ] && {
         if [ -f "$HOME_DIR_ROOT" ]; then
             msg_2 "Replacing /root"
-            mv /root /root.ORIG
+            mv /root /ORG.root
             cd / || error_msg "Failed to cd into: /"
             untar_file "$HOME_DIR_ROOT" z # NO_EXIT_ON_ERROR
             touch "$f_home_root_replaced"
