@@ -170,7 +170,18 @@ get_battery_info() {
 }
 
 get_sysload_lvl() {
+    # Debian 10 cant display sysload on iSH...
+    sysload_not_available="$HOME/.no-sysload-available"
+    [ -f "$sysload_not_available" ] && {
+        echo
+        return
+    }
     _sysload="$(uptime | awk -F'average:' '{print $2}' | awk -F, '{print $1}' | tr -d ' ')"
+    [ "$_sysload" = "0.00" ] && {
+        touch "$sysload_not_available"
+        echo
+        return
+    }
     _load_lvl="$(echo "$_sysload" | cut -d. -f 1)"
     if [ "$_load_lvl" -ge 20 ]; then
         _load_color=196 # red

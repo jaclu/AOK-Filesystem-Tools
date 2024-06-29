@@ -62,8 +62,13 @@ if ! shopt -oq posix; then
     fi
 fi
 
-#
-#  Use either one, dynamic will display sysload 5 and on ish-AOK batt-lvl
-#
-use_dynamic_bash_prompt
-# use_static_bash_prompt
+if [[ -f $HOME/.no-sysload-available ]]; then
+    # Debian 10 cant display sysload on iSH...
+    use_static_bash_prompt
+else
+    #
+    #  Use either one, dynamic will display sysload and on ish-AOK batt-lvl
+    #
+    use_dynamic_bash_prompt
+    # use_static_bash_prompt
+fi
