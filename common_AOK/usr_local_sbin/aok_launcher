@@ -66,6 +66,9 @@ fix_stdio_device() {
     [ -z "$1" ] && error_msg "fix_stdio_device() - no param 1"
     [ -z "$2" ] && error_msg "fix_stdio_device($fsd_src,) - no param 2"
 
+    [ -f "$f_this_is_chrooted" ] && {
+        error_msg "fix_stdio_device($1, $2) can not be used when chrooted"
+    }
     [ -c "$fsd_name" ] || {
         print_log "Fixing $fsd_name"
         rm -f "$fsd_name"
@@ -96,6 +99,11 @@ verify_device() {
     [ -z "$vd_maj" ] && error_msg "verify_device($vd_dev_name,,) - no param 2"
     [ -z "$vd_min" ] && error_msg "verify_device($vd_dev_name,$vd_maj,) - no param 3"
 
+    [ -f "$f_this_is_chrooted" ] && {
+        error_msg "verify_device($1, $2, $3) can not be used when chrooted"
+    }
+
+
     [ -c "$vd_dev_name" ] || {
         rm -f "$vd_dev_name" && mknod -m 666 "$vd_dev_name" c "$vd_maj" "$vd_min"
         print_log "Fixed $vd_dev_name"
@@ -110,7 +118,9 @@ verify_devs() {
     #
     #  Make sure all /dev entries are reasonable
     #
-    [ ! -d /proc/ish ] && return # only do on ish
+
+    # Can only run on non-chrooted iSH
+    [ -f "$f_this_is_chrooted" ] && [ ! -d /proc/ish ] && return
 
     fix_stdio_device /proc/self/fd/0 stdin
     fix_stdio_device /proc/self/fd/1 stdout
