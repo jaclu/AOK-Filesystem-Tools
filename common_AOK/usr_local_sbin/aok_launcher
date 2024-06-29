@@ -67,7 +67,7 @@ fix_stdio_device() {
     [ -z "$2" ] && error_msg "fix_stdio_device($fsd_src,) - no param 2"
 
     [ -c "$fsd_name" ] || {
-        echo "Fixing $fsd_name"
+        print_log "Fixing $fsd_name"
         rm -f "$fsd_name"
         ln -sf "$fsd_src" "$fsd_name"
     }
@@ -82,7 +82,7 @@ check_for_bad_null() {
     [ -f "$bad_null" ] && {
         echo
         echo
-        echo "WARNING: $bad_null found - typo in /dev/null redirect?"
+        print_log "WARNING: $bad_null found - typo in /dev/null redirect?"
         echo
     }
     return 0
@@ -98,7 +98,7 @@ verify_device() {
 
     [ -c "$vd_dev_name" ] || {
         rm -f "$vd_dev_name" && mknod -m 666 "$vd_dev_name" c "$vd_maj" "$vd_min"
-        echo "Fixed $vd_dev_name"
+        print_log "Fixed $vd_dev_name"
     }
     unset vd_dev_name
     unset vd_maj
@@ -247,9 +247,15 @@ display_header() {
 
     echo
     echo "aok_launcher - AOK: $aok_vers - Filesystem: $fs_name"
+    msg=""
     [ -f "$f_pts_0_as_console" ] && {
-        echo "/dev/pts/0 is used as /dev/console - " \
-            "no session will be started on this vterm"
+        msg="/dev/pts/0 is used as /dev/console"
+        if $this_is_pts0; then
+            msg="$msg - no session will be started on this vterm"
+        else
+            msg="$msg - this is: $(tty)"
+        fi
+        echo "$msg"
     }
     if $this_is_pts0 || [ -f "$f_this_is_chrooted" ]; then
         echo "Press 'r' during bootup for recovery-mode"
@@ -442,8 +448,8 @@ deploy_aok() {
     echo "*                                                    *"
     echo "*   Returned from deploy, resuming this Launch cmd   *"
     echo "*                                                    *"
-    echo "*   A reboot is recomended,                          *"
-    echo "*   to ensure all services are running.              *"
+    echo "*   A reboot is recomended, to ensure all services   *"
+    echo "*   are running.                                     *"
     echo "*                                                    *"
     echo "******************************************************"
     echo
