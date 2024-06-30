@@ -19,6 +19,7 @@ do_shutdown() {
     /usr/local/bin/logger "$prog_name" "$msg"
 
     echo "$pids" | xargs -r kill -9
+    sleep 2
 }
 
 #===============================================================

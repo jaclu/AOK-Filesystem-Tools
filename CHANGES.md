@@ -4,6 +4,8 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in main branch
 
+- currently at v0.16.8a
+- halt: added sleep after kills
 - currently at v0.16.8
 - aok_launcher: chk char-devs are correctly configured
 - aok_launcher: chk not chrooted before dev checks
