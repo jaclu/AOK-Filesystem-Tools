@@ -4,6 +4,7 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in main branch
 
+- split up some huge functions into parts
 - currently at v0.16.8a
 - halt: added sleep after kills
 - currently at v0.16.8

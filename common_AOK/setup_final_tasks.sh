@@ -119,21 +119,31 @@ hostname_fix() {
 
 aok_kernel_consideration() {
     msg_2 "aok_kernel_consideration()"
-    if ! this_is_aok_kernel; then
-        if ! min_release 3.18; then
+    this_is_aok_kernel || {
+        msg_3 "Not aok kernel!"
+        min_release 3.18 || {
             msg_3 "procps wont work on regular iSH for Alpine < 3.18"
             apk del procps || {
                 error_msg "apk del procps failed"
             }
-        fi
-    elif [ -n "$AOK_APKS" ]; then
+        }
+        return
+    }
+
+    [ -n "$AOK_APKS" ] && {
         msg_3 "Install packages only for AOK kernel"
         # In this case we want the variable to expand into its components
         # shellcheck disable=SC2086
         apk add $AOK_APKS || {
             error_msg "apk add AOK_APKS failed"
         }
-    fi
+    }
+
+    # shellcheck disable=SC2154
+    this_is_aok_kernel && [ "$AOK_HOSTNAME_SUFFIX" = "Y" ] && {
+        msg_3 "Using -aok suffix"
+        aok -s on
+    }
     # msg_3 "aok_kernel_consideration() - done"
 }
 

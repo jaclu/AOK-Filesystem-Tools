@@ -80,16 +80,7 @@ else
     "$setup_final"
 fi
 
-[ -n "$PREBUILD_ADDITIONAL_TASKS" ] && {
-    msg_1 "Running additional setup tasks"
-    echo "---------------"
-    echo "$PREBUILD_ADDITIONAL_TASKS"
-    echo "---------------"
-    $PREBUILD_ADDITIONAL_TASKS || {
-        error_msg "PREBUILD_ADDITIONAL_TASKS returned error"
-    }
-    msg_1 "Returned from the additional prebuild tasks"
-}
+additional_prebuild_tasks
 
 display_installed_versions_if_prebuilt
 

@@ -750,6 +750,23 @@ destfs_detect() {
     fi
 }
 
+additional_prebuild_tasks() {
+    #
+    #  Additional tasks that could be run during pre-build, ie
+    #  doesnt have to happen on destination platform
+    #
+    [ -n "$PREBUILD_ADDITIONAL_TASKS" ] && {
+        msg_1 "Running additional setup tasks"
+        echo "---------------"
+        echo "$PREBUILD_ADDITIONAL_TASKS"
+        echo "---------------"
+        $PREBUILD_ADDITIONAL_TASKS || {
+            error_msg "PREBUILD_ADDITIONAL_TASKS returned error"
+        }
+        msg_1 "Returned from the additional prebuild tasks"
+    }
+}
+
 #---------------------------------------------------------------
 #
 #   lsb-release
@@ -889,6 +906,12 @@ deploy_state_check_param() {
     unset _func
     unset bspc_bs
 }
+
+#---------------------------------------------------------------
+#
+#   Other
+#
+#---------------------------------------------------------------
 
 deploy_starting() {
     if [ "$build_env" = "$be_other" ]; then
