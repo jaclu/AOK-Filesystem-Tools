@@ -4,6 +4,10 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in main branch
 
+- currently at v0.16.9
+- error_msg supports exit code < 0
+- handling case where chroot was used for prebuild, but dest is native
+- better handling of chroot hostname
 - split up some huge functions into parts
 - currently at v0.16.8a
 - halt: added sleep after kills
