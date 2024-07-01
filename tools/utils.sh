@@ -24,11 +24,6 @@ error_msg() {
         echo
         echo "error_msg() no param"
         exit 9
-    elif [ "$_em_exit_code" = "0" ]; then
-        echo
-        echo "error_msg() second parameter was 0"
-        echo "            if continuation is desired use no_exit"
-        exit 9
     fi
 
     _em_msg="ERROR[$0]: $_em_msg"
@@ -36,8 +31,8 @@ error_msg() {
     echo "$_em_msg"
     echo
 
-    if [ "$_em_exit_code" = "no_exit" ]; then
-        echo "no_exit given, will continue"
+    if [ "$_em_exit_code" -lt 0 ]; then
+        echo "exit code: $_em_exit_code given - will continue"
         echo
     else
         exit "$_em_exit_code"
