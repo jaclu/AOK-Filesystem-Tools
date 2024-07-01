@@ -74,66 +74,33 @@ ensure_path_items_are_available() {
     # msg_3 "ensure_path_items_are_available() - done"
 }
 
-hostname_fix() {
-    # echo "=V= hostname_fix()"
-    msg_2 "Using alternate hostname"
-    orig_hostname="$(/bin/hostname)"
-
-    # shellcheck disable=SC2154
-    this_is_aok_kernel && [ "$AOK_HOSTNAME_SUFFIX" = "Y" ] && {
-        msg_3 "Using -aok suffix"
-        aok -s on
-    }
-
-    _f=/bin/ORG.hostname
-    if [ ! -f "$_f" ]; then
-        msg_3 "Renaming original /bin/hostname -> $_f"
-        mv /bin/hostname "$_f"
-    else
-        rm -f /bin/hostname # dont overwrite ORG file
-    fi
-    ln -sf /usr/local/bin/hostname /bin
-
-    _f=/bin/hostname
-    [ -f "$_f" ] && [ ! -h "$_f" ] && {
-        msg_3 "Linking /usr/local/bin to /bin/hostname"
-        rm /bin/hostname
-        ln -sf /usr/local/bin/hostname /bin/hostname
-    }
-
-    if [ -n "$ALT_HOSTNAME_SOURCE_FILE" ]; then
-        msg_3 "Sourcing hostname from: $ALT_HOSTNAME_SOURCE_FILE"
-        hostname -S "$ALT_HOSTNAME_SOURCE_FILE" || {
-            error_msg "Failed to soure hostname"
-        }
-    elif this_fs_is_chrooted; then
-        # give the chrooted instance a name based on the host
-        echo "ish-$orig_hostname" >/etc/hostname
-        hostname -S /etc/hostname
-    fi
-    #  Ensure hostname has been picked up, iSH-AOK also updates /bin/hostname
-    hostname -U >/dev/null
-    # echo "^^^ hostname_fix() - done"
-
-}
-
 aok_kernel_consideration() {
     msg_2 "aok_kernel_consideration()"
-    if ! this_is_aok_kernel; then
-        if ! min_release 3.18; then
+    this_is_aok_kernel || {
+        msg_3 "Not aok kernel!"
+        min_release 3.18 || {
             msg_3 "procps wont work on regular iSH for Alpine < 3.18"
             apk del procps || {
                 error_msg "apk del procps failed"
             }
-        fi
-    elif [ -n "$AOK_APKS" ]; then
+        }
+        return
+    }
+
+    [ -n "$AOK_APKS" ] && {
         msg_3 "Install packages only for AOK kernel"
         # In this case we want the variable to expand into its components
         # shellcheck disable=SC2086
         apk add $AOK_APKS || {
             error_msg "apk add AOK_APKS failed"
         }
-    fi
+    }
+
+    # shellcheck disable=SC2154
+    this_is_aok_kernel && [ "$AOK_HOSTNAME_SUFFIX" = "Y" ] && {
+        msg_3 "Using -aok suffix"
+        aok -s on
+    }
     # msg_3 "aok_kernel_consideration() - done"
 }
 
@@ -206,7 +173,7 @@ run_additional_tasks_if_found() {
     msg_2 "run_additional_tasks_if_found()"
 
     [ -n "$FIRST_BOOT_ADDITIONAL_TASKS" ] && {
-        msg_1 "Running additional setup tasks"
+        msg_1 "Running additional final setup tasks"
         echo "---------------"
         echo "$FIRST_BOOT_ADDITIONAL_TASKS"
         echo "---------------"
@@ -224,6 +191,14 @@ clean_up_dest_env() {
 
     rm -f "$f_home_user_replaced"
     rm -f "$f_home_root_replaced"
+    rm -f "$f_hostname_initial"
+
+    # dont remove if final dest is chrooted!
+    if this_fs_is_chrooted; then
+        msg_3 "dest is chrooted - Leaving: $f_chroot_hostname"
+    else
+        rm -f "$f_chroot_hostname"
+    fi
 }
 
 #===============================================================
@@ -248,6 +223,8 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 deploy_state_set "$deploy_state_finalizing"
 msg_script_title "$prog_name_sft - Final part of setup"
+
+set_hostname # it might have changed since pre-build...
 
 hostfs_name="$(hostfs_detect)"
 f_fs_final_tasks=/opt/AOK/"$hostfs_name"/setup_final_tasks.sh
@@ -286,7 +263,6 @@ fi
 
 user_interactions
 ensure_path_items_are_available
-hostname_fix
 
 #
 #  Currently Debian doesnt seem to have to take the iSH app into

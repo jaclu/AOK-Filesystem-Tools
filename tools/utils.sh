@@ -24,11 +24,6 @@ error_msg() {
         echo
         echo "error_msg() no param"
         exit 9
-    elif [ "$_em_exit_code" = "0" ]; then
-        echo
-        echo "error_msg() second parameter was 0"
-        echo "            if continuation is desired use no_exit"
-        exit 9
     fi
 
     _em_msg="ERROR[$0]: $_em_msg"
@@ -36,8 +31,8 @@ error_msg() {
     echo "$_em_msg"
     echo
 
-    if [ "$_em_exit_code" = "no_exit" ]; then
-        echo "no_exit given, will continue"
+    if [ "$_em_exit_code" -lt 0 ]; then
+        echo "exit code: $_em_exit_code given - will continue"
         echo
     else
         exit "$_em_exit_code"
@@ -750,6 +745,23 @@ destfs_detect() {
     fi
 }
 
+additional_prebuild_tasks() {
+    #
+    #  Additional tasks that could be run during pre-build, ie
+    #  doesnt have to happen on destination platform
+    #
+    [ -n "$PREBUILD_ADDITIONAL_TASKS" ] && {
+        msg_1 "Running additional setup tasks"
+        echo "---------------"
+        echo "$PREBUILD_ADDITIONAL_TASKS"
+        echo "---------------"
+        $PREBUILD_ADDITIONAL_TASKS || {
+            error_msg "PREBUILD_ADDITIONAL_TASKS returned error"
+        }
+        msg_1 "Returned from the additional prebuild tasks"
+    }
+}
+
 #---------------------------------------------------------------
 #
 #   lsb-release
@@ -890,6 +902,12 @@ deploy_state_check_param() {
     unset bspc_bs
 }
 
+#---------------------------------------------------------------
+#
+#   Other
+#
+#---------------------------------------------------------------
+
 deploy_starting() {
     if [ "$build_env" = "$be_other" ]; then
         echo
@@ -946,6 +964,62 @@ replace_home_root() {
 replace_home_dirs() {
     replace_home_user
     replace_home_root
+}
+
+set_hostname() {
+    msg_2 "Set hostname"
+    if this_fs_is_chrooted; then
+        # defined in setup_common_env.sh:replacing_std_bins_with_aok_versions()
+        prefix="ish-"
+
+        if [ -f "$f_hostname_initial" ]; then
+            hname="$(cat "$f_hostname_initial")"
+        else
+            hname="$(hostname)"
+            _s="Could not find: $f_hostname_initial - reading hostname as fallback: [$hname]"
+            error_msg "$_s" -1
+        fi
+
+        if hostname -h | grep -q "$f_chroot_hostname"; then
+            msg_3 "chrooted - already using $f_chroot_hostname"
+        else
+            msg_3 "chrooted - will use $f_chroot_hostname"
+            # add prefix with if not already done
+            echo "$hname" | grep -q "^$prefix" || {
+                hname="${prefix}${hname}"
+                msg_4 "prefixing with $prefix -> $hname"
+                echo "$hname" >"$f_chroot_hostname"
+            }
+            hostname -S "$f_chroot_hostname" >/dev/null || {
+                error_msg "Failed to source hostname from $f_chroot_hostname"
+            }
+        fi
+    elif [ -n "$ALT_HOSTNAME_SOURCE_FILE" ]; then
+        msg_3 "Sourcing hostname from: $ALT_HOSTNAME_SOURCE_FILE"
+        hostname -S "$ALT_HOSTNAME_SOURCE_FILE" || {
+            error_msg "Failed to soure alt file"
+        }
+    elif ! this_fs_is_chrooted && [ -f "$f_chroot_hostname" ]; then
+        msg_3 "was pre-built chrooted, but now runs native"
+        rm -f "$f_chroot_hostname"
+        if hostfs_is_alpine; then
+            hname="$(busybox hostname)"
+        elif command -v ORG.hostname >/dev/null; then
+            hname="$(ORG.hostname)"
+        else
+            hname="unknown"
+        fi
+        [ -n "$hname" ] && {
+            _f=/etc/opt/AOK/detected-hostname
+            msg_3 "Saved detected hostname [$hname] in: $_f"
+            echo "$hname" >"$_f"
+            hostname -S "$_f"
+        }
+    fi
+    #  Ensure hostname has been picked up
+    hostname -U >/dev/null
+    msg_3 "hostname is: $(hostname)"
+    unset hname prefix new_hname
 }
 
 #===============================================================
@@ -1096,6 +1170,9 @@ f_hostname_source_fname="$d_aok_etc"/hostname_source_fname
 
 f_home_user_replaced="$d_aok_etc"/home_user_replaced
 f_home_root_replaced="$d_aok_etc"/home_root_replaced
+
+f_hostname_initial=/tmp/hostname-initial
+f_chroot_hostname=/.chroot_hostname
 
 #
 #  For automated logins
