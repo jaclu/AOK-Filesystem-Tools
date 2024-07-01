@@ -276,6 +276,7 @@ check_softlinks() {
         f_org_halt="/sbin/ORG.halt"
         f_org_shutdown="/sbin/ORG.shutdown"
     fi
+
     should_be_softlink "$d_hostname"/hostname \
         /usr/local/bin/hostname "$d_hostname"/ORG.hostname
     should_be_softlink /sbin/halt /usr/local/sbin/halt "$f_org_halt"

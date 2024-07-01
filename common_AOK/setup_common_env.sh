@@ -375,6 +375,7 @@ else
 fi
 
 setup_environment
+set_hostname
 setup_root_env
 create_user
 

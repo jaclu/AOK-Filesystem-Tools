@@ -971,6 +971,46 @@ replace_home_dirs() {
     replace_home_root
 }
 
+set_hostname() {
+    msg_2 "Set hostname"
+    if this_fs_is_chrooted; then
+        # defined in setup_common_env.sh:replacing_std_bins_with_aok_versions()
+        prefix="ish-"
+
+        if [ -f "$f_hostname_initial" ]; then
+            hname="$(cat "$f_hostname_initial")"
+        else
+            hname="$(hostname)"
+            _s="Could not find: $f_hostname_initial - reading hostname as fallback: [$hname]"
+            error_msg "$_s" -1
+        fi
+
+        if hostname -h | grep -q "$f_chroot_hostname"; then
+            msg_3 "chrooted - already using $f_chroot_hostname"
+        else
+            msg_3 "chrooted - will use $f_chroot_hostname"
+            # add prefix with if not already done
+            echo "$hname" | grep -q "^$prefix" || {
+                hname="${prefix}${hname}"
+                msg_4 "prefixing with $prefix -> $hname"
+                echo "$hname" >"$f_chroot_hostname"
+            }
+            hostname -S "$f_chroot_hostname" >/dev/null || {
+                error_msg "Failed to source hostname from $f_chroot_hostname"
+            }
+        fi
+    elif [ -n "$ALT_HOSTNAME_SOURCE_FILE" ]; then
+        msg_3 "Sourcing hostname from: $ALT_HOSTNAME_SOURCE_FILE"
+        hostname -S "$ALT_HOSTNAME_SOURCE_FILE" || {
+            error_msg "Failed to soure alt file"
+        }
+    fi
+    #  Ensure hostname has been picked up
+    hostname -U >/dev/null
+    msg_3 "hostname is: $(hostname)"
+    unset hname prefix new_hname
+}
+
 #===============================================================
 #
 #   Main
@@ -1119,6 +1159,9 @@ f_hostname_source_fname="$d_aok_etc"/hostname_source_fname
 
 f_home_user_replaced="$d_aok_etc"/home_user_replaced
 f_home_root_replaced="$d_aok_etc"/home_root_replaced
+
+f_hostname_initial=/tmp/hostname-initial
+f_chroot_hostname=/.chroot_hostname
 
 #
 #  For automated logins
