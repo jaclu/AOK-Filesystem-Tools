@@ -1004,6 +1004,22 @@ set_hostname() {
         hostname -S "$ALT_HOSTNAME_SOURCE_FILE" || {
             error_msg "Failed to soure alt file"
         }
+    elif ! this_fs_is_chrooted && [ -f "$f_chroot_hostname" ]; then
+        msg_3 "was pre-built chrooted, but now runs native"
+        rm -f "$f_chroot_hostname"
+        if hostfs_is_alpine; then
+            hname="$(busybox hostname)"
+        elif command -v ORG.hostname >/dev/null; then
+            hname="$(ORG.hostname)"
+        else
+            hname="unknown"
+        fi
+        [ -n "$hname" ] && {
+            _f=/etc/opt/AOK/detected-hostname
+            msg_3 "Saved detected hostname [$hname] in: $_f"
+            echo "$hname" >"$_f"
+            hostname -S "$_f"
+        }
     fi
     #  Ensure hostname has been picked up
     hostname -U >/dev/null
