@@ -51,6 +51,24 @@ handle_apks() {
         msg_1 "No CORE_APKS defined"
     fi
 
+    min_release "3.19" && {
+        # 3.19 and higher will insta-die if a modern sudo is used....
+        msg_2 "For Alpine > 3.18, an older sudo must be used"
+        msg_3 "Downgrading sudo -> 1.9.12_p2-r0 (Alpine 3.14)"
+        wget https://mirror.math.princeton.edu/pub/alpinelinux/v3.14/main/x86/sudo-1.9.12_p2-r0.apk
+        apk del sudo
+        apk add sudo-1.9.12_p2-r0.apk || error_msg "Failed to install sudo"
+        msg_3 "sudo-1.9.12_p2-r0.apk installed and version locked"
+        rm sudo-1.9.12_p2-r0.apk
+    }
+
+    # if min_release "3.19"; then
+    #         if wget https://dl-cdn.alpinelinux.org/alpine/v3.17/main/x86/mtr-0.92-r0.apk >/dev/null 2>&1; then
+
+    #     cd /tmp
+    #     wget https://pkgs.alpinelinux.org/package/v3.17/community/x86/sudo
+    #     apk install
+
     if [ -n "$AOK_PKGS_SKIP" ]; then
         msg_1 "Removing packages"
         echo "$AOK_PKGS_SKIP"

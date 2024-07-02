@@ -4,7 +4,10 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in main branch
 
-- Nothing atm.
+- v0.17.1
+- Alpine 3.14 sudo (1.9.12_p2-r0) will be used for Alpine > 3.18
+This solves the insta-crash if the intended sudo is used.
+
 
 ## 0.17
 
