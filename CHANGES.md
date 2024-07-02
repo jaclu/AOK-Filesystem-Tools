@@ -4,45 +4,26 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in main branch
 
-- currently at v0.16.10
-- split aok bins handling to also be usable in updates
-- currently at v0.16.9
-- error_msg supports exit code < 0
-- handling case where chroot was used for prebuild, but dest is native
-- better handling of chroot hostname
-- split up some huge functions into parts
-- currently at v0.16.8a
-- halt: added sleep after kills
-- currently at v0.16.8
-- aok_launcher: chk char-devs are correctly configured
-- aok_launcher: chk not chrooted before dev checks
-- currently at v0.16.7
-- aok_launcer - improved bootup notifications
-- Some deploy tweaks
-- runbg notifies all sessions incl /dev/console of state change
-- skel files handles Debian10 not able to display sysload
-- shutdown compatible with default params, can display help
-- halt will continue until it shuts system down
-- improved wall handling of /dev/console
-- made orignal file renames consistent
-- currently at v0.16.6
-- added uptime to Boot notation
-- simplified must be run by root msg
-- currently at v0.16.5
-- /sbin shutdown, halt & poweroff replacements
-- imrpoved hostname deploy
-- currently at v0.16.4
-- rework of shutdown procedures
-- currently at v0.16.3
-- Refactored bootup and shutdown of aok_launcher and related tools
-- Added start hint to allow console monitoring before inittab starts
-- Improvements to shutdown
-- Added some checks
-- Debian console restart
-- added warning when mixing default launcher and console mode
-- made error_msg state file with issue
+- Nothing atm.
+
+## 0.17
+
 - aok_launcher - console mode tails all log files, hit Ctrl-C to re-read
-in case something is added/removed
+in case something is added/removed, enable by doing `apk -C on`
+- added warning when mixing default launcher and console mode
+- inittab will halt for upto 10s to wait for aok_launcher to prepare
+console and logfile tracking.
+- replacing of some bins with aok replacementalso usable in updates
+- runbg notifies all sessions incl /dev/console of state change
+- better handling of chroot hostname
+- shutdown, halt & poweroff AOK replacements
+- halt will continue until it shuts system down, starting nicely, eventually
+doing it brutally.
+- improved wall handling of /dev/console
+- made error_msg state file with issue
+- aok_launcher: chk char-devs and stdio are fixed if need-be
+- split up some huge functions into parts
+- added uptime to Boot notation
 
 ## 0.16
 
