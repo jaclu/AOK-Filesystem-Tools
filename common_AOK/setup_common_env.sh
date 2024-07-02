@@ -124,50 +124,6 @@ setup_cron_env() {
     #msg_3 "setup_cron_env() - done"
 }
 
-replace_std_bin() {
-    f_bin="$1"
-    f_bin_replacement="$2"
-
-    [ -z "$f_bin" ] && error_msg "replace_std_bin() - missing 1st param"
-    [ -z "$f_bin_replacement" ] && {
-        error_msg "replace_std_bin($f_bin,) - missing 2nd param"
-    }
-
-    f_bin_org="$(dirname "$f_bin")/ORG.$(basename "$f_bin")"
-    if [ ! -f "$f_bin_org" ]; then
-        if [ -f "$f_bin" ]; then
-            msg_4 "Renaming original $f_bin -> $f_bin_org"
-            mv "$f_bin" "$f_bin_org"
-        else
-            msg_4 "Original $f_bin - not found"
-        fi
-    else
-        error_msg "$f_hostname_org already pressent, removing $f_bin" -1
-        rm -f "$f_bin"
-    fi
-
-    msg_3 "Softlinking $f_bin_replacement -> $f_bin"
-    ln -sf "$f_bin_replacement" "$f_bin"
-}
-
-replacing_std_bins_with_aok_versions() {
-    #
-    #  Replacing some stadard bins with AOK version
-    #
-    msg_2 "Replacing std bins wirh AOK versions"
-
-    _f=/usr/bin/hostname
-    [ ! -f "$_f" ] && _f=/bin/hostname
-    $_f -s >"$f_hostname_initial" # Used by utils:set_hostname()
-    replace_std_bin "$_f" /usr/local/bin/hostname
-
-    replace_std_bin /usr/bin/wall /usr/local/bin/wall
-    replace_std_bin /sbin/shutdown /usr/local/sbin/shutdown
-    replace_std_bin /sbin/halt /usr/local/sbin/halt
-    replace_std_bin /sbin/poweroff /usr/local/sbin/halt
-    echo
-}
-
 disabling_default_services() {
     #
     #  openrc is extreamly forgiving when it comes to dependencies, any
@@ -339,6 +295,8 @@ create_user() {
 
 # shellcheck source=/dev/null
 [ -z "$d_aok_etc" ] && . /opt/AOK/tools/utils.sh
+
+. /opt/AOK/tools/multi_use.sh
 
 ensure_ish_or_chrooted
 

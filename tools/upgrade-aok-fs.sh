@@ -267,24 +267,7 @@ obsolete_files() {
 check_softlinks() {
     msg_2 "Checking that softlinked bins are setup"
 
-    if hostfs_is_alpine; then
-        d_hostname=/bin
-        f_org_halt=""     # was a softlink to busybox...
-        f_org_shutdown="" # not defined??
-    else
-        d_hostname=/usr/bin
-        f_org_halt="/sbin/ORG.halt"
-        f_org_shutdown="/sbin/ORG.shutdown"
-    fi
-
-    should_be_softlink "$d_hostname"/hostname \
-        /usr/local/bin/hostname "$d_hostname"/ORG.hostname
-    should_be_softlink /sbin/halt /usr/local/sbin/halt "$f_org_halt"
-    should_be_softlink /sbin/shutdown \
-        /usr/local/sbin/shutdown "$f_org_shutdown"
-
-    should_be_softlink /sbin/poweroff /usr/local/sbin/halt
-    should_be_softlink /usr/bin/wall /usr/local/bin/wall /usr/bin/ORG.wall
+    replacing_std_bins_with_aok_versions upgrade
 }
 
 update_aok_release() {
@@ -320,10 +303,14 @@ update_aok_release() {
 #
 #===============================================================
 
-# shellcheck source=/dev/null
+# shell check source=/dev/null
 hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
-# shellcheck source=/dev/null
+
 . /opt/AOK/tools/utils.sh
+
+. /opt/AOK/tools/multi_use.sh
+
+
 
 # shellcheck disable=SC1007
 prog_name=$(basename "$0")
