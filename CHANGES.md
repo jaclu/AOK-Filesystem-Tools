@@ -4,6 +4,8 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in main branch
 
+- currently at v0.16.10
+- split aok bins handling to also be usable in updates
 - currently at v0.16.9
 - error_msg supports exit code < 0
 - handling case where chroot was used for prebuild, but dest is native
