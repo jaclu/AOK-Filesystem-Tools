@@ -382,6 +382,9 @@ monitor_log_files() {
 
 bootup() {
     # at bootup also log it
+
+    /usr/local/bin/network-check.sh
+
     if [ -f "$f_pts_0_as_console" ]; then
         # also done in profile for interactive vterms
         /usr/local/bin/check-env-compatible
@@ -392,7 +395,6 @@ bootup() {
             rm -f /dev/console && mknod -m 222 /dev/console c 136 0
         }
 
-        /usr/local/bin/network-check.sh
         indicate_end_of_recovery_window
 
         if [ -x "$cmd_custom_console_monitor" ]; then
@@ -405,7 +407,6 @@ bootup() {
             echo "Reverting console to normal mode"
             rm -f /dev/console && mknod -m 666 /dev/console c 5 1
         }
-        /usr/local/bin/network-check.sh
         indicate_end_of_recovery_window
     fi
 
@@ -689,9 +690,14 @@ else
     this_is_pts0=false
 fi
 check_for_recovery_mode
-$this_is_pts0 && {
-    echo "$prog_name - Booted at: $(date '+%Y-%m-%d')$(uptime)"
-}
+
+if $this_is_pts0 || [ -f "$f_this_is_chrooted" ]; then
+    /usr/local/bin/logger "$prog_name" "===  System startup  ==="
+    _s="$prog_name - iSH Booted at: $(date '+%Y-%m-%d')"
+    _s="${_s}$(/usr/local/bin/uptime)"
+    echo "$_s"
+    unset _s
+fi
 
 verify_devs
 [ -f "$f_rel_debian" ] && update_deb_log_kill_cmd
