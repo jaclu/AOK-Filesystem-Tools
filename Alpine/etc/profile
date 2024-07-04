@@ -45,4 +45,6 @@ if [ -f "/etc/opt/AOK/show_profile_hints" ]; then
     . /etc/profile-hints
 fi
 
+/usr/local/bin/check-env-compatible
+
 echo
