@@ -90,6 +90,12 @@ msg_4() {
     do_msg "  -  $1"
 }
 
+syslog() {
+    [ -z "$1" ] && error_msg "syslog() - called without param"
+
+    /usr/local/bin/logger "$(basename "$0")" "$1"
+}
+
 msg_script_title() {
     [ -z "$1" ] && error_msg "msg_script_title() no param"
     echo
@@ -523,6 +529,7 @@ this_is_ish() {
 }
 
 this_is_aok_kernel() {
+    ! this_is_ish && return 1
     grep -qi aok /proc/ish/version 2>/dev/null
 }
 
