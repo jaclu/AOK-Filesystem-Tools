@@ -4,6 +4,17 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in main branch
 
+## 0.18-pre-1
+
+- Identified coreutils as incomaptible with Alpine > 3.19
+- Now using Alpine 3.20.0 as default Alpine release
+- simplified skel file deploy
+- log aok changes
+- rewrote tools/vers_check.sh
+- reworked uptime to show iOS uptime
+- more version checks on what CORE_APKS to install
+- moved deploy_bat_monitord into aok_kernel_consideration
+- Display warning if env is not compatible
 - v0.17.1
 - Alpine 3.14 sudo (1.9.12_p2-r0) will be used for Alpine > 3.18
 This solves the insta-crash if the intended sudo is used.
