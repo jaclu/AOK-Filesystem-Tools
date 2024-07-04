@@ -103,20 +103,20 @@ verify_device() {
         error_msg "verify_device($1, $2, $3) can not be used when chrooted"
     }
 
-    maj_min=$(stat --format="%t:%T" "$vd_dev_name")
+    maj_min=$(stat -c "%t:%T" "$vd_dev_name")
     maj_act=$(printf "%d\n" "0x${maj_min%:*}")
     min_act=$(printf "%d\n" "0x${maj_min#*:}")
     if [ "$vd_maj" != "$maj_act" ] || [ "$vd_min" != "$min_act" ]; then
         error_msg "$vd_dev_name - misconfigured, was: $maj_act:$min_act"
         rm "$vd_dev_name"
     fi
-
     [ -c "$vd_dev_name" ] || {
         rm -f "$vd_dev_name" && mknod -m 666 "$vd_dev_name" c "$vd_maj" "$vd_min"
         print_log "Fixed $vd_dev_name"
     }
     unset vd_dev_name vd_maj vd_min
     unset maj_min maj_act min_act
+
     return 0
 }
 
