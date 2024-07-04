@@ -86,7 +86,11 @@ replacing_std_bins_with_aok_versions() {
     replace_std_bin /sbin/halt /usr/local/sbin/halt "$upgrade"
     replace_std_bin /sbin/poweroff /usr/local/sbin/halt "$upgrade"
 
-    # echo
+    if this_is_aok_kernel; then
+        rm -f /usr/local/bin/uptime
+    elif [ -f /etc/debian_version ]; then
+        replace_std_bin /usr/bin/uptime /usr/local/bin/uptime "$upgrade"
+    fi
 }
 
 #===============================================================
