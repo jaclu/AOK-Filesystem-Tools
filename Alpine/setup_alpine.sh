@@ -35,6 +35,13 @@ handle_apks() {
             CORE_APKS="$(echo "$CORE_APKS" | sed 's/shadow-login//')"
         fi
     fi
+    if ! min_release 3.18; then
+        msg_3 "Pre 3.18 procps was called procps-ng"
+        CORE_APKS="$(echo "$CORE_APKS" | sed 's/procps/procps-ng/')"
+    elif min_release "3.20"; then
+        msg_1 "><> Alpine >= 3.20 - coreutils cant be used"
+        CORE_APKS="$(echo "$CORE_APKS" | sed 's/coreutils//')"
+    fi
 
     if [ -n "$CORE_APKS" ]; then
         msg_1 "Install core packages"
@@ -61,13 +68,6 @@ handle_apks() {
         msg_3 "sudo-1.9.12_p2-r0.apk installed and version locked"
         rm sudo-1.9.12_p2-r0.apk
     }
-
-    # if min_release "3.19"; then
-    #         if wget https://dl-cdn.alpinelinux.org/alpine/v3.17/main/x86/mtr-0.92-r0.apk >/dev/null 2>&1; then
-
-    #     cd /tmp
-    #     wget https://pkgs.alpinelinux.org/package/v3.17/community/x86/sudo
-    #     apk install
 
     if [ -n "$AOK_PKGS_SKIP" ]; then
         msg_1 "Removing packages"
