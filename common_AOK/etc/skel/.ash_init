@@ -38,7 +38,7 @@ use_static_bash_prompt
 #  To make it possible to see what shell is used atm, ash tries
 #  to replace the : separating hostname and cwd into |
 #
-if  _s="$(echo "$PS1" | sed 's#]:\\#]|\\#' 2>/dev/null)" ; then
+if _s="$(echo "$PS1" | sed 's#]:\\#]|\\#' 2>/dev/null)"; then
     PS1="$_s"
 else
     echo "Failed to do ash adoption of prompt, keeping it same as bash"

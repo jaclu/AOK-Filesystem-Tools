@@ -80,11 +80,10 @@ destfs_is_alpine() {
 }
 
 show_on_off_by_file() {
-    f_name="$1"
-    [ -z "$f_name" ] && {
+    [ -z "$1" ] && {
         error_msg "show_on_off_by_file() - no param given"
     }
-    if [ -f "$f_name" ]; then
+    if [ -f "$1" ]; then
         echo "on"
     else
         echo "off"
@@ -98,10 +97,10 @@ show_on_off_by_file() {
 #===============================================================
 
 autologin_change() {
-    uname_autologin="$1"
-    [ -z "$uname_autologin" ] && {
+    [ -z "$1" ] && {
         error_msg "autologin_change() - no param given"
     }
+    uname_autologin="$1"
 
     if [ "$uname_autologin" = "disable" ]; then
         echo "disabling auto-login"
@@ -114,12 +113,16 @@ autologin_change() {
         }
         echo "$uname_autologin" >"$f_login_default_user"
         if [ -f "$f_logins_continous" ]; then
-            _s="continous "
+            continous_setting="continous "
         else
-            _s=""
+            continous_setting=""
         fi
-        echo "Enabled ${_s}auto-login for user: $uname_autologin"
+        echo "Enabled ${continous_setting}auto-login for user: $uname_autologin"
+        unset continous_setting
     fi
+    autologin_display syslog
+
+    unset uname_autologin
 }
 
 autologin_settting() {
@@ -168,17 +171,18 @@ continous_sessions_change() {
 }
 
 continous_sessions_setting() {
-    _s="$(show_on_off_by_file "$f_logins_continous")"
-    if [ "$_s" = "off" ]; then
+    cont_ses_setting="$(show_on_off_by_file "$f_logins_continous")"
+    if [ "$cont_ses_setting" = "off" ]; then
         echo "vterm will terminate after logout"
     else
-        _s="$(autologin_settting)"
-        if [ "$_s" = "$autologin_disabled" ]; then
+        cont_ses_setting="$(autologin_settting)"
+        if [ "$cont_ses_setting" = "$autologin_disabled" ]; then
             echo "vterm will sttart a new session after logout"
         else
-            echo "vterm will autlogin as username: $_s"
+            echo "vterm will autlogin as username: $cont_ses_setting"
         fi
     fi
+    unset cont_ses_setting
 }
 
 continous_sessions_display() {

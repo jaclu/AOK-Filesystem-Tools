@@ -39,7 +39,7 @@ handle_apks() {
         msg_3 "Pre 3.18 procps was called procps-ng"
         CORE_APKS="$(echo "$CORE_APKS" | sed 's/procps/procps-ng/')"
     elif min_release "3.20"; then
-        msg_1 "><> Alpine >= 3.20 - coreutils cant be used"
+        msg_3 "Alpine >= 3.20 - coreutils cant be used"
         CORE_APKS="$(echo "$CORE_APKS" | sed 's/coreutils//')"
     fi
 

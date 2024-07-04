@@ -40,6 +40,7 @@ For more details see uptime(1)."
 }
 
 calculate_ish_uptime() {
+    $dbg && echo ">calculate_ish_uptime()"
     boot_time_epoch=$(date -d "$time_stamp_bootup" +%s)
     current_time=$(date +%s)
     uptime_seconds=$((current_time - boot_time_epoch))
@@ -49,6 +50,7 @@ calculate_ish_uptime() {
 
 calculate_ios_uptime() {
     # Read the uptime from /proc/uptime
+    $dbg && echo ">calculate_ios_uptime()"
     uptime_raw="$(cut -d' ' -f1 </proc/uptime)"
 
     if test -d /proc/ish && grep -qiv aok /proc/ish/version 2>/dev/null; then
@@ -65,6 +67,7 @@ calculate_ios_uptime() {
 }
 
 calculate_uptime() {
+    $dbg && echo ">calculate_uptime()"
     time_stamp_bootup="$(grep "System startup" /var/log/syslog |
         tail -n 1 | awk '{print $1" "$2}')"
     if [ -n "$time_stamp_bootup" ] && ! $force_ios_uptime; then
@@ -114,11 +117,13 @@ show_since() {
 show_version() {
     _f=/etc/aok-fs-release
     if [ -f "$_f" ]; then
-        _vers="$(cat "$_f")"
+        aok_vers="$(cat "$_f")"
     else
-        _vers="unknown AOK-FS version"
+        aok_vers="unknown AOK-FS version"
     fi
-    echo "uptime from AOK-FS $_vers"
+    echo "uptime from AOK-FS $aok_vers"
+
+    unset aok_vers
 }
 
 default_view() {
@@ -163,10 +168,12 @@ force_ios_uptime=false
 display_mode="default"
 # if Alpine uptime is used this provides the desired options
 alpine_options=""
+dbg=false
 
 while [ -n "$1" ]; do
     case "$1" in
     -h | --help) show_help ;;
+    -d) dbg=true ;;
     -i | --ios) force_ios_uptime=true ;;
     -p | --pretty) display_mode="pretty" ;; # option not suported by busybox
     -s | --since)

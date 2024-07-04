@@ -969,9 +969,9 @@ replace_home_dirs() {
 set_hostname() {
     msg_2 "Set hostname"
     if this_fs_is_chrooted; then
-        # defined in setup_common_env.sh:replacing_std_bins_with_aok_versions()
         prefix="ish-"
 
+        # defined in setup_common_env.sh:replacing_std_bins_with_aok_versions()
         if [ -f "$f_hostname_initial" ]; then
             hname="$(cat "$f_hostname_initial")"
         else
