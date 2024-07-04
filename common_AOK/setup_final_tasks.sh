@@ -96,6 +96,8 @@ aok_kernel_consideration() {
         }
     }
 
+    deploy_bat_monitord
+
     # shellcheck disable=SC2154
     this_is_aok_kernel && [ "$AOK_HOSTNAME_SUFFIX" = "Y" ] && {
         msg_3 "Using -aok suffix"
@@ -269,8 +271,6 @@ ensure_path_items_are_available
 #  consideration
 #
 hostfs_is_alpine && aok_kernel_consideration
-
-deploy_bat_monitord
 
 if hostfs_is_alpine; then
     next_etc_profile="/opt/AOK/Alpine/etc/profile"
