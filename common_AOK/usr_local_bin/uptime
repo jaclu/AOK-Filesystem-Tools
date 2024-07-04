@@ -39,6 +39,20 @@ For more details see uptime(1)."
     exit 0
 }
 
+org_uptime() {
+    # Security check that it isnt linking to itself...
+
+    _p="$(realpath "$(dirname -- "$0")")"
+    f_this="$_p/$prog_name"
+    cmd_org=/usr/bin/uptime
+
+    [ "$(realpath "$cmd_org")" = "$f_this" ] && {
+        echo "ERROR: $cmd_org points to this replacement uptime!"
+        exit 1
+    }
+    $cmd_org $@
+}
+
 calculate_ish_uptime() {
     $dbg && echo ">calculate_ish_uptime()"
     boot_time_epoch=$(date -d "$time_stamp_bootup" +%s)
@@ -74,7 +88,7 @@ calculate_uptime() {
         calculate_ish_uptime
     elif [ -f /etc/alpine-release ]; then
         # shellcheck disable=SC2248
-        /usr/bin/uptime $alpine_options # use the normal uptime
+        org_uptime $alpine_options # use the normal uptime
         exit 0
     else
         calculate_ios_uptime
@@ -90,7 +104,7 @@ calculate_uptime() {
 
 display_sysload() {
     if [ -f /etc/alpine-release ]; then
-        /usr/bin/uptime | sed 's/load average: /|/' | cut -d'|' -f 2
+        org_uptime | sed 's/load average: /|/' | cut -d'|' -f 2
     else
         echo "0.00, 0.00, 0.00"
     fi
@@ -108,7 +122,7 @@ show_pretty() {
 show_since() {
     if [ -f /etc/alpine-release ]; then
         echo "Alpine only supports since for iOS uptime:"
-        /usr/bin/uptime -s
+        org_uptime -s
         exit 0
     fi
     date -d "$uptime_seconds seconds ago" "+%Y-%m-%d %H:%M:%S"
@@ -169,6 +183,8 @@ display_mode="default"
 # if Alpine uptime is used this provides the desired options
 alpine_options=""
 dbg=false
+
+prog_name="$(basename "$0")"
 
 while [ -n "$1" ]; do
     case "$1" in
