@@ -85,7 +85,15 @@ PROMPT="%(?..%F{red}?%?)%F{$PCOL_CWD}%~%f%b%# "
 #
 if true; then
     update_prompt_content() {
-        RPROMPT="$_user_host_name $(get_sysload_lvl)$(get_battery_info zsh) %F{$PCOL_GREY}%*%f"
+        if grep -qi aok /proc/ish/version 2>/dev/null; then
+            _s="$_user_host_name $(get_sysload_lvl)$(get_battery_info zsh)"
+            _s="$_s %F{$PCOL_GREY}%*%f"
+            RPROMPT="$_s"
+            unset _s
+        else
+            RPROMPT="$_user_host_name $(get_sysload_lvl) %F{$PCOL_GREY}%*%f"
+        fi
+
     }
 
     precmd() {
