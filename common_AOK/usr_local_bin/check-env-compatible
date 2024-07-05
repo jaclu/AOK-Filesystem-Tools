@@ -51,7 +51,7 @@ WARNING: iSH will fail to hanlde /dev resources if coreutils is installed
     #endregion
 }
 
-procps_check() {
+uptime_check() {
     #
     #  On Alpine >= 3.19  /usr/bin/uptime segfaults if procps is installed
     #  This gives a warning
@@ -59,8 +59,8 @@ procps_check() {
     #region warning
     warn="
 
-WARNING: If procps is installed on Alpine >= 3.19 /usr/bin/uptime
-will segfault.
+WARNING: If procps is installed on Alpine /usr/bin/uptime will segfault.
+
 This has been solved by soft-linking /usr/bin/uptime to /bin/busybox
 So this warning is just informational, and wont be seen again until
 procps is updated and potentially installs an incompatible uptime.
@@ -70,19 +70,6 @@ At that point this issue will be self corrected again.
 
     # Only relevant for Alpine
     [ -f /etc/alpine-release ] || return
-
-    # if version check is not available, no check can be done
-    [ -f /opt/AOK/tools/vers_check.sh ] || {
-        echo "Unable to check Alpine release."
-        echo "If procps is installed on Alpine >= 3.19"
-        echo "/usr/bin/uptime will segfault."
-        return
-    }
-
-    . /opt/AOK/tools/vers_check.sh
-
-    # if older Alpine - all is good
-    ! min_version 3.19 && return
 
     cmd_uptime=/usr/bin/uptime
     [ "$(realpath "$cmd_uptime")" = /bin/busybox ] && return
@@ -111,4 +98,4 @@ else
 fi
 
 coreutils_check
-procps_check
+uptime_check
