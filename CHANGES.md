@@ -4,9 +4,19 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in main branch
 
-- v0.17.1
+## 0.18
+
+- Default Alpine is now 3.20.1
 - Alpine 3.14 sudo (1.9.12_p2-r0) will be used for Alpine > 3.18
-This solves the insta-crash if the intended sudo is used.
+This solves the insta-crash if the default sudo is used.
+- more version checks on what CORE_APKS to install
+- improved handling of incompatible packages
+- /usr/local/bin/check-env-compatible self corrects procps uptime
+- reworked uptime to show iOS uptime with option -i
+- simplified detection of non-interactive shells
+- simplified shell detection
+- updated Alpine releases
+- better handling of recovery-mode
 
 
 ## 0.17

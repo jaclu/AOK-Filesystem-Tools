@@ -180,9 +180,6 @@ while [ -n "$1" ]; do
             error_msg "-S / --sourcefile file not found: $sync_file"
         fi
 
-        [ "$sync_file" != "/etc/hostname" ] && [ "${sync_file#"/etc"}" != "$sync_file" ] && {
-            error_msg "syncfile can't start with /etc, unless /etc/hostname"
-        }
         echo "$sync_file" | sudo tee "$f_hostname_source_fname" >/dev/null
         read_syncfile
         /usr/local/bin/logger hostname "set to: $(cat /etc/hostname)"

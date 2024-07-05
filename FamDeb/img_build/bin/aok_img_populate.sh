@@ -62,28 +62,11 @@ pkgs_other="fortune-mod" # make sure /usr/games is in PATH
 CORE_APTS="$pkg_busybox $pkgs_tools $pkgs_shells $pkgs_services
     $pkgs_net_tools $pkgs_editing $pkgs_text_ui $pkgs_other"
 
-#  shellcheck disable=SC2086
+#  shellcheck disable=SC2086  # in this case variable should expand
 apt install -y $CORE_APTS || error_msg "apt install issue"
 health_check
 
-# purges="exim4-config shared-mime-info"
-# # fontconfig related
-# purges="$purges adwaita-icon-theme at-spi2-core fontconfig
-#     fontconfig-config fonts-dejavu-core
-#     libgdk-pixbuf-2.0-0:i386 libgtk-3-common x11-common
-# "
-
-# msg_1 "Remove stuff not needed by iSH-AOK"
-# #  shellcheck disable=SC2086
-# apt purge -y $purges
-# health_check
-
 disable_services
-
-# rmdir_if_only_uuid /usr/local/share/fonts
-# rmdir_if_only_uuid /usr/share/fonts/truetype/dejavu
-# rmdir_if_only_uuid /usr/share/fonts/truetype
-# rmdir_if_only_uuid /usr/share/fonts
 
 health_check
 

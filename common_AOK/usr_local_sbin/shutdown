@@ -146,9 +146,7 @@ while [ -n "$1" ]; do
 done
 
 notification="
-
     *** SYSTEM SHUTDOWN NOTICE ***
-
 $notification_extra
 "
 
@@ -159,12 +157,9 @@ $(hostname) will be shutdown in $hold_time seconds!!
 }
 
 $do_wall && /usr/local/bin/wall "$notification"
-
 if [ "$hold_time" != "0" ]; then
     echo
     echo "Abort shut down by hitting Ctrl-C within $hold_time secoonds"
-    echo
-
     echo
     sleep "$hold_time"
 fi

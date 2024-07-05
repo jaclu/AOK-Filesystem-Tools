@@ -19,16 +19,13 @@ copy_skel_files() {
         error_msg "copy_skel_files($csf_dest) - not indicating a directory"
     fi
 
-    # cp -rv /etc/skel/. "$csf_dest"
-    rsync -ah /etc/skel/. "$csf_dest"
-
     #
-    #  Ensure all files are owned by owner of this after skel copy
+    #  Ensure all files are owned by owner of the containing folder after
+    #  skel copy
     #
-    csf_owner=$(stat -c "%U" "$csf_dest")
-    chown -R "$csf_owner": "$csf_dest"
+    csf_owner="$(find "$csf_dest" -maxdepth 0 -printf "%u:%g")"
+    rsync -a --chown="$csf_owner" /etc/skel/ "$csf_dest"
 
-    # ln -sf .bash_profile .bashrc  # TODO: for old skel files, can probably go
     unset csf_dest
     unset csf_owner
     # echo "^^^ copy_skel_files($1) - done"
@@ -280,7 +277,7 @@ create_user() {
     msg_3 "Adding documentation to userdir"
     cp -a /opt/AOK/Docs "$cu_home_dir"
 
-    # set ownership
+    #  ensure that all files have right ownership
     chown -R "$USER_NAME": "$cu_home_dir"
 
     unset cu_home_dir

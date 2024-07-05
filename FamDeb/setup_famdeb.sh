@@ -74,7 +74,7 @@ handle_apts() {
         msg_1 "Add $distro_name packages"
         echo "$apts_to_add"
         echo
-        #  shellcheck disable=SC2086
+        #  shellcheck disable=SC2086 # in this case variable should expand
         apt install -y $apts_to_add || {
             error_msg "apt install failed"
         }
@@ -90,7 +90,7 @@ handle_apts() {
         #  To prevent leftovers having to potentially be purged later
         #  we do purge instead of remove, purge implies a remove
         #
-        #  shellcheck disable=SC2086
+        #  shellcheck disable=SC2086 # in this case variable should expand
         apt purge -y $apts_to_remove || {
             error_msg "apt purge failed"
         }

@@ -80,11 +80,10 @@ destfs_is_alpine() {
 }
 
 show_on_off_by_file() {
-    f_name="$1"
-    [ -z "$f_name" ] && {
+    [ -z "$1" ] && {
         error_msg "show_on_off_by_file() - no param given"
     }
-    if [ -f "$f_name" ]; then
+    if [ -f "$1" ]; then
         echo "on"
     else
         echo "off"
@@ -98,10 +97,10 @@ show_on_off_by_file() {
 #===============================================================
 
 autologin_change() {
-    uname_autologin="$1"
-    [ -z "$uname_autologin" ] && {
+    [ -z "$1" ] && {
         error_msg "autologin_change() - no param given"
     }
+    uname_autologin="$1"
 
     if [ "$uname_autologin" = "disable" ]; then
         echo "disabling auto-login"
@@ -114,12 +113,16 @@ autologin_change() {
         }
         echo "$uname_autologin" >"$f_login_default_user"
         if [ -f "$f_logins_continous" ]; then
-            _s="continous "
+            continous_setting="continous "
         else
-            _s=""
+            continous_setting=""
         fi
-        echo "Enabled ${_s}auto-login for user: $uname_autologin"
+        echo "Enabled ${continous_setting}auto-login for user: $uname_autologin"
+        unset continous_setting
     fi
+    autologin_display syslog
+
+    unset uname_autologin
 }
 
 autologin_settting() {
@@ -131,7 +134,13 @@ autologin_settting() {
 }
 
 autologin_display() {
-    echo "autologin:     $(autologin_settting)"
+    _m="autologin:     $(autologin_settting)"
+    if [ "$1" = "syslog" ]; then
+        syslog "$_m"
+    else
+        echo "$_m"
+    fi
+    unset _m
 }
 
 autologin_disabled="disabled"
@@ -165,24 +174,34 @@ continous_sessions_change() {
         error_msg "continous_sessions_change() - options are on/off"
         ;;
     esac
+    continous_sessions_display syslog
+
+    unset continous_mode
 }
 
 continous_sessions_setting() {
-    _s="$(show_on_off_by_file "$f_logins_continous")"
-    if [ "$_s" = "off" ]; then
+    cont_ses_setting="$(show_on_off_by_file "$f_logins_continous")"
+    if [ "$cont_ses_setting" = "off" ]; then
         echo "vterm will terminate after logout"
     else
-        _s="$(autologin_settting)"
-        if [ "$_s" = "$autologin_disabled" ]; then
+        cont_ses_setting="$(autologin_settting)"
+        if [ "$cont_ses_setting" = "$autologin_disabled" ]; then
             echo "vterm will sttart a new session after logout"
         else
-            echo "vterm will autlogin as username: $_s"
+            echo "vterm will autlogin as username: $cont_ses_setting"
         fi
     fi
+    unset cont_ses_setting
 }
 
 continous_sessions_display() {
-    echo "continnous:    $(continous_sessions_setting)"
+    _m="continnous:    $(continous_sessions_setting)"
+    if [ "$1" = "syslog" ]; then
+        syslog "$_m"
+    else
+        echo "$_m"
+    fi
+    unset _m
 }
 
 #===============================================================
@@ -210,6 +229,7 @@ launch_cmd_change() {
 
     *) launch_cmd_custom "$lnch_cmd" ;;
     esac
+    launch_cmd_display syslog
 }
 
 launch_cmd_custom() {
@@ -221,7 +241,13 @@ launch_cmd_custom() {
 }
 
 launch_cmd_display() {
-    echo "Launch cmd:    '$(get_launch_cmd)'"
+    _m="Launch cmd:    '$(get_launch_cmd)'"
+    if [ "$1" = "syslog" ]; then
+        syslog "$_m"
+    else
+        echo "$_m"
+    fi
+    unset _m
 }
 
 launch_cmd_options="aok|default|'[ \"custom_cmd\" ]'"
@@ -246,6 +272,7 @@ profile_hints_change() {
         error_msg "profile_hints_change() - options are on/off"
         ;;
     esac
+    profile_hints_display syslog
 }
 
 profile_hints_setting() {
@@ -253,7 +280,13 @@ profile_hints_setting() {
 }
 
 profile_hints_display() {
-    echo "profile-hints: $(profile_hints_setting)"
+    _m="profile-hints: $(profile_hints_setting)"
+    if [ "$1" = "syslog" ]; then
+        syslog "$_m"
+    else
+        echo "$_m"
+    fi
+    unset _m
 }
 
 #===============================================================
@@ -274,6 +307,7 @@ aok_suffix_change() {
         error_msg "aok_suffix_change() - options are on/off"
         ;;
     esac
+    aok_suffix_display syslog
 }
 
 aok_suffix_setting() {
@@ -281,7 +315,13 @@ aok_suffix_setting() {
 }
 
 aok_suffix_display() {
-    echo "aoksuffix:     $(aok_suffix_setting)"
+    _m="aoksuffix:     $(aok_suffix_setting)"
+    if [ "$1" = "syslog" ]; then
+        syslog "$_m"
+    else
+        echo "$_m"
+    fi
+    unset _m
 }
 
 #===============================================================
@@ -296,12 +336,14 @@ console_mode_change() {
     [ -z "$use_console" ] && {
         error_msg "console_mode_change() - no param given, options are on/off"
     }
+
     case "$use_console" in
     "on")
         touch "$f_pts_0_as_console"
         [ "$(stat -c "%t %T" /dev/console)" != "88 0" ] && {
             echo "Setting up /dev/pts/0 as console"
-            rm -f /dev/console && mknod -m 222 /dev/console c 136 0
+            rm -f /dev/console
+            mknod -m 666 /dev/console c 136 0
         }
 
         if [ -f /etc/alpine-release ]; then
@@ -347,7 +389,8 @@ console_mode_change() {
         rm -f "$f_pts_0_as_console"
         [ "$(stat -c "%t %T" /dev/console)" != "5 1" ] && {
             echo "Reverting console to normal mode"
-            rm -f /dev/console && mknod -m 666 /dev/console c 5 1
+            rm -f /dev/console
+            mknod -m 666 /dev/console c 5 1
         }
 
         # if /dev/console is not used and rc_logger=YES openrc gets stuck
@@ -368,6 +411,7 @@ console_mode_change() {
         error_msg "console_mode_change() - options are on/off"
         ;;
     esac
+    console_mode_display syslog
     echo "This will take effect next time App is run."
 }
 
@@ -376,7 +420,13 @@ console_mode_setting() {
 }
 
 console_mode_display() {
-    echo "console:       $(console_mode_setting)"
+    _m="console:       $(console_mode_setting)"
+    if [ "$1" = "syslog" ]; then
+        syslog "$_m"
+    else
+        echo "$_m"
+    fi
+    unset _m
 }
 
 #===============================================================
@@ -400,6 +450,7 @@ extralocking_change() {
         error_msg "extralocking_change() - options are on/off"
         ;;
     esac
+    extralocking_display syslog
 }
 
 extralocking_setting() {
@@ -415,7 +466,13 @@ extralocking_setting() {
 }
 
 extralocking_display() {
-    echo "extralocking:  $(extralocking_setting)"
+    _m="extralocking:  $(extralocking_setting)"
+    if [ "$1" = "syslog" ]; then
+        syslog "$_m"
+    else
+        echo "$_m"
+    fi
+    unset _m
 }
 
 f_elock=/proc/ish/defaults/enable_extralocking
@@ -441,6 +498,7 @@ multicore_change() {
         error_msg "multicore_change() - options are on/off"
         ;;
     esac
+    multicore_display syslog
 }
 
 multicore_setting() {
@@ -456,7 +514,13 @@ multicore_setting() {
 }
 
 multicore_display() {
-    echo "multicore:     $(multicore_setting)"
+    _m="multicore:     $(multicore_setting)"
+    if [ "$1" = "syslog" ]; then
+        syslog "$_m"
+    else
+        echo "$_m"
+    fi
+    unset _m
 }
 
 f_multicore=/proc/ish/defaults/enable_multicore

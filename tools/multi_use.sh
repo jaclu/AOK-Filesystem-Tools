@@ -19,16 +19,16 @@ replace_std_bin() {
         error_msg "replace_std_bin($f_bin,) - missing 2nd param"
     }
     case "$upgrade" in
-	"" | "upgrade");;
-	*)
-	    _s="replace_std_bin() - Invalid upgrade option: [$upgrade]"
-	    error_msg "$_s"
-	    ;;
+    "" | "upgrade") ;;
+    *)
+        _s="replace_std_bin() - Invalid upgrade option: [$upgrade]"
+        error_msg "$_s"
+        ;;
     esac
 
     # Check if it is done already
     [ "$(realpath "$f_bin")" = "$(realpath "$f_bin_replacement")" ] && {
-	return
+        return
     }
 
     msg_3 "Softlinking $f_bin_replacement -> $f_bin"
@@ -43,13 +43,12 @@ replace_std_bin() {
         fi
     fi
 
-
     [ -f "$f_bin" ] && {
-	[ "$upgrade" != "upgrade" ] && {
-	    _s="$f_bin_replacement already pressent, removing $f_bin"
-	    error_msg "$_s" -1
-	}
-	rm -f "$f_bin"
+        [ "$upgrade" != "upgrade" ] && {
+            _s="$f_bin_replacement already pressent, removing $f_bin"
+            error_msg "$_s" -1
+        }
+        rm -f "$f_bin"
     }
     ln -sf "$f_bin_replacement" "$f_bin"
 }
@@ -68,17 +67,17 @@ replacing_std_bins_with_aok_versions() {
     [ ! -f "$org_hostname" ] && org_hostname=/bin/hostname
 
     [ "$1" != "upgrade" ] && {
-      	#
-	# on 1st boot original hostname can be used to pick up name
-	# of host, mostly useful when chrooted, since on iOS devices
-	# it will just report localhost
-	#
+        #
+        # on 1st boot original hostname can be used to pick up name
+        # of host, mostly useful when chrooted, since on iOS devices
+        # it will just report localhost
+        #
 
-	# Used by utils:set_hostname()
+        # Used by utils:set_hostname()
         $org_hostname -s >"$f_hostname_initial"
 
-	msg_4 "Using org hostname to store what it reports"
-	msg_4 " [$(cat "$f_hostname_initial")] in: $f_hostname_initial"
+        msg_4 "Using org hostname to store what it reports"
+        msg_4 " [$(cat "$f_hostname_initial")] in: $f_hostname_initial"
     }
 
     replace_std_bin "$org_hostname" /usr/local/bin/hostname "$upgrade"
@@ -87,7 +86,11 @@ replacing_std_bins_with_aok_versions() {
     replace_std_bin /sbin/halt /usr/local/sbin/halt "$upgrade"
     replace_std_bin /sbin/poweroff /usr/local/sbin/halt "$upgrade"
 
-    # echo
+    if this_is_aok_kernel; then
+        rm -f /usr/local/bin/uptime
+    elif [ -f /etc/debian_version ]; then
+        replace_std_bin /usr/bin/uptime /usr/local/bin/uptime "$upgrade"
+    fi
 }
 
 #===============================================================

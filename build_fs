@@ -414,7 +414,7 @@ consider_generating_tarball() {
         #
         #  Here the tarball is generated
         #
-        #  shellcheck disable=SC2086,SC2248
+        #  shellcheck disable=SC2086 # in this case variable should expand
         if ! /opt/AOK/compress_image $cgt_extra_params; then
             error_msg "detected in compress_image"
         fi

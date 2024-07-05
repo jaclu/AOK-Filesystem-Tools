@@ -149,15 +149,6 @@ general_upgrade() {
         # kill_tail_logging is updated on each boot by aok_launcher
         _s="--exclude=kill_tail_logging $distro_fam_prefix/usr_local_sbin/"
         rsync_chown "$_s" /usr/local/sbin
-        if ! this_is_aok_kernel && ! this_fs_is_chrooted; then
-            _f="/usr/bin/uptime"
-            msg_3 "$_f"
-            file "$_f" | grep -q ELF && {
-                msg_4 "Saving ELF $_f -> /usr/bin/org-uptime"
-                mv "$_f" /usr/bin/org-uptime
-            }
-            rsync_chown /opt/AOK/FamDeb/ish_replacement_bins/uptime /usr/bin
-        fi
         msg_3 "/etc/init.d/rc"
         rsync_chown "$distro_fam_prefix"/etc/init.d/rc /etc/init.d
     else
@@ -310,8 +301,6 @@ hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
 
 . /opt/AOK/tools/multi_use.sh
 
-
-
 # shellcheck disable=SC1007
 prog_name=$(basename "$0")
 
@@ -357,3 +346,7 @@ update_aok_release
 verify_launch_cmd
 obsolete_files
 check_softlinks
+
+# Double check that no new incompatiblities have been listed
+msg_2 "Ensuring no incompatabilies are detected"
+/usr/local/bin/check-env-compatible

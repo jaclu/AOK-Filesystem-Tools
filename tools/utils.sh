@@ -90,6 +90,12 @@ msg_4() {
     do_msg "  -  $1"
 }
 
+syslog() {
+    [ -z "$1" ] && error_msg "syslog() - called without param"
+
+    /usr/local/bin/logger "$(basename "$0")" "$1"
+}
+
 msg_script_title() {
     [ -z "$1" ] && error_msg "msg_script_title() no param"
     echo
@@ -414,7 +420,7 @@ rsync_chown() {
 
     _r_params="-ah --exclude="'*~'" --chown=root:root $src $d_dest"
     if [ -n "$_silent_mode" ]; then
-        #  shellcheck disable=SC2086
+        #  shellcheck disable=SC2086 # in this case variable should expand
         rsync $_r_params >/dev/null || {
             error_msg "rsync_chown($src, $d_dest, silent) failed"
         }
@@ -428,7 +434,7 @@ rsync_chown() {
         #
         # rsync -P $_r_params | grep -v -e '\^./$' -e '^sending incremental' -e '^\[[:space:]]' || {
         rsync_output=/tmp/aok-rsync-chown-output
-        #  shellcheck disable=SC2086
+        #  shellcheck disable=SC2086 # in this case variable should expand
         rsync -P $_r_params >"$rsync_output" || {
             error_msg "rsync_chown($src, $d_dest) failed"
         }
@@ -523,6 +529,7 @@ this_is_ish() {
 }
 
 this_is_aok_kernel() {
+    ! this_is_ish && return 1
     grep -qi aok /proc/ish/version 2>/dev/null
 }
 
@@ -969,9 +976,9 @@ replace_home_dirs() {
 set_hostname() {
     msg_2 "Set hostname"
     if this_fs_is_chrooted; then
-        # defined in setup_common_env.sh:replacing_std_bins_with_aok_versions()
         prefix="ish-"
 
+        # defined in setup_common_env.sh:replacing_std_bins_with_aok_versions()
         if [ -f "$f_hostname_initial" ]; then
             hname="$(cat "$f_hostname_initial")"
         else
