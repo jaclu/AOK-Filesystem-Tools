@@ -469,6 +469,7 @@ This will continue in $cleanup_sleep secnods,hit Ctrl-C if you want to abort
 
         define_chroot_env
         env_restore
+        rm -f "$f_is_chrooted" # ensure its gone if left
         exit 0
         ;;
 
