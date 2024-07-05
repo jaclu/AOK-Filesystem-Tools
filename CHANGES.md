@@ -4,6 +4,32 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in main branch
 
+## 0.18-pre-8
+
+- updated Alpine releases
+- improved param handling
+- simplified shell detection
+- simplified detection of non-interactive shells
+- improved handling of incompatible packages
+- remove residual this_fs_is_chrooted
+
+## 0.18-pre-7
+
+- /usr/local/bin/check-env-compatible self corrects procps uptime
+
+## 0.18-pre-6
+
+- procps allowed upto 3.19 - after some tesing it turns out /usr/bin/uptime
+segfaults already by 3.19
+
+## 0.18-pre-5
+
+- changed skel file shell detection and aborting of non-interactive shells
+
+## 0.18-pre-4
+
+- procps allowed upto 3.19
+
 ## 0.18-pre-1
 
 - Identified coreutils as incomaptible with Alpine > 3.19
