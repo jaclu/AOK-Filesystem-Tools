@@ -17,10 +17,7 @@
 #  Non-interactive shells wont read this by themselves. This ensures
 #  that if they get here via idirect sourcing, they abort.
 #
-case $- in
-*i*) ;;
-*) return ;; # If not running interactively, don't do anything
-esac
+echo "$-" | grep -qv 'i' && return # non-interactive
 
 # the default umask is set in /etc/profile; for setting the umask
 # for ssh logins, install and configure the libpam-umask package.

@@ -14,10 +14,7 @@
 #  Non-interactive shells wont read this by themselves. This ensures
 #  that if they get here via idirect sourcing, they abort.
 #
-case $- in
-*i*) ;;
-*) return ;; # If not running interactively, don't do anything
-esac
+echo "$-" | grep -qv 'i' && return # non-interactive
 
 #
 #  Common settings that can be used by most shells
