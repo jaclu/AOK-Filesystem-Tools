@@ -186,6 +186,8 @@ pgrep -f \"$cmd_tail\" | xargs -r kill
 }
 
 check_for_recovery_mode() {
+    $recovery_mode_canceled && return
+
     # Disable terminal line buffering and enable read without Enter
     stty -icanon min 0 time 0
 
@@ -235,6 +237,8 @@ check_for_recovery_mode() {
 }
 
 indicate_end_of_recovery_window() {
+    $recovery_mode_canceled && return
+
     if [ -f "$f_this_is_chrooted" ]; then
         #
         #  On iSH boot there is time to press r during boot wait
@@ -243,9 +247,14 @@ indicate_end_of_recovery_window() {
         #
         sleep 0.7
     fi
+
     check_for_recovery_mode
+
+    recovery_mode_canceled=true
+
     echo "recovery-mode no longer possible"
     echo
+
     # remove any left-over recovery logs
     rm -f /var/log/recovery-mode.log
 }
@@ -656,6 +665,7 @@ handle_logins() {
 #===============================================================
 
 state_prefix=/etc/opt/AOK
+recovery_mode_canceled=false
 f_pts_0_as_console="$state_prefix"/pts_0_as_console
 f_recovery_mode="$state_prefix"/recovery-mode
 f_inittab_can_start="$state_prefix"/inittab_can_start
@@ -707,14 +717,12 @@ check_for_recovery_mode
 display_header
 
 #  If deploy has not completed - handle it
-if [ -f "$f_deploy_state" ]; then
-    deploy_aok
+[ -f "$f_deploy_state" ] && deploy_aok
+
+if $this_is_pts0; then
+    bootup # if /dev/console is used, pts/0 will not exit this
 else
-    if $this_is_pts0; then
-        bootup # if /dev/console is used, pts/0 will not exit this
-    else
-        /usr/local/bin/network-check.sh
-    fi
+    /usr/local/bin/network-check.sh
 fi
 
 [ -f "$f_this_is_chrooted" ] && indicate_end_of_recovery_window
