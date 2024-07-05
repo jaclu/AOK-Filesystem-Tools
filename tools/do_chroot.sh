@@ -258,8 +258,6 @@ kill_remaining_procs() {
 
     msg_3 "remaining procs to kill: [$ch_procs]"
     echo "$ch_procs" | tr ' ' '\n' | xargs kill -9
-    # shell check disable=SC2016,SC2086  # TODO: fix and test
-    # echo $ch_procs | tr ' ' '\n' | xargs -I {} sh -c 's="$(ps ax|grep {} |grep -v grep)" ;echo  "attempting to kill: $s" ; kill {}'
 
     #
     #  Ensure thee are no leftovers that kill didnt get rid off

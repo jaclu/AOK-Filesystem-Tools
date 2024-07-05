@@ -37,13 +37,6 @@ initial_log_entries() {
             continue # not a text file
         }
         case "$log_basename" in
-        # skip some logfiles
-        #autossh.log ) # different time stamp format
-        #echo "==> $logfile <=="
-        # shell check disable=SC2086,SC2211
-        #$cmd_tail$log_basename 2>/dev/null &
-        #continue
-        #;;
         rc.log) continue ;; # no time stamps
         *) ;;
         esac
