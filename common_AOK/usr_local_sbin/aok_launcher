@@ -487,6 +487,8 @@ deploy_aok() {
     echo "*                                                    *"
     echo "******************************************************"
     echo
+    #  Ensure nothing that shouldnt be there was installed
+    /usr/local/bin/check-env-compatible
     sleep 3
 }
 

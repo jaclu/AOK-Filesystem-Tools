@@ -16,6 +16,7 @@ notification() {
         echo "$1"
     fi
 }
+
 coreutils_check() {
     #
     #  On Alpine >= 3.20  iSH fails to handle /dev if coreutils is installed
@@ -26,7 +27,12 @@ coreutils_check() {
     [ -f /etc/alpine-release ] || return
 
     # if version check is not available, no check can be done
-    [ -f /opt/AOK/tools/vers_check.sh ] || return
+    [ -f /opt/AOK/tools/vers_check.sh ] || {
+        echo "Unable to check Alpine release."
+        echo "If coreutils is installed on Alpine >= 3.20"
+        echo "/dev resources will not be POSIX compatible."
+        return
+    }
 
     . /opt/AOK/tools/vers_check.sh
 
@@ -43,6 +49,48 @@ WARNING: iSH will fail to hanlde /dev resources if coreutils is installed
 
 "
     #endregion
+}
+
+procps_check() {
+    #
+    #  On Alpine >= 3.19  /usr/bin/uptime segfaults if procps is installed
+    #  This gives a warning
+    #
+    #region warning
+    warn="
+
+WARNING: If procps is installed on Alpine >= 3.19 /usr/bin/uptime
+will segfault.
+This has been solved by soft-linking /usr/bin/uptime to /bin/busybox
+So this warning is just informational, and wont be seen again until
+procps is updated and potentially installs an incompatible uptime.
+At that point this issue will be self corrected again.
+"
+    #endregion
+
+    # Only relevant for Alpine
+    [ -f /etc/alpine-release ] || return
+
+    # if version check is not available, no check can be done
+    [ -f /opt/AOK/tools/vers_check.sh ] || {
+        echo "Unable to check Alpine release."
+        echo "If procps is installed on Alpine >= 3.19"
+        echo "/usr/bin/uptime will segfault."
+        return
+    }
+
+    . /opt/AOK/tools/vers_check.sh
+
+    # if older Alpine - all is good
+    ! min_version 3.19 && return
+
+    cmd_uptime=/usr/bin/uptime
+    [ "$(realpath "$cmd_uptime")" = /bin/busybox ] && return
+
+    rm -f "$cmd_uptime"
+    ln -sf /bin/busybox "$cmd_uptime"
+
+    notification "$warn"
 }
 
 #===============================================================
@@ -63,3 +111,4 @@ else
 fi
 
 coreutils_check
+procps_check

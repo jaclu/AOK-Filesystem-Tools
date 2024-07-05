@@ -20,6 +20,15 @@ find_fastest_mirror() {
     setup-apkrepos -f
 }
 
+removing_unwanted_package() {
+    rup_pkg="$1"
+    _s="removing_unwanted_package() - called without param"
+    [ -z "$rup_pkg" ] && error_msg "$_s"
+
+    msg_3 "removing $rup_pkg from CORE_APKS"
+    CORE_APKS="$(echo "$CORE_APKS" | sed "s/$rup_pkg//")"
+}
+
 handle_apks() {
 
     msg_1 "apk upgrade"
@@ -32,16 +41,32 @@ handle_apks() {
         if [ -z "${CORE_APKS##*shadow-login*}" ]; then
             # This package was introduced starting with Alpine 3.16
             msg_3 "Excluding not yet available apk 'shadow-login"
-            CORE_APKS="$(echo "$CORE_APKS" | sed 's/shadow-login//')"
+            removing_unwanted_package "shadow-login"
         fi
     fi
     if ! min_release 3.18; then
         msg_3 "Pre 3.18 procps was called procps-ng"
         CORE_APKS="$(echo "$CORE_APKS" | sed 's/procps/procps-ng/')"
-    elif min_release "3.20"; then
-        msg_3 "Alpine >= 3.20 - coreutils cant be used"
-        CORE_APKS="$(echo "$CORE_APKS" | sed 's/coreutils//')"
+    # elif min_release "3.19"; then
+    #     msg_3 "Alpine >= 3.19 - procps cant be used"
+    #     removing_unwanted_package procps
     fi
+    if min_release "3.20"; then
+        msg_3 "Alpine >= 3.20 - coreutils cant be used"
+        removing_unwanted_package coreutils
+    fi
+
+    min_release "3.19" && {
+        # 3.19 and higher will insta-die if a modern sudo is used....
+        msg_2 "For Alpine > 3.18, an older sudo must be used"
+        removing_unwanted_package sudo
+        msg_3 "Installing fixed vers sudo - 1.9.12_p2-r0 (Alpine 3.14)"
+        wget https://mirror.math.princeton.edu/pub/alpinelinux/v3.14/main/x86/sudo-1.9.12_p2-r0.apk
+        apk del sudo
+        apk add sudo-1.9.12_p2-r0.apk || error_msg "Failed to install sudo"
+        msg_3 "sudo-1.9.12_p2-r0.apk installed and version locked"
+        rm sudo-1.9.12_p2-r0.apk
+    }
 
     if [ -n "$CORE_APKS" ]; then
         msg_1 "Install core packages"
@@ -57,17 +82,6 @@ handle_apks() {
     else
         msg_1 "No CORE_APKS defined"
     fi
-
-    min_release "3.19" && {
-        # 3.19 and higher will insta-die if a modern sudo is used....
-        msg_2 "For Alpine > 3.18, an older sudo must be used"
-        msg_3 "Downgrading sudo -> 1.9.12_p2-r0 (Alpine 3.14)"
-        wget https://mirror.math.princeton.edu/pub/alpinelinux/v3.14/main/x86/sudo-1.9.12_p2-r0.apk
-        apk del sudo
-        apk add sudo-1.9.12_p2-r0.apk || error_msg "Failed to install sudo"
-        msg_3 "sudo-1.9.12_p2-r0.apk installed and version locked"
-        rm sudo-1.9.12_p2-r0.apk
-    }
 
     if [ -n "$AOK_PKGS_SKIP" ]; then
         msg_1 "Removing packages"
@@ -219,6 +233,8 @@ else
 fi
 
 additional_prebuild_tasks
+
+/usr/local/bin/check-env-compatible
 
 display_installed_versions_if_prebuilt
 

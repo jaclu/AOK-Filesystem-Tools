@@ -346,3 +346,7 @@ update_aok_release
 verify_launch_cmd
 obsolete_files
 check_softlinks
+
+# Double check that no new incompatiblities have been listed
+msg_2 "Ensuring no incompatabilies are detected"
+/usr/local/bin/check-env-compatible

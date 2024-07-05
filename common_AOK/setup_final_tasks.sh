@@ -106,24 +106,6 @@ aok_kernel_consideration() {
     # msg_3 "aok_kernel_consideration() - done"
 }
 
-verify_alpine_uptime() {
-    #
-    #  Some versions of uptime doesnt work in iSH, test and
-    #  replace with softlink to busybox if that is the case
-    #
-    uptime_cmd="$(command -v uptime)"
-    uptime_cmd_real="$(realpath "$uptime_cmd")"
-
-    [ "$uptime_cmd_real" = "/bin/busybox" ] && return
-
-    "$uptime_cmd" >/dev/null 2>&1 || {
-        msg_2 "WARNING: Installed uptime not useable!"
-        msg_3 "changing it to busybox symbolic link"
-        rm -f "$uptime_cmd"
-        ln -sf /bin/busybox "$uptime_cmd"
-    }
-}
-
 start_cron_if_active() {
     msg_2 "start_cron_if_active()"
     #  shellcheck disable=SC2154
@@ -274,11 +256,6 @@ hostfs_is_alpine && aok_kernel_consideration
 
 if hostfs_is_alpine; then
     next_etc_profile="/opt/AOK/Alpine/etc/profile"
-    #
-    #  Some versions of Alpine uptime doesnt work in ish, test and
-    #  replace with softlink to busybox if that is the case
-    #
-    verify_alpine_uptime
 elif hostfs_is_debian || hostfs_is_devuan; then
     next_etc_profile="/opt/AOK/FamDeb/etc/profile"
 else
@@ -305,6 +282,8 @@ display_time_elapsed "$duration" "Setup Final tasks"
 
 verify_launch_cmd
 clean_up_dest_env
+
+/usr/local/bin/check-env-compatible
 
 msg_1 "File system deploy completed"
 
