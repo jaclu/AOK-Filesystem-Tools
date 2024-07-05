@@ -62,7 +62,7 @@ pkgs_other="fortune-mod" # make sure /usr/games is in PATH
 CORE_APTS="$pkg_busybox $pkgs_tools $pkgs_shells $pkgs_services
     $pkgs_net_tools $pkgs_editing $pkgs_text_ui $pkgs_other"
 
-#  shellcheck disable=SC2086
+#  shellcheck disable=SC2086  # in this case variable should expand
 apt install -y $CORE_APTS || error_msg "apt install issue"
 health_check
 

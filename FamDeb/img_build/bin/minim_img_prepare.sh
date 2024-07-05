@@ -27,7 +27,7 @@ pkgs_purge="groff-base file pigz less curl rsync sqlite3 tinysshd vim
     vim-runtime x11-common sysv-rc fontconfig-config fontconfig
     fonts-dejavu-core at-spi2-core libfontconfig1 libmagic1:i386"
 echo "   $pkgs_purge"
-#  shellcheck disable=SC2086
+#  shellcheck disable=SC2086 # in this case variable should expand
 apt purge -y $pkgs_purge
 
 health_check

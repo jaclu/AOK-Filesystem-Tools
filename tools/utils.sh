@@ -420,7 +420,7 @@ rsync_chown() {
 
     _r_params="-ah --exclude="'*~'" --chown=root:root $src $d_dest"
     if [ -n "$_silent_mode" ]; then
-        #  shellcheck disable=SC2086
+        #  shellcheck disable=SC2086 # in this case variable should expand
         rsync $_r_params >/dev/null || {
             error_msg "rsync_chown($src, $d_dest, silent) failed"
         }
@@ -434,7 +434,7 @@ rsync_chown() {
         #
         # rsync -P $_r_params | grep -v -e '\^./$' -e '^sending incremental' -e '^\[[:space:]]' || {
         rsync_output=/tmp/aok-rsync-chown-output
-        #  shellcheck disable=SC2086
+        #  shellcheck disable=SC2086 # in this case variable should expand
         rsync -P $_r_params >"$rsync_output" || {
             error_msg "rsync_chown($src, $d_dest) failed"
         }

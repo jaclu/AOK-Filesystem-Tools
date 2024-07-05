@@ -49,7 +49,7 @@ handle_apks() {
         echo
 
         # In this case we want the variable to expand into its components
-        # shellcheck disable=SC2086
+        # shellcheck disable=SC2086 # in this case variable should expand
         apk add $CORE_APKS || {
             error_msg "apk add CORE_APKS failed"
         }
@@ -74,7 +74,8 @@ handle_apks() {
         echo "$AOK_PKGS_SKIP"
         echo
 
-        #  shellcheck disable=SC2086
+        # In this case we want the variable to expand into its components
+        # shellcheck disable=SC2086 # in this case variable should expand
         apk del $AOK_PKGS_SKIP || error_msg "Failed to delete AOK_PKGS_SKIP"
         echo
     fi

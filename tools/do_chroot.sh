@@ -545,7 +545,7 @@ touch "$f_is_chrooted"
 #  the chroot env, like TMPDIR
 #
 #  In this case we want the $cmd_w_params variable to expand into its components
-#  shellcheck disable=SC2086
+#  shellcheck disable=SC2086 # in this case variable should expand
 TMPDIR="" SHELL="" LANG="" chroot "$CHROOT_TO" $cmd_w_params
 chroot_exit_code="$?"
 

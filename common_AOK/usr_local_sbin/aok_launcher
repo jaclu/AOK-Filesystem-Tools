@@ -564,8 +564,8 @@ login_with_param_check() {
         unset def_user
 
         print_log "Starting login with params: [$login_params]" noecho
-        # shellcheck disable=SC2086
-        "$f_login_prog" $login_params || {
+        # shellcheck disable=SC2086  # in this case variable should expand
+        $f_login_prog $login_params || {
             login_ex_code="$?"
             echo
             _s="ERROR: $f_login_prog exited with#1: $login_ex_code,"
