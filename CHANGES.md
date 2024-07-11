@@ -2,7 +2,17 @@
 
 I will try to keep track of changes between releases here
 
-## Upcomming release, available in main branch
+## Upcomming release, available in devel branch
+
+## 0.19
+
+- simplified dest selection for wall
+- better check if pigz is installed
+- reshuffle of motd tasks
+- added tools: aok_fs-save & aok_fs-replace
+- updated skel files
+- improved package selection for old releases
+- added uptime -l to just show sysload
 
 ## 0.18
 

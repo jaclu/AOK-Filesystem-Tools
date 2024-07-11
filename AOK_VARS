@@ -25,7 +25,7 @@
 #  Label for AOK builds, is also displayed by motd to indicate what
 #  AOK FS release is being used
 #
-AOK_VERSION="0.18"
+AOK_VERSION="0.19"
 
 #
 #  If defined this will be created as a no-password sudo capable user
@@ -133,36 +133,23 @@ USER_SHELL="/bin/bash"
 #  ALPINE_VERSION defines what Alpine release (minirootfs) will be used
 #  current releases can be found at: https://alpinelinux.org/releases/
 #
-# ALPINE_VERSION=3.15.11 # End of Alpine support 2023-11-01
-# ALPINE_VERSION=3.16.9 # End of Alpine support 2024-05-23
-#  ALPINE_VERSION=3.17.8 # End of Alpine support 2024-11-22
-# ALPINE_VERSION=3.18.7 # End of Alpine support 2025-05-09
-
-#  As of 2024-07-02 sudo insta-crashes iSH if using Alpine >= 3.19...
+#  sudo insta-crashes iSH if using Alpine >= 3.19... last checked 2024-07-02
 #  test: sudo ls
 #  AOK installs an older sudo (Alpine 3.14) on such releases, this
 #  solves the issue
-
+#
+# ALPINE_VERSION=3.17.8 # End of Alpine support 2024-11-22
+# ALPINE_VERSION=3.18.7 # End of Alpine support 2025-05-09
 # ALPINE_VERSION=3.19.2 # End of Alpine support  2025-11-01
 ALPINE_VERSION=3.20.1 # End of Alpine support  2026-04-01
 
 #
 #  For edge releases - Current development tree
 #  Format is the isodate featured in the minirootfs filename
-#  Meaning that: alpine-minirootfs-20230901-x86.tar.gz
-#  Would be requested as: ALPINE_VERSION="20230901"
+#  Meaning that: alpine-minirootfs-20240606-x86.tar.gz
+#  Would be requested as: ALPINE_VERSION="20240606"
 #
-# ALPINE_VERSION="20230901"  # 3.19_alpha20230901
-# ALPINE_VERSION="20230329"  # 3.18_alpha20230329
-# ALPINE_VERSION="20221110"  # 3.17_alpha20221110
-#
-#  If you need to detect if the build is an edge release in your
-#  .AOK_VARS, when making config desicions,
-#  you can check it thus:
-#
-#  if echo "$ALPINE_VERSION" | grep -Eq '^[0-9]{8}$'; then
-#      echo "this is edge"
-#  fi
+#  ALPINE_VERSION="20240606"  # 3.21.0_alpha20240606
 #
 
 #
@@ -174,7 +161,7 @@ ALPINE_VERSION=3.20.1 # End of Alpine support  2026-04-01
 #
 #  Always installed packages
 #
-pkgs_tools="busybox-extras coreutils procps util-linux
+pkgs_tools="busybox-extras coreutils util-linux
     sudo shadow shadow-login tzdata findutils sed tar pigz file gawk
     grep htop less sqlite fzf py3-pip ncdu"
 pkgs_shells="bash zsh"
@@ -223,7 +210,7 @@ NODEJS_APKS='nodejs nodejs-dev'
 #  not development related man pages, those doing development are
 #  assumed to know what man pages they might need :)
 #
-DOCS_APKS="man-db man-pages busybox-doc coreutils-doc procps-ng-doc \
+DOCS_APKS="man-db man-pages busybox-doc coreutils-doc \
     sudo-doc shadow-doc shadow-login-doc tzdata-doc findutils-doc sed-doc \
     tar-doc file-doc gawk-doc grep-doc htop-doc less-doc git-doc \
     sqlite-doc fzf-doc py3-pip-doc ncdu-doc bash-doc zsh-doc openrc-doc \

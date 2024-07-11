@@ -39,20 +39,22 @@ handle_apks() {
 
     if ! min_release "3.16"; then
         if [ -z "${CORE_APKS##*shadow-login*}" ]; then
-            # This package was introduced starting with Alpine 3.16
-            msg_3 "Excluding not yet available apk 'shadow-login"
+            msg_2 "Excluding packages not yet availabe before 3.16"
             removing_unwanted_package "shadow-login"
+            removing_unwanted_package "py3-pendulum"
+            removing_unwanted_package "zsh-completions"
+            removing_unwanted_package "zsh-history-substring-search"
         fi
     fi
-    if ! min_release 3.18; then
-        msg_3 "Pre 3.18 procps was called procps-ng"
-        CORE_APKS="$(echo "$CORE_APKS" | sed 's/procps/procps-ng/')"
+    #if ! min_release 3.15; then
+    #    msg_2 "Pre 3.15 procps was called procps-ng"
+    #    CORE_APKS="$(echo "$CORE_APKS" | sed 's/procps/procps-ng/')"
     # elif min_release "3.19"; then
     #     msg_3 "Alpine >= 3.19 - procps cant be used"
     #     removing_unwanted_package procps
-    fi
+    #fi
     if min_release "3.20"; then
-        msg_3 "Alpine >= 3.20 - coreutils cant be used"
+        msg_2 "Alpine >= 3.20 - coreutils cant be used"
         removing_unwanted_package coreutils
     fi
 
@@ -136,7 +138,7 @@ prepare_env_etc() {
         msg_2 "Adding apk repository - testing"
         #    cp /opt/AOK/Alpine/etc/repositories-edge /etc/apk/repositories
         echo "$testing_repo" >>/etc/apk/repositories
-    elif min_release 3.17; then
+    elif min_release 3.19; then
         #
         #  Only works for fairly recent releases, otherwise dependencies won't
         #  work.

@@ -199,9 +199,12 @@ setup_environment() {
     # If AOK_HOSTNAME_SUFFIX is defined and this runs on an aok kernel
     # on first boot aok -s on  will be set
     #
-    aok -c off -H on -s off -C off
-    # only set if not chrooted
-    this_fs_is_chrooted || aok -l aok
+    aok -c off -H on -s off
+    #
+    #  This will only take effect if system is not pre-built.
+    #  Same settings will be done in setup_final_tasks.sh on dest platform
+    #
+    this_fs_is_chrooted || aok -l aok -C off
 
     setup_cron_env
 

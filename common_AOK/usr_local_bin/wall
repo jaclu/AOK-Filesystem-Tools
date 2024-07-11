@@ -109,22 +109,6 @@ while [ -n "$1" ]; do
     shift
 done
 
-[ -c /dev/console ] && {
-    # if pts/0 is only console, display msg this way
-    pgrep -t pts/0 >/dev/null || display_msg >/dev/console
-}
-
-# get pts in fashion suitable for pgrep
-cd /dev || {
-    msg="ERROR: $0 - failed to cd /dev"
-    echo "$msg"
-    /usr/local/bin/logger "$0" "$msg"
-    exit 1
-}
-
-for pts in pts/*; do
-    pgrep -t "$pts" >/dev/null || continue # skip if not used
-
-    pts=/dev/"$pts" # back to normal notation
+for pts in /dev/pts/*; do
     display_msg >"$pts"
 done

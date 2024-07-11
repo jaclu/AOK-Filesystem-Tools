@@ -35,10 +35,9 @@ set_current_shell_name() {
     #  The SHELL variable only displays initial login shell
     #  if you change shell, even using ` -l` to indicate
     #  doing a login shell, it doesnt change.
-    #  Instead I add CURRENT_SHELL to indicate what this shell is
+    #  Instead I add CURRENT_SHELL to indicate what this shell is.
+    #  On Alpine ash is usually softlinked to busybox
     #
-
-    # Determine the current shell
     if [ -n "$FISH_VERSION" ]; then
         CURRENT_SHELL="fish"
     else
@@ -46,6 +45,7 @@ set_current_shell_name() {
             case "$(basename "$(realpath /proc/$$/exe)")" in
             ash | busybox) CURRENT_SHELL="ash" ;;
             bash) CURRENT_SHELL="bash" ;;
+	    dash) CURRENT_SHELL="dash" ;;
             zsh) CURRENT_SHELL="zsh" ;;
             *) CURRENT_SHELL="" ;; # unknown
             esac

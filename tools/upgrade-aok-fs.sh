@@ -223,6 +223,13 @@ obsolete_files() {
     is_obsolete_file_present /etc/opt/AOK-login_method
     is_obsolete_file_present /etc/opt/hostname_cached
 
+    is_obsolete_file_present /etc/update-motd.d/11-aok-release
+    is_obsolete_file_present /etc/update-motd.d/12-deb-vers
+    is_obsolete_file_present /etc/update-motd.d/13-ish-release
+    is_obsolete_file_present /etc/update-motd.d/25-aok-release
+    is_obsolete_file_present /etc/update-motd.d/26-deb-vers
+    is_obsolete_file_present /etc/update-motd.d/27-ish-release
+
     is_obsolete_file_present /usr/local/bin/aok_groups
     is_obsolete_file_present /usr/local/bin/apk_find_pkg
     is_obsolete_file_present /usr/local/bin/battery_charge
@@ -350,3 +357,14 @@ check_softlinks
 # Double check that no new incompatiblities have been listed
 msg_2 "Ensuring no incompatabilies are detected"
 /usr/local/bin/check-env-compatible
+
+cmd_post_update=/etc/opt/AOK/post-update.sh
+
+
+[ -x "$cmd_post_update" ] && {
+    msg_2 "Running $cmd_post_update"
+    $cmd_post_update
+}
+
+echo
+aok-versions

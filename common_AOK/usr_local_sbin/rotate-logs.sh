@@ -48,7 +48,7 @@ for log_file in "$d_log"/*; do
 	[ "$(basename "$log_file")" = "lastlog" ] && continue # special file
 	[ -f "$log_file" ] || continue                        # not a file
 
-	file_size="$(stat --printf='%s' "$log_file")"
+	file_size="$(stat -c '%s' "$log_file")"
 	[ -f "$log_file" ] && [ "$file_size" -gt "$max_size" ] && { # > 20k
 		# Set the rotated file name
 		_fn="$(dirname "$log_file")/$(date +"%y%m%d-%H%M%S")"

@@ -161,6 +161,14 @@ untar_file() {
         msg_3 "     into: $(pwd)"
     fi
 
+    cmd_pigz="$(command -v pigz)"
+
+    if [ -z "$cmd_pigz" ] && [ -x /home/linuxbrew/.linuxbrew/bin/pigz ]; then
+        cmd_pigz=/home/linuxbrew/.linuxbrew/bin/pigz
+        error_msg "><> using linuxbrew pigz [$cmd_pigz]"
+    fi
+    [ -z "$cmd_pigz" ] && error_msg "><> no pigz"
+
     if [ -n "$cmd_pigz" ]; then
         # pigz -dc your_archive.tgz | tar -xf -
         msg_4 "Using $cmd_pigz"
@@ -171,6 +179,7 @@ untar_file() {
         }
     else
         msg_4 "No pigz"
+        error_msg "><> No pigz [$cmd_pigz]"
         tar "xf${_tar_params}" "$_tarball" || {
             [ "$_no_exit" != "NO_EXIT_ON_ERROR" ] && error_msg "Failed to untar $_tarball"
         }
@@ -460,21 +469,25 @@ copy_local_bins() {
     fi
 
     # msg_1 "Copying /usr/local stuff from $_clb_base_dir"
-    _clb_src_dir="/opt/AOK/${_clb_base_dir}/usr_local_bin"
-    if [ -z "$(find "$_clb_src_dir" -type d -empty)" ]; then
-        msg_3 "Add $_clb_base_dir AOK-FS stuff to /usr/local/bin"
-        mkdir -p /usr/local/bin
-        rsync_chown "$_clb_src_dir/*" /usr/local/bin silent
+    _clb_src_dir=/opt/AOK/"$_clb_base_dir"
+
+    _clb_rel_src=usr_local_bin
+    _clb_dest=/usr/local/bin
+    msg_3 "><> ls $_clb_src_dir | grep -q $_clb_rel_src"
+    if find "$_clb_src_dir" | grep -q "$_clb_rel_src"; then
+        mkdir -p "$_clb_dest"
+        rsync_chown "$_clb_src_dir/$_clb_rel_src/*" "$_clb_dest" silent
     fi
 
-    _clb_src_dir="/opt/AOK/${_clb_base_dir}/usr_local_sbin"
-    if [ -d "$_clb_src_dir" ]; then
-        msg_3 "Add $_clb_base_dir AOK-FS stuff to /usr/local/sbin"
-        mkdir -p /usr/local/sbin
-        rsync_chown "$_clb_src_dir/*" /usr/local/sbin silent
+    _clb_rel_src=usr_local_sbin
+    _clb_dest=/usr/local/sbin
+    msg_3 "><> ls $_clb_src_dir | grep -q $_clb_rel_src"
+    if find "$_clb_src_dir" | grep -q "$_clb_rel_src"; then
+        mkdir -p "$_clb_dest"
+        rsync_chown "$_clb_src_dir/$_clb_rel_src/*" "$_clb_dest" silent
     fi
-    unset _clb_base_dir
-    unset _clb_src_dir
+
+    unset _clb_base_dir _clb_src_dir _clb_rel_src _clb_dest
     # echo "^^^ copy_local_bins() - done"
 }
 
@@ -1190,8 +1203,3 @@ f_logins_continous="$d_aok_etc"/login-continous
 f_hostname_aok_suffix="$d_aok_etc"/hostname-aok-suffix
 f_pts_0_as_console="$d_aok_etc"/pts_0_as_console
 f_profile_hints="$d_aok_etc"/show_profile_hints
-
-cmd_pigz="$(command -v pigz)"
-if [ -z "$cmd_pigz" ] && [ -x /home/linuxbrew/.linuxbrew/bin/pigz ]; then
-    cmd_pigz=/home/linuxbrew/.linuxbrew/bin/pigz
-fi

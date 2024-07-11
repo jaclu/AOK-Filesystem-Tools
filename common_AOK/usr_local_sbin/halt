@@ -35,6 +35,18 @@ prog_name=$(basename "$0")
     exit 1
 }
 
+# remove some stat files
+
+state_prefix=/etc/opt/AOK
+f_inittab_can_start="$state_prefix"/inittab_can_start
+
+[ -f "$f_inittab_can_start" ] && {
+    /usr/local/bin/logger "$prog_name" "WARNING found: $f_inittab_can_start"
+}
+rm -f "$f_inittab_can_start"
+rm -f "$state_prefix"/recovery-mode
+rm -f /var/log/recovery-mode.log
+
 #
 #  sync & sleep probably not needed on iSH, but its supposed to be
 #  done now :)
@@ -51,15 +63,25 @@ sleep 1
 key_pids="$(pgrep -f aok_launcher)"
 [ -n "$key_pids" ] && do_shutdown aok_launcher
 
-# a session on console
-key_pids="$(pgrep -t pts/0)"
+if [ -f /etc/alpine-release ]; then
+    #
+    #  Alpine busybox pgrep does not have -t option
+    #  workarround is to scan for pts/0 procs via ps -o pid,tty
+    #
+    pts0_id="$(stat -c "%t %T\n" /dev/pts/0 |
+        awk '{ printf("%d,%d\n", strtonum("0x"$1), strtonum("0x"$2)) }')"
+    # shellcheck disable=SC2009 # we need to do ps grep in this case
+    key_pids="$(ps -o pid,tty | grep "$pts0_id" | awk '{print $1}')"
+else
+    key_pids="$(pgrep -t pts/0)"
+fi
 [ -n "$key_pids" ] && do_shutdown pts/0
 
 # login sessions
 key_pids="$(pgrep -f "login -f")"
 [ -n "$key_pids" ] && do_shutdown "'login -f'"
 
-# find init pid
+# find init pid - usually but not absolutely allways 1...
 key_pids="$(pgrep -f "init ")"
 [ -n "$key_pids" ] && do_shutdown "init via pgrep"
 

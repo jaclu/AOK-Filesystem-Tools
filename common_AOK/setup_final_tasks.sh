@@ -76,16 +76,16 @@ ensure_path_items_are_available() {
 
 aok_kernel_consideration() {
     msg_2 "aok_kernel_consideration()"
-    this_is_aok_kernel || {
+    if ! this_is_aok_kernel || this_fs_is_chrooted; then
         msg_3 "Not aok kernel!"
-        min_release 3.18 || {
-            msg_3 "procps wont work on regular iSH for Alpine < 3.18"
-            apk del procps || {
-                error_msg "apk del procps failed"
-            }
-        }
+        #min_release 3.18 || {
+        #    msg_3 "procps wont work on regular iSH for Alpine < 3.18"
+        #    apk del procps || {
+        #        error_msg "apk del procps failed"
+        #    }
+        #}
         return
-    }
+    fi
 
     [ -n "$AOK_APKS" ] && {
         msg_3 "Install packages only for AOK kernel"
@@ -201,6 +201,7 @@ echo
 
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
+# shellcheck source=/opt/AOK/tools/utils.sh
 [ -z "$d_aok_etc" ] && . /opt/AOK/tools/utils.sh
 . /opt/AOK/tools/ios_version.sh
 . /opt/AOK/tools/user_interactions.sh

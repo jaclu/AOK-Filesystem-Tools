@@ -37,24 +37,14 @@ min_version() {
     v_comp="$(get_digits_from_string "$1")"
     f_v_ref=/tmp/aok_vers_comp_ref
 
-    # echo "><> min_version($1) [$_aok_installed_alpine_vers]"
-
     [ -z "$_aok_installed_alpine_vers" ] && {
         if [ -f "$f_v_ref" ]; then
-            # echo "><> will read cache file: $f_v_ref"
             _aok_installed_alpine_vers="$(cat "$f_v_ref")"
-            # echo "><> _aok_installed_alpine_vers [$_aok_installed_alpine_vers] from cache file: $f_v_ref"
         else
             _aok_installed_alpine_vers="$(get_digits_from_string "$(cat /etc/alpine-release)")"
-            # echo "><> _aok_installed_alpine_vers [$_aok_installed_alpine_vers] from /etc/alpine-release"
-            dirname "$f_v_ref" && {
-                # echo "><> will cache Alpine vers to $f_v_ref"
-                echo "$_aok_installed_alpine_vers" >"$f_v_ref"
-            }
+            echo "$_aok_installed_alpine_vers" >"$f_v_ref"
         fi
     }
-
-    # echo "><> will compare [$v_comp] -le [$_aok_installed_alpine_vers]"
 
     # this only leaves _b defined
     [ "$v_comp" -le "$_aok_installed_alpine_vers" ] && _b=0 || _b=1
@@ -132,7 +122,6 @@ vers_check_verify() {
     v_ref="$2"
     v_comp="$3"
 
-    # echo "><> vers_check_verify($1,$2,$3)"
     min_version "$v_ref" "$v_comp" && rslt_actual=0 || rslt_actual=1
     [ "$rslt_actual" = "$rslt_exp" ] || {
         echo "Failed: $v_ref <= $v_comp should be $rslt_exp - was $rslt_actual"
