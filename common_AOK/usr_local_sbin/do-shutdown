@@ -49,7 +49,7 @@ if [ -f /etc/alpine-release ]; then
     openrc shutdown
     display_msg "Completed openrc shutdown"
     display_msg "Will shutdown system"
-    /sbin/halt
+    /sbin/poweroff
 elif [ -f /etc/debian_version ]; then
     init 0
 fi
