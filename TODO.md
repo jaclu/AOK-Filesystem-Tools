@@ -172,4 +172,3 @@ the console session is logged out after a copple of minutes  - investigate
 since it is about to become more usefull, i should update it to ensure it
 is in line with the debian image when it comes to what is installed
 out of the door
-
