@@ -20,5 +20,7 @@
 
 [ -z "$d_aok_etc" ] && . /opt/AOK/tools/utils.sh
 
-# ish-aok does not need the replacement uptime
-this_is_aok_kernel && rm -f /usr/local/bin/uptime
+if this_is_aok_kernel; then
+    # ish-aok does not need the replacement uptime
+    rm -f /usr/local/bin/uptime
+fi

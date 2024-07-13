@@ -6,7 +6,7 @@
 #
 #  Copyright (c) 2023-2024: Jacob.Lundqvist@gmail.com
 #
-#  Displays Debian version
+#  Displays Devuan version
 #
 
-echo "Debian version:  $(cat /etc/debian_version)"
+echo "Devuan version:  $(cat /etc/devuan_version)"

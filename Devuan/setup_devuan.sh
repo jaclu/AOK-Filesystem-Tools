@@ -11,7 +11,39 @@
 #  This modifies a Devuan Linux FS with the AOK changes
 #
 
-install_sshd() {
+setup_cron_env() {
+    msg_2 "Setup Devuan cron"
+
+    msg_3 "Adding root crontab running periodic content"
+    mkdir -p /var/spool/cron/crontabs
+    rsync_chown /opt/AOK/common_AOK/cron/crontab-root /var/spool/cron/crontabs/root
+
+    #  shellcheck disable=SC2154
+    if [ "$USE_CRON_SERVICE" = "Y" ]; then
+        msg_3 "Activating cron service"
+        # [ -z "$(command -v cron)" ] && error_msg "cron service requested, cron does not seem to be installed"
+        rc-update add cron default
+    else
+        msg_3 "Inactivating cron service"
+        #  Action only needs to be taken if it was active
+        find /etc/runlevels | grep -q cron && rc-update del cron default
+    fi
+    # msg_3 "setup_cron_env() - done"
+}
+
+devuan_services() {
+    #
+    #  Setting up suitable services, and removing those not meaningfull
+    #  on iSH
+    #
+    msg_2 "devuan_services()"
+    msg_3 "Remove previous ssh host keys if present"
+    rm -f /etc/ssh/ssh_host*key*
+
+    setup_cron_env
+}
+
+not_install_sshd() {
     #
     #  Install sshd, then remove the service, in order to not leave it running
     #  unless requested to: with enable-sshd / disable_sshd
@@ -30,18 +62,6 @@ install_sshd() {
     rc-update del ssh default
 }
 
-devuan_services() {
-    #
-    #  Setting up suitable services, and removing those not meaningfull
-    #  on iSH
-    #
-    msg_2 "devuan_services()"
-    msg_3 "Remove previous ssh host keys if present"
-    rm -f /etc/ssh/ssh_host*key*
-
-    # setup_cron_env
-}
-
 #===============================================================
 #
 #   Main
@@ -54,18 +74,15 @@ tsd_start="$(date +%s)"
 
 ensure_ish_or_chrooted
 
-$setup_famdeb_scr || error_msg "in $setup_famdeb_scr"
-
-initiate_deploy Devuan "$(cat /etc/devuan_version)"
-
 msg_script_title "setup_devuan.sh  Devuan specific AOK env"
 initiate_deploy Devuan "$(cat /etc/devuan_version)"
 
+$setup_famdeb_scr || error_msg "in $setup_famdeb_scr"
+
 rsync_chown /opt/AOK/Devuan/etc/update-motd.d /etc
 
-install_sshd
 # setup_login
-devuan_services
+debian_services
 
 replace_home_dirs
 
@@ -84,15 +101,10 @@ additional_prebuild_tasks
 
 display_installed_versions_if_prebuilt
 
-msg_1 "Setup complete!"
+msg_1 "Devuan specific setup complete!"
 
 duration="$(($(date +%s) - tsd_start))"
 display_time_elapsed "$duration" "Setup Devuan"
-echo
-echo "=_=_="
-echo "=====   setup_devuan completed $(date)   ====="
-echo "=_=_="
-echo
 
 if [ -n "$is_prebuilt" ]; then
     msg_1 "Prebuild completed, exiting"
