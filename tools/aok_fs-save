@@ -34,7 +34,7 @@ fi
 aok_vers="$(cat "$d_aok_fs"/etc/aok-fs-release)" || {
     error_msg "failed to detect aok-fs release"
 }
-tar_name="$d_aok_saves/$tar_name-AOK-$aok_vers-done.tgz"
+tar_name="$d_aok_completed/$tar_name-AOK-$aok_vers-done.tgz"
 
 cd "$d_aok_fs" || {
     error_msg "Failed to cd into $d_aok_fs"
@@ -46,7 +46,7 @@ cd "$d_aok_fs" || {
 
 msg_1 "Will crate: $(basename "$tar_name")"
 
-f_tar_tmp="$d_aok_saves"/tmp.tgz
+f_tar_tmp="$d_aok_completed"/tmp.tgz
 msg_2 "Creating $f_tar_tmp (aprox $time_estimate)"
 tar cfz "$f_tar_tmp" . || {
     echo
