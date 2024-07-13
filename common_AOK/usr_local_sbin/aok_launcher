@@ -563,6 +563,10 @@ handle_logins() {
             error_msg "$f_login_prog exited with#3: $login_ex_code"
         }
 
+	#
+	#  post login session, decide to exit or contimue
+	#
+
         if [ -f "$f_this_is_chrooted" ]; then
             _s="This is chrooted, always terminating on logout,"
             _s="$_s this should also exit the chroot"
