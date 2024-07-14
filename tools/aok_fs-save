@@ -23,10 +23,8 @@ f_debian_version="$d_aok_fs"/etc/debian_version
 if [ -f "$f_alpine_release" ]; then
     # seems to be Aline
     tar_name="Alpine-$(cat "$f_alpine_release")"
-    time_estimate="30s"
 elif [ -f "$f_debian_version" ]; then
     tar_name="Debian-$(cat "$f_debian_version")"
-    time_estimate="63s"
 else
     error_msg "failed to detect Alpine/Debian"
 fi
@@ -47,7 +45,7 @@ cd "$d_aok_fs" || {
 msg_1 "Will crate: $(basename "$tar_name")"
 
 f_tar_tmp="$d_aok_completed"/tmp.tgz
-msg_2 "Creating $f_tar_tmp (aprox $time_estimate)"
+msg_2 "Creating $f_tar_tmp"
 
 cmd_pigz="$(command -v pigz)"
 if [ -n "$cmd_pigz" ]; then

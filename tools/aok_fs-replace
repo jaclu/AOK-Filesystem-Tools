@@ -43,7 +43,6 @@ cd "$d_aok_fs" || {
     error_msg "pwd is not $d_aok_fs"
 }
 
-msg_2 "Untaring: $replacement_fs"
 untar_file "$replacement_fs"
 
 msg_3 "Done!"
