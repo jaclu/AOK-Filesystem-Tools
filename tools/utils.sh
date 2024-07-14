@@ -31,10 +31,7 @@ error_msg() {
     echo "$_em_msg"
     echo
 
-    if [ "$_em_exit_code" -lt 0 ]; then
-        echo "exit code: $_em_exit_code given - will continue"
-        echo
-    else
+    if [ "$_em_exit_code" -gt -1 ]; then
         exit "$_em_exit_code"
     fi
     unset _em_msg
@@ -167,7 +164,6 @@ untar_file() {
         cmd_pigz=/home/linuxbrew/.linuxbrew/bin/pigz
         error_msg "><> using linuxbrew pigz [$cmd_pigz]"
     fi
-    [ -z "$cmd_pigz" ] && error_msg "><> no pigz"
 
     if [ -n "$cmd_pigz" ]; then
         # pigz -dc your_archive.tgz | tar -xf -
@@ -179,7 +175,6 @@ untar_file() {
         }
     else
         msg_4 "No pigz"
-        error_msg "><> No pigz [$cmd_pigz]"
         tar "xf${_tar_params}" "$_tarball" || {
             [ "$_no_exit" != "NO_EXIT_ON_ERROR" ] && error_msg "Failed to untar $_tarball"
         }
@@ -819,10 +814,12 @@ get_lsb_release() {
             msg_4 "lsb-release-minimal will be installed!"
             if destfs_is_alpine; then
                 /opt/AOK/tools/do_chroot.sh "apk add lsb-release-minimal" >/dev/null 2>&1 ||
-                    error_msg "Failed to install lsb-release-minimal"
+                    error_msg "Failed to install lsb-release-minimal" -1
+                return 1
             elif destfs_is_devuan || destfs_is_debian; then
                 /opt/AOK/tools/do_chroot.sh "apt install -y lsb-release" >/dev/null 2>&1 ||
-                    error_msg "Failed to install lsb-release"
+                    error_msg "Failed to install lsb-release" -1
+                return 1
             else
                 error_msg "Don't know how to install lsb-release on this platform"
             fi

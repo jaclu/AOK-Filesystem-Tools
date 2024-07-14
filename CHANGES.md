@@ -4,6 +4,8 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in devel branch
 
+- v0.19.3
+- manually naming tar if lsb_release is not available
 - removed bzip2 support - not compatible with pigz
 - v0.19.2
 - install 3.18 sqlite on Alpine >= 3.19

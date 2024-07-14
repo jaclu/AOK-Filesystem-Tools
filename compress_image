@@ -94,13 +94,21 @@ else
         ;;
     "$distro_alpine")
         msg_3 "Getting release details for Alpine"
-        get_lsb_release chroot || error_msg "get_lsb_release error"
-        tarball_fn="${lsb_DistributorID}-${lsb_Release}-AOK-${AOK_VERSION}"
+        if get_lsb_release chroot; then
+            tarball_fn="${lsb_DistributorID}-${lsb_Release}-AOK-${AOK_VERSION}"
+        else
+            msg_4 "lsb_release unavailable, manually naming tar"
+            tarball_fn="Alpine-$(cat "$d_build_root"/etc/alpine-release)-AOK-${AOK_VERSION}"
+        fi
         ;;
     "$distro_debian" | "$distro_devuan")
         msg_3 "Getting release details for Debian/Devuan"
-        get_lsb_release chroot || error_msg "get_lsb_release error"
-        tarball_fn="${lsb_DistributorID}${lsb_Release}-AOK-${AOK_VERSION}"
+        if get_lsb_release chroot; then
+            tarball_fn="${lsb_DistributorID}-${lsb_Release}-AOK-${AOK_VERSION}"
+        else
+            msg_4 "lsb_release unavailable, manually naming tar"
+            tarball_fn="Debian-$(cat "$d_build_root"/etc/debian_version)-AOK-${AOK_VERSION}"
+        fi
         ;;
 
     *) error_msg "Could not detext FS type" ;;
