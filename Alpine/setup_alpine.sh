@@ -29,6 +29,23 @@ removing_unwanted_package() {
     CORE_APKS="$(echo "$CORE_APKS" | sed "s/$rup_pkg//")"
 }
 
+use_older_apk() {
+    url="$1"
+    pkg_name="$(echo "$url" | sed 's#/# #g' | awk '{print $NF}')"
+    pkg_base_name="$(echo "$pkg_name" | sed 's/-[0-9].*//')"
+    msg_2 "For Alpine > 3.18, an older $pkg_base_name must be used"
+    removing_unwanted_package "$pkg_base_name"
+
+    msg_3 "Installing fixed vers - $pkg_name"
+    wget "$url" 2>/dev/null || error_msg "Failed to download: $url"
+    apk del "$pkg_base_name" >/dev/null
+    apk add "$pkg_name" >/dev/null || error_msg "Failed to install $pkg_name"
+    msg_3 "$pkg_name installed and version locked"
+    rm "$pkg_name" || {
+	error_msg "Failed to remove downloaded $pkg_name after installing it"
+    }
+}
+
 handle_apks() {
 
     msg_1 "apk upgrade"
@@ -59,15 +76,12 @@ handle_apks() {
     fi
 
     min_release "3.19" && {
+	msg_1 "><> older apks"
         # 3.19 and higher will insta-die if a modern sudo is used....
-        msg_2 "For Alpine > 3.18, an older sudo must be used"
-        removing_unwanted_package sudo
-        msg_3 "Installing fixed vers sudo - 1.9.12_p2-r0 (Alpine 3.14)"
-        wget https://mirror.math.princeton.edu/pub/alpinelinux/v3.14/main/x86/sudo-1.9.12_p2-r0.apk
-        apk del sudo
-        apk add sudo-1.9.12_p2-r0.apk || error_msg "Failed to install sudo"
-        msg_3 "sudo-1.9.12_p2-r0.apk installed and version locked"
-        rm sudo-1.9.12_p2-r0.apk
+	use_older_apk https://dl-cdn.alpinelinux.org/alpine/v3.18/community/x86/sudo-1.9.13_p3-r2.apk
+	# 3.19 and higher has stability issues with modern sqlite
+	use_older_apk https://dl-cdn.alpinelinux.org/alpine/v3.18/main/x86/sqlite-libs-3.41.2-r3.apk
+	use_older_apk https://dl-cdn.alpinelinux.org/alpine/v3.18/main/x86/sqlite-3.41.2-r3.apk
     }
 
     if [ -n "$CORE_APKS" ]; then
