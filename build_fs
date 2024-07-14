@@ -38,7 +38,6 @@ Available options:
                    it displays.
 -c  --clear        Empty the build env ($d_build_root)
 -C  --full_clear   Do a clear, and in addition clear the download cache
--j  --bzip2        Use bzip2 compression for distribution
 -N  --no_compress  Terminates when FS is prepared, without generating
                    a FS tarball.
 
@@ -154,13 +153,13 @@ parse_arguments() { # Multi OK 1
             exit 0
             ;;
 
-        "-j" | "--bzip2")
-            if ! $aok_FS_do_compress; then
-                echo "Can not be combined: -j and -N"
-                exit 1
-            fi
-            use_bzip2=true
-            ;;
+        # "-j" | "--bzip2")
+        #     if ! $aok_FS_do_compress; then
+        #         echo "Can not be combined: -j and -N"
+        #         exit 1
+        #     fi
+        #     use_bzip2=true
+        #     ;;
 
         "-N" | "--no_compress")
             if $use_bzip2; then

@@ -19,7 +19,6 @@ Available options:
 
 -h  --help         Print this help and exit.
 -l  --label        Provide a name for tarball (without path or extension)
--j  --bzip2        Use bzip2 compression
 -v  --verbose      Display progrss as FS is being compressed."
     exit 0
 }
@@ -55,7 +54,7 @@ while [ -n "$1" ]; do
 
     "-h" | "--help") show_help ;;
 
-    "-j" | "--bzip2") use_bzip2=true ;;
+    # "-j" | "--bzip2") use_bzip2=true ;;
 
     "-l" | "--label")
         shift
