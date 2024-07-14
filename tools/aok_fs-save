@@ -48,10 +48,22 @@ msg_1 "Will crate: $(basename "$tar_name")"
 
 f_tar_tmp="$d_aok_completed"/tmp.tgz
 msg_2 "Creating $f_tar_tmp (aprox $time_estimate)"
-tar cfz "$f_tar_tmp" . || {
-    echo
-    error_msg "failed to tar"
-}
+
+cmd_pigz="$(command -v pigz)"
+if [ -n "$cmd_pigz" ]; then
+    msg_3 "Using $cmd_pigz"
+    # time tar -cf - . | pigz -p 2 > foo.tgz
+    tar -cf - . | $cmd_pigz >"$f_tar_tmp"|| {
+	echo
+	error_msg "failed to tar"
+    }
+else
+    msg_3 "No pigz"
+    tar cfz "$f_tar_tmp" . || {
+	echo
+	error_msg "failed to tar"
+    }
+fi
 
 msg_3 "Renaming into: $(basename "$tar_name")"
 mv "$f_tar_tmp" "$tar_name" || {

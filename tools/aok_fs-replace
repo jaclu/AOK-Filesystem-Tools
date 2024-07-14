@@ -44,8 +44,6 @@ cd "$d_aok_fs" || {
 }
 
 msg_2 "Untaring: $replacement_fs"
-tar xfz "$replacement_fs" || {
-    echo
-    error_msg "Failed to untar $replacement_fs"
-}
+untar_file "$replacement_fs"
+
 msg_3 "Done!"
