@@ -36,7 +36,10 @@ use_ash_env() {
 #  There will normally not be a need to handle bash here.
 #
 if [ -f /proc/$$/exe ]; then
-    case "$(basename "$(realpath /proc/$$/exe)")" in
+    CURRENT_SHELL="$(basename "$(readlink /proc/$$/exe)")" || {
+	CURRENT_SHELL="" # unknown
+    }
+    case "$CURRENT_SHELL" in
         ash | busybox | dash)
 	    use_ash_env
             ;;

@@ -42,15 +42,10 @@ set_current_shell_name() {
         CURRENT_SHELL="fish"
     else
         if [ -f /proc/$$/exe ]; then
-            case "$(basename "$(realpath /proc/$$/exe)")" in
-            ash | busybox) CURRENT_SHELL="ash" ;;
-            bash) CURRENT_SHELL="bash" ;;
-	    dash) CURRENT_SHELL="dash" ;;
-            zsh) CURRENT_SHELL="zsh" ;;
-            *) CURRENT_SHELL="" ;; # unknown
-            esac
-        else
-            CURRENT_SHELL="" # unknown
+	    # readlink can handle pointers outside a chroot, unlike realpath
+	    CURRENT_SHELL="$(basename "$(readlink /proc/$$/exe)")" || {
+		CURRENT_SHELL="" # unknown
+	    }
         fi
     fi
 }
