@@ -17,6 +17,10 @@ the same apps are installed, and they offer the same custom tools. Alpine
 uses fewer resources, so things will be a bit "faster," but in the iSH
 universe, speed is a relative concept.
 
+## What works?
+
+I havent fiddled with the Devuan build for almot two years, so is highly unlikely to do something meaningfull at this point in time. Same with `./build_fs -s` (select), also something I havent used for ages, so higly unlikely to be working. At some point I should do a cleanup and fix what doesnt work
+
 ## Disclaimer
 
 I typically work on this on a workstation and test it on multiple devices
