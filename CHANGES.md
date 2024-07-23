@@ -4,6 +4,8 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in devel branch
 
+- v0.19.4
+- /usr/local/bin/uptime - better option handling
 - v0.19.3
 - manually naming tar if lsb_release is not available
 - removed bzip2 support - not compatible with pigz

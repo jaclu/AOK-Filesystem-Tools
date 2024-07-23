@@ -45,27 +45,30 @@ EOF
     exit 0
 }
 
+is_busybox_uptime() {
+    [ -x "$cmd_busybox" ] && [ "$(realpath /usr/bin/uptime)" = "$cmd_busybox" ]
+}
+
+
 org_uptime() {
     $dbg && echo ">org_uptime()" >/dev/stderr
 
-    cmd_org=/usr/bin/uptime
-
-    [ ! -x "$cmd_org" ] && {
-        if [ -x /bin/busybox ]; then
-            echo "Linking $cmd_org to busybox"
-            ln -sf /bin/busybox "$cmd_org"
+    [ ! -x "$cmd_org_uptime" ] && {
+        if [ -x "$cmd_busybox" ]; then
+            echo "Linking $cmd_org_uptime to busybox"
+            ln -sf "$cmd_busybox" "$cmd_org_uptime"
         else
-            echo "ERROR: original $cmd_org unavailable!"
+            echo "ERROR: $cmd_org_uptime unavailable!"
             exit 1
         fi
     }
 
-    [ "$(realpath "$cmd_org")" = "$(realpath "$0")" ] && {
-        echo "ERROR: $cmd_org points to this replacement uptime!"
+    [ "$(realpath "$cmd_org_uptime")" = "$(realpath "$0")" ] && {
+        echo "ERROR: $cmd_org_uptime points to this replacement uptime!"
         exit 1
     }
     $dbg && echo ">org_uptime() - running org_uptime" >/dev/stderr
-    $cmd_org
+    $cmd_org_uptime
 }
 
 calculate_ish_uptime() {
@@ -137,10 +140,14 @@ show_since() {
 }
 
 show_version() {
-    $dbg && echo ">show_version()" >/dev/stderr
-    _f=/etc/aok-fs-release
-    aok_vers=$(cat "$_f" 2>/dev/null || echo "unknown AOK-FS version")
-    echo "uptime from AOK-FS $aok_vers"
+    $dbg && echo ">show_version()" >/dev/stder
+    if $force_ios_uptime && is_busybox_uptime; then
+        $cmd_busybox uptime -V 2>&1 | grep ^BusyBox
+    else
+	_f=/etc/aok-fs-release
+	aok_vers=$(cat "$_f" 2>/dev/null || echo "unknown AOK-FS version")
+	echo "uptime from AOK-FS $aok_vers"
+    fi
     exit 0
 }
 
@@ -170,6 +177,10 @@ default_view() {
 #
 #===============================================================
 
+cmd_org_uptime=/usr/bin/uptime
+cmd_busybox=/bin/busybox
+
+#  Defaults for boolean options
 force_ios_uptime=false
 display_mode="default"
 dbg=false
@@ -182,7 +193,7 @@ while [ -n "$1" ]; do
     -l | --load) display_mode="load" ;;
     -p | --pretty) display_mode="pretty" ;;
     -s | --since) display_mode="since" ;;
-    -V | --version) show_version ;;
+    -V | --version) display_mode="version" ;;
     *)
         echo "uptime: invalid option -- '$1'"
         show_help
@@ -194,11 +205,12 @@ done
 calculate_uptime
 
 case "$display_mode" in
-default) default_view ;;
-pretty) show_pretty ;;
-since) show_since ;;
-load) display_sysload ;;
-*)
-    echo "Invalid display_mode [$display_mode]"
-    ;;
+    version) show_version ;;
+    default) default_view ;;
+    pretty) show_pretty ;;
+    since) show_since ;;
+    load) display_sysload ;;
+    *)
+	echo "Invalid display_mode [$display_mode]"
+	;;
 esac
