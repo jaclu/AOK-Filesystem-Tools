@@ -4,6 +4,8 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in devel branch
 
+- v0.19.7
+- restore org uptime for ish-aok
 - v0.19.6
 - improved and disabled locale assignment
 - v0.19.5

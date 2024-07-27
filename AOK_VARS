@@ -25,7 +25,7 @@
 #  Label for AOK builds, is also displayed by motd to indicate what
 #  AOK FS release is being used
 #
-AOK_VERSION="0.19.6"
+AOK_VERSION="0.19.7"
 
 #
 #  If defined this will be created as a no-password sudo capable user
@@ -121,7 +121,7 @@ USER_SHELL="/bin/bash"
 #  `hostname` on iSH-AOK and JacPad if you check on regular iSH
 #  This feature also works for iOS >= 17
 #
-# AOK_HOSTNAME_SUFFIX="Y"
+AOK_HOSTNAME_SUFFIX="Y"
 
 ########################################################################
 #
