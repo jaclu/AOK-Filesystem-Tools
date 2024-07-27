@@ -4,6 +4,7 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in devel branch
 
+- v0.19.5
 - fixed incorrect order of tasks when not prebuilding
 - v0.19.4
 - /usr/local/bin/uptime - better option handling

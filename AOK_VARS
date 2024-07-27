@@ -25,7 +25,7 @@
 #  Label for AOK builds, is also displayed by motd to indicate what
 #  AOK FS release is being used
 #
-AOK_VERSION="0.19.4"
+AOK_VERSION="0.19.5"
 
 #
 #  If defined this will be created as a no-password sudo capable user
@@ -110,7 +110,7 @@ USER_SHELL="/bin/bash"
 #  If this is not defined, no hostname syncing will happen, and
 #  /etc/hostname will be used as a static hostname.
 #  During the final deploy step a hostname will be requested.
-#  It can be changed later by running: aok -H enable
+#  It can be changed later by following the instructions listed by: hostname -h
 #
 # ALT_HOSTNAME_SOURCE_FILE="/iCloud/temp/hostname_by_shortcut.txt"
 
@@ -135,7 +135,7 @@ USER_SHELL="/bin/bash"
 #
 #  sudo insta-crashes iSH if using Alpine >= 3.19... last checked 2024-07-02
 #  test: sudo ls
-#  AOK installs an older sudo (Alpine 3.14) on such releases, this
+#  AOK installs an older sudo (Alpine 3.18) on such releases, this
 #  solves the issue
 #
 # ALPINE_VERSION=3.17.8 # End of Alpine support 2024-11-22
