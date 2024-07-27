@@ -124,9 +124,11 @@ display_time_elapsed() {
     dte_mins="$((dte_t_in / 60))"
     dte_seconds="$((dte_t_in - dte_mins * 60))"
 
-    [ -z "$d_build_root" ] && deploy_state_is_it "$deploy_state_pre_build" && {
+    if [ -z "$d_build_root" ] && deploy_state_is_it "$deploy_state_pre_build"; then
         echo "$dte_t_in" >>"$f_dte_pb"
-    }
+    else
+        rm -f "$f_dte_pb"
+    fi
 
     #  Add zero prefix when < 10
     [ "$dte_mins" -gt 0 ] && [ "$dte_mins" -lt 10 ] && dte_mins="0$dte_mins"
