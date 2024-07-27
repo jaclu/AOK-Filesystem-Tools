@@ -87,7 +87,18 @@ replacing_std_bins_with_aok_versions() {
     replace_std_bin /sbin/poweroff /usr/local/sbin/halt "$upgrade"
 
     if this_is_aok_kernel; then
-        rm -f /usr/local/bin/uptime
+        # ish-aok does not need the replacement uptime
+        org_uptime=/usr/bin/ORG.uptime
+        def_uptime=/usr/bin/uptime
+        [ -x "$org_uptime" ] && {
+            msg_4 "reactivate org uptime"
+            rm -f "$def_uptime"
+            mv "$org_uptime" "$def_uptime"
+        }
+        [ "$(realpath "$def_uptime")" = "$def_uptime" ] && {
+            msg_4 "remove replacement uptime"
+            rm -f /usr/local/bin/uptime
+        }
     elif [ -f /etc/debian_version ]; then
         replace_std_bin /usr/bin/uptime /usr/local/bin/uptime "$upgrade"
     fi

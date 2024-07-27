@@ -22,5 +22,14 @@
 
 if this_is_aok_kernel; then
     # ish-aok does not need the replacement uptime
-    rm -f /usr/local/bin/uptime
+    org_uptime=/usr/bin/ORG.uptime
+    def_uptime=/usr/bin/uptime
+    [ -x "$org_uptime" ] && {
+        # reactivate org uptime
+        rm -f "$def_uptime"
+        mv "$org_uptime" "$def_uptime"
+        # finally remove replacement uptime
+        rm -f /usr/local/bin/uptime
+    }
+
 fi
