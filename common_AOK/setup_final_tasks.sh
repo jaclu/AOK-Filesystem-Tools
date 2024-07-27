@@ -98,6 +98,8 @@ aok_kernel_consideration() {
 
     deploy_bat_monitord
 
+    this_fs_is_chrooted || aok -l aok -C off
+
     # shellcheck disable=SC2154
     this_is_aok_kernel && [ "$AOK_HOSTNAME_SUFFIX" = "Y" ] && {
         msg_3 "Using -aok suffix"

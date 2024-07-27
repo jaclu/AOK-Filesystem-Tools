@@ -195,16 +195,13 @@ setup_environment() {
     changing_sshd_port
 
     msg_2 "Set default aok preferences"
-    #
-    # If AOK_HOSTNAME_SUFFIX is defined and this runs on an aok kernel
-    # on first boot aok -s on  will be set
-    #
-    aok -c off -H on -s off
-    #
-    #  This will only take effect if system is not pre-built.
-    #  Same settings will be done in setup_final_tasks.sh on dest platform
-    #
-    this_fs_is_chrooted || aok -l aok -C off
+    if [ "$AOK_HOSTNAME_SUFFIX" = "Y" ]; then
+        use_aok_suffix="on"
+    else
+        use_aok_suffix="off"
+    fi
+    aok -c off -H on -s "$use_aok_suffix"
+    unset use_aok_suffix
 
     setup_cron_env
 
