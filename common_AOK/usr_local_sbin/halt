@@ -68,7 +68,7 @@ if [ -f /etc/alpine-release ]; then
     #  Alpine busybox pgrep does not have -t option
     #  workarround is to scan for pts/0 procs via ps -o pid,tty
     #
-    pts0_id="$(stat -c "%t %T\\n" /dev/pts/0 |
+    pts0_id="$(stat -c "%t %T\n" /dev/pts/0 |
         awk '{ printf("%d,%d\n", strtonum("0x"$1), strtonum("0x"$2)) }')"
     # shellcheck disable=SC2009 # we need to do ps grep in this case
     key_pids="$(ps -o pid,tty | grep "$pts0_id" | awk '{print $1}')"

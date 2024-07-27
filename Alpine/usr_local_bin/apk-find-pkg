@@ -59,7 +59,7 @@ cmd="$cmd | xargs -I {} tar -zxf {} -O"
 #  name, records seems to normally be 14 lines, so grab a bit more to
 #  be somewhat future proof
 #
-cmd="$cmd | grep -a -B 16 cmd\\:${prog}="
+cmd="$cmd | grep -a -B 16 cmd\:${prog}="
 
 #
 #  reverse this output, and search for the line starting with P:

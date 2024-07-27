@@ -42,10 +42,10 @@ set_current_shell_name() {
         CURRENT_SHELL="fish"
     else
         if [ -f /proc/$$/exe ]; then
-	    # readlink can handle pointers outside a chroot, unlike realpath
-	    CURRENT_SHELL="$(basename "$(readlink /proc/$$/exe)")" || {
-		CURRENT_SHELL="" # unknown
-	    }
+            # readlink can handle pointers outside a chroot, unlike realpath
+            CURRENT_SHELL="$(basename "$(readlink /proc/$$/exe)")" || {
+                CURRENT_SHELL="" # unknown
+            }
         fi
     fi
 }
@@ -141,7 +141,7 @@ get_battery_info() {
     fi
 
     case "$_shell_name" in
-    "bash" | "ash") _bat_color="\\[\\e[38;5;${_chrg_color}m\\]" ;;
+    "bash" | "ash") _bat_color="\[\e[38;5;${_chrg_color}m\]" ;;
     "zsh") _bat_color="%F{$_chrg_color}" ;;
     *) _bat_color="" ;;
     esac
@@ -187,7 +187,7 @@ get_sysload_lvl() {
 
     case "$CURRENT_SHELL" in
     zsh) printf '%s' "%F{$_load_color}$_sysload" ;;
-    bash | ash) printf '%s' "\\[\\e[38;5;${_load_color}m\\]$_sysload" ;;
+    bash | ash) printf '%s' "\[\e[38;5;${_load_color}m\]$_sysload" ;;
     *) ;;
     esac
 
@@ -204,13 +204,13 @@ use_static_bash_prompt() {
     prompt_colors
 
     #  shell specific notation for prompt colors
-    PCOL_USERNAME="\\[\\e[38;5;${PCOL_USERNAME}m\\]"
-    PCOL_HOSTNAME="\\[\\e[38;5;${PCOL_HOSTNAME}m\\]"
-    PCOL_CWD="\\[\\e[38;5;${PCOL_CWD}m\\]"
-    PCOL_GREY="\\[\\e[38;5;${PCOL_GREY}m\\]"
-    PCOL_CLR="\\e[0m"
+    PCOL_USERNAME="\[\e[38;5;${PCOL_USERNAME}m\]"
+    PCOL_HOSTNAME="\[\e[38;5;${PCOL_HOSTNAME}m\]"
+    PCOL_CWD="\[\e[38;5;${PCOL_CWD}m\]"
+    PCOL_GREY="\[\e[38;5;${PCOL_GREY}m\]"
+    PCOL_CLR="\e[0m"
 
-    PS1="${PCOL_USERNAME}\\u${PCOL_GREY}@${PCOL_HOSTNAME}${_hn}${PCOL_GREY}:${PCOL_CWD}\\w${PCOL_CLR}\\$ "
+    PS1="${PCOL_USERNAME}\u${PCOL_GREY}@${PCOL_HOSTNAME}${_hn}${PCOL_GREY}:${PCOL_CWD}\w${PCOL_CLR}\$ "
 }
 
 use_dynamic_bash_prompt() {
@@ -223,12 +223,12 @@ use_dynamic_bash_prompt() {
 }
 
 update_dynamic_aok_bash_prompt() {
-    PS1="${PCOL_USERNAME}\\u${PCOL_GREY}@${PCOL_HOSTNAME}${_hn} ${PCOL_GREY}$(get_sysload_lvl)$(get_battery_info bash)${PCOL_GREY}:${PCOL_CWD}\\w${PCOL_CLR}\\$ "
+    PS1="${PCOL_USERNAME}\u${PCOL_GREY}@${PCOL_HOSTNAME}${_hn} ${PCOL_GREY}$(get_sysload_lvl)$(get_battery_info bash)${PCOL_GREY}:${PCOL_CWD}\w${PCOL_CLR}\$ "
 }
 
 update_dynamic_bash_prompt() {
     # non ish-aok kernels doesnt support battery info, so no need to fail the check on every prompt
-    PS1="${PCOL_USERNAME}\\u${PCOL_GREY}@${PCOL_HOSTNAME}${_hn} ${PCOL_GREY}$(get_sysload_lvl)${PCOL_GREY}:${PCOL_CWD}\\w${PCOL_CLR}\\$ "
+    PS1="${PCOL_USERNAME}\u${PCOL_GREY}@${PCOL_HOSTNAME}${_hn} ${PCOL_GREY}$(get_sysload_lvl)${PCOL_GREY}:${PCOL_CWD}\w${PCOL_CLR}\$ "
 }
 
 #===============================================================

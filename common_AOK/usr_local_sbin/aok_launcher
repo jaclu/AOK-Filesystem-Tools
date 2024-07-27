@@ -75,8 +75,8 @@ verify_device() {
     }
 
     maj_min=$(stat -c "%t:%T" "$vd_dev_name")
-    maj_act=$(printf "%d\\n" "0x${maj_min%:*}")
-    min_act=$(printf "%d\\n" "0x${maj_min#*:}")
+    maj_act=$(printf "%d\n" "0x${maj_min%:*}")
+    min_act=$(printf "%d\n" "0x${maj_min#*:}")
     if [ "$vd_maj" != "$maj_act" ] || [ "$vd_min" != "$min_act" ]; then
         error_msg "$vd_dev_name - misconfigured, was: $maj_act:$min_act"
         rm "$vd_dev_name"
@@ -514,7 +514,7 @@ runlevel_wait() {
         if [ "$current_runlevel" = "$expected_runlevel" ]; then
             #echo "runlevel is now: '$expected_runlevel'"
 
-	    # clear before exiting loop
+            # clear before exiting loop
             unset current_runlevel
 
             break
@@ -522,7 +522,7 @@ runlevel_wait() {
         _s="current runlevel is $current_runlevel - waiting for"
         _s="$_s $expected_runlevel - press Ctrl-C to abort wait"
 
-	# clear before potential exit
+        # clear before potential exit
         unset current_runlevel _s
 
         sleep 2
@@ -563,9 +563,9 @@ handle_logins() {
             error_msg "$f_login_prog exited with#3: $login_ex_code"
         }
 
-	#
-	#  post login session, decide to exit or contimue
-	#
+        #
+        #  post login session, decide to exit or contimue
+        #
 
         if [ -f "$f_this_is_chrooted" ]; then
             _s="This is chrooted, always terminating on logout,"
@@ -783,12 +783,11 @@ recovery_mode_enable
 
 [ -f "$f_this_is_chrooted" ] && {
     # When chrooted, initttab wont exexute so do such tasks here
-    print_log "-----  chrooted init tasks  -----" noecho
     /usr/local/bin/logger "$prog_name" "===  System startup  ==="
     /usr/local/sbin/reset-run-dir
     /usr/local/sbin/rotate-logs.sh
     [ -f "$f_rel_alpine" ] && {
-	/usr/local/sbin/update-motd
+        /usr/local/sbin/update-motd
     }
 }
 
