@@ -15,7 +15,7 @@
 # shellcheck source=/dev/null
 hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
 
-# shellcheck source=/dev/null
+# shellcheck disable=SC2154 source=/dev/null
 [[ -z "$d_aok_etc" ]] && . /opt/AOK/tools/utils.sh
 
 ensure_ish_or_chrooted
