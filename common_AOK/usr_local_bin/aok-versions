@@ -35,4 +35,4 @@ aok_release="$(cat /etc/aok-fs-release 2>/dev/null)"
 echo "AOK-FS release:  $aok_release"
 
 
-printf "\e[0m" # clear color
+# printf "\e[0m" # clear color
