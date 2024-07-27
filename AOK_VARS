@@ -25,7 +25,7 @@
 #  Label for AOK builds, is also displayed by motd to indicate what
 #  AOK FS release is being used
 #
-AOK_VERSION="0.19.5"
+AOK_VERSION="0.19.6"
 
 #
 #  If defined this will be created as a no-password sudo capable user
@@ -161,7 +161,7 @@ ALPINE_VERSION=3.20.1 # End of Alpine support  2026-04-01
 #
 #  Always installed packages
 #
-pkgs_tools="busybox-extras coreutils util-linux
+pkgs_tools="busybox-extras coreutils util-linux musl-locales
     sudo shadow shadow-login tzdata findutils sed tar pigz file gawk
     grep htop less sqlite fzf py3-pip ncdu"
 pkgs_shells="bash zsh"
