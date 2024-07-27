@@ -1049,6 +1049,7 @@ complete_initial_setup() {
     if deploy_state_is_it "$deploy_state_pre_build"; then
         set_new_etc_profile "$setup_final"
         msg_1 "Prebuild completed, exiting"
+        exit 123
     else
         $setup_final
         msg_1 "Please reboot/restart this app now!"
