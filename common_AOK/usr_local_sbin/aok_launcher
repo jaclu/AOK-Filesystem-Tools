@@ -75,8 +75,8 @@ verify_device() {
     }
 
     maj_min=$(stat -c "%t:%T" "$vd_dev_name")
-    maj_act=$(printf "%d\n" "0x${maj_min%:*}")
-    min_act=$(printf "%d\n" "0x${maj_min#*:}")
+    maj_act=$(printf "%d\\n" "0x${maj_min%:*}")
+    min_act=$(printf "%d\\n" "0x${maj_min#*:}")
     if [ "$vd_maj" != "$maj_act" ] || [ "$vd_min" != "$min_act" ]; then
         error_msg "$vd_dev_name - misconfigured, was: $maj_act:$min_act"
         rm "$vd_dev_name"

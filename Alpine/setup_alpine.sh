@@ -42,7 +42,7 @@ use_older_apk() {
     apk add "$pkg_name" >/dev/null || error_msg "Failed to install $pkg_name"
     msg_3 "$pkg_name installed and version locked"
     rm "$pkg_name" || {
-	error_msg "Failed to remove downloaded $pkg_name after installing it"
+        error_msg "Failed to remove downloaded $pkg_name after installing it"
     }
 }
 
@@ -76,12 +76,12 @@ handle_apks() {
     fi
 
     min_release "3.19" && {
-	msg_1 "><> older apks"
+        msg_1 "><> older apks"
         # 3.19 and higher will insta-die if a modern sudo is used....
-	use_older_apk https://dl-cdn.alpinelinux.org/alpine/v3.18/community/x86/sudo-1.9.13_p3-r2.apk
-	# 3.19 and higher has stability issues with modern sqlite
-	use_older_apk https://dl-cdn.alpinelinux.org/alpine/v3.18/main/x86/sqlite-libs-3.41.2-r3.apk
-	use_older_apk https://dl-cdn.alpinelinux.org/alpine/v3.18/main/x86/sqlite-3.41.2-r3.apk
+        use_older_apk https://dl-cdn.alpinelinux.org/alpine/v3.18/community/x86/sudo-1.9.13_p3-r2.apk
+        # 3.19 and higher has stability issues with modern sqlite
+        use_older_apk https://dl-cdn.alpinelinux.org/alpine/v3.18/main/x86/sqlite-libs-3.41.2-r3.apk
+        use_older_apk https://dl-cdn.alpinelinux.org/alpine/v3.18/main/x86/sqlite-3.41.2-r3.apk
     }
 
     if [ -n "$CORE_APKS" ]; then

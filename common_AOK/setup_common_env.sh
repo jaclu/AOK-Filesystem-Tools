@@ -191,7 +191,7 @@ setup_environment() {
     handle_hardcoded_tz
     adding_runbg_service
     removing_original_hostname_service
-    replacing_std_bins_with_aok_versions
+    replacing_std_bins_with_aok_versions ""
     changing_sshd_port
 
     msg_2 "Set default aok preferences"
