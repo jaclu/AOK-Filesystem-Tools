@@ -360,11 +360,12 @@ set_new_etc_profile() {
             echo "#  to exit out of the chroot"
             echo "#"
             echo "export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            echo "cd"
             echo "$sp_new_profile"
             echo 'ex_code="$?"'
-            #  shellcheck disable=SC2016
-            echo '[ "$ex_code" = "123" ] && exit  # 123=prebuild done, exit without error' # use single quotes so $? isnt expanded here
-            #  shellcheck disable=SC2016
+            #  shellcheck disable=SC2016 # single quotes are intentional here
+            echo '[ "$ex_code" = "123" ] && exit  # 123=prebuild done, exit without error'
+            #  shellcheck disable=SC2016 # single quotes are intentional here
             echo 'if [ "$ex_code" -ne 0 ]; then'
 
             #
@@ -373,15 +374,9 @@ set_new_etc_profile() {
             #  not expanding them
             #
             printf "    echo \"ERROR: %s exited with code: " "$sp_new_profile"
-            #  shellcheck disable=SC2016
+            #  shellcheck disable=SC2016 # single quotes are intentional here
             echo '$ex_code"'
             echo "fi"
-            echo ""
-            echo "#"
-            echo "#  Since the deploy script was run in a subshell, its path"
-            echo "#  cant be shared when exiting deploy and dropping into an"
-            echo "#  interactive env, so here comes a generic path"
-            echo "#"
         ) >"$d_build_root"/etc/profile
     fi
 
@@ -567,32 +562,7 @@ verify_launch_cmd() {
     fi
 }
 
-restore_launch_cmd() {
-    #
-    #  In case something goes wrong use this to (hopefully) ensure
-    #  it's restored
-    #
-
-    #  Does not use set_launch_cmd in order to prevent risk for infinite loops
-    echo "$launch_cmd_default" >"$f_launch_cmd"
-
-    # is safe to call even here in a "exception handler"
-    _slc_current="$(get_launch_cmd)"
-    if [ "$_slc_current" != "$launch_cmd_default" ]; then
-        echo
-        echo "ERROR: Failed to restore launch cmd!"
-        echo
-        echo "Current launch cmd: $_slc_current"
-        echo "Intended default:   $launch_cmd_default"
-        echo
-        echo "Make sure to set it manually, otherwise iSH will probably"
-        echo "fail to start!"
-        exit 1
-    fi
-    unset _slc_current
-}
-
-get_launch_cmd() {
+get_launch_cmd() { # ok
     #
     #  It is reported as a multiline, here it is wrapped into a one-line
     #  notation, to make it easier to compare vs the launch_md_XXX
@@ -603,29 +573,6 @@ get_launch_cmd() {
         exit
     fi
     tr -d '\n' <"$f_launch_cmd" | sed 's/  \+/ /g' | sed 's/"]/" ]/'
-}
-
-set_launch_cmd() {
-    _slc_cmd="$1"
-    [ -z "$_slc_cmd" ] && error_msg "set_launch_cmd() - no param"
-    if this_fs_is_chrooted; then
-        echo "Launch cmd not available when chrooted"
-        exit
-    fi
-    echo "$_slc_cmd" >"$f_launch_cmd"
-    _slc_current="$(get_launch_cmd)"
-    [ "$_slc_current" = "$_slc_cmd" ] || {
-        echo
-        echo "ERROR: Failed to set Launch cmd"
-        echo
-        echo "Sample syntax: '$launch_cmd_default'"
-        echo "intended: '$_slc_cmd'"
-        echo "current:  '$_slc_current'"
-        restore_launch_cmd "Failed to set a launch command"
-        exit 1
-    }
-    unset _slc_cmd
-    unset _slc_current
 }
 
 # each param MUST be wrapped in ""...
@@ -1001,6 +948,7 @@ set_hostname() {
 
         if hostname -h | grep -q "$f_chroot_hostname"; then
             msg_3 "chrooted - already using $f_chroot_hostname"
+            hostname -U
         else
             msg_3 "chrooted - will use $f_chroot_hostname"
             # add prefix with if not already done
@@ -1009,7 +957,7 @@ set_hostname() {
                 msg_4 "prefixing with $prefix -> $hname"
                 echo "$hname" >"$f_chroot_hostname"
             }
-            hostname -S "$f_chroot_hostname" >/dev/null || {
+            hostname -S "$f_chroot_hostname" || {
                 error_msg "Failed to source hostname from $f_chroot_hostname"
             }
         fi
@@ -1035,9 +983,7 @@ set_hostname() {
             hostname -S "$_f"
         }
     fi
-    #  Ensure hostname has been picked up
-    hostname -U >/dev/null
-    msg_3 "hostname is: $(hostname)"
+    # msg_3 "hostname is: $(hostname)"
     unset hname prefix new_hname
 }
 

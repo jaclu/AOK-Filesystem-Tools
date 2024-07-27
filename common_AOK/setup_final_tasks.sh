@@ -97,15 +97,6 @@ aok_kernel_consideration() {
     }
 
     deploy_bat_monitord
-
-    this_fs_is_chrooted || aok -l aok -C off
-
-    # shellcheck disable=SC2154
-    this_is_aok_kernel && [ "$AOK_HOSTNAME_SUFFIX" = "Y" ] && {
-        msg_3 "Using -aok suffix"
-        aok -s on
-    }
-    # msg_3 "aok_kernel_consideration() - done"
 }
 
 start_cron_if_active() {
@@ -211,6 +202,17 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 deploy_state_set "$deploy_state_finalizing"
 msg_script_title "$prog_name_sft - Final part of setup"
 
+msg_2 "Dest platform aok tweaks"
+if this_fs_is_chrooted; then
+    aok -s off # should happen before set_hostname
+else
+    this_is_aok_kernel || {
+        msg_3 "Not ish-aok kernel, disabling suffix"
+        aok -s off
+    }
+    aok -C off -l aok
+fi
+
 set_hostname # it might have changed since pre-build...
 
 hostfs_name="$(hostfs_detect)"
@@ -233,9 +235,6 @@ if this_fs_is_chrooted; then
     msg_3 "Setting default chroot app: $_f"
     echo "$_f" >/.chroot_default_cmd
     [ -z "$USER_NAME" ] && aok -a "root"
-else
-    msg_2 "Setting Launch Cmd to: $launch_cmd_AOK"
-    set_launch_cmd "$launch_cmd_AOK"
 fi
 
 [ -n "$USER_NAME" ] && {
@@ -283,7 +282,6 @@ run_additional_tasks_if_found
 duration="$(($(date +%s) - tsaft_start))"
 display_time_elapsed "$duration" "Setup Final tasks"
 
-verify_launch_cmd
 clean_up_dest_env
 
 /usr/local/bin/check-env-compatible
@@ -295,9 +293,3 @@ msg_1 "File system deploy completed"
 echo "Setup has completed the last deploy steps and is ready!
 You are recomended to reboot in order to ensure that all services are started,
 and your environment is used."
-
-#
-#  This ridiculous extra step is needed if chrooted on iSH
-#
-cd / || error_msg "Failed to cd /"
-cd || error_msg "Failed to cd home"

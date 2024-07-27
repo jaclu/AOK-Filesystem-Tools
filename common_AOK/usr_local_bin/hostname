@@ -109,6 +109,7 @@ read_syncfile() {
     #
     #  Copies last line of sync file to /etc/hosts
     #
+    sudo_check
 
     #
     #  First find sync file
@@ -140,6 +141,8 @@ read_syncfile() {
     fi
 
     fn_handle_aok_suffix
+
+    sudo /usr/local/bin/logger hostname "set to: $(cat /etc/hostname)"
 
     sudo /usr/local/sbin/ensure-hostname-in-host-file
 }
@@ -179,14 +182,10 @@ while [ -n "$1" ]; do
 
         echo "$sync_file" | sudo tee "$f_hostname_source_fname" >/dev/null
         read_syncfile
-        /usr/local/bin/logger hostname "set to: $(cat /etc/hostname)"
         ;;
 
     "-U" | "--update")
-        sudo_check
         read_syncfile
-        /usr/local/bin/logger hostname "set to: $(cat /etc/hostname)"
-        exit 0
         ;;
 
     *) ;;

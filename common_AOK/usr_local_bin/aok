@@ -248,6 +248,54 @@ launch_cmd_display() {
     unset _m
 }
 
+restore_launch_cmd() {
+    #
+    #  In case something goes wrong use this to (hopefully) ensure
+    #  it's restored
+    #
+
+    #  Does not use set_launch_cmd in order to prevent risk for infinite loops
+    echo "$launch_cmd_default" >"$f_launch_cmd"
+
+    # is safe to call even here in a "exception handler"
+    _slc_current="$(get_launch_cmd)"
+    if [ "$_slc_current" != "$launch_cmd_default" ]; then
+        echo
+        echo "ERROR: Failed to restore launch cmd!"
+        echo
+        echo "Current launch cmd: $_slc_current"
+        echo "Intended default:   $launch_cmd_default"
+        echo
+        echo "Make sure to set it manually, otherwise iSH will probably"
+        echo "fail to start!"
+        exit 1
+    fi
+    unset _slc_current
+}
+
+set_launch_cmd() {
+    _slc_cmd="$1"
+    [ -z "$_slc_cmd" ] && error_msg "set_launch_cmd() - no param"
+    if this_fs_is_chrooted; then
+        echo "Launch cmd not available when chrooted"
+        exit
+    fi
+    echo "$_slc_cmd" >"$f_launch_cmd"
+    _slc_current="$(get_launch_cmd)"
+    [ "$_slc_current" = "$_slc_cmd" ] || {
+        echo
+        echo "ERROR: Failed to set Launch cmd"
+        echo
+        echo "Sample syntax: '$launch_cmd_default'"
+        echo "intended: '$_slc_cmd'"
+        echo "current:  '$_slc_current'"
+        restore_launch_cmd "Failed to set a launch command"
+        exit 1
+    }
+    unset _slc_cmd
+    unset _slc_current
+}
+
 launch_cmd_options="aok|default|'[ \"custom_cmd\" ]'"
 
 #===============================================================
