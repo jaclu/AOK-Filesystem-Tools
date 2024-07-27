@@ -7,6 +7,11 @@
 #  Copyright (c) 2022-2024: Jacob.Lundqvist@gmail.com
 #
 
+#
+#  Since this is a bash script and the sourced files are POSIX, shellcheck
+#  cant source theese files without displaying tons of warnings
+#
+
 # shellcheck source=/dev/null
 hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
 
