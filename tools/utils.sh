@@ -452,9 +452,11 @@ rsync_chown() {
             ;;
         esac
     fi
+    rm -f "$rsync_output"
     unset src
     unset d_dest
     unset _silent_mode
+    unset rsync_output
     # echo "^^^ rsync_chown() - done"
 }
 
