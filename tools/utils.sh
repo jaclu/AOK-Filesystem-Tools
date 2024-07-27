@@ -468,7 +468,6 @@ copy_local_bins() {
 
     _clb_rel_src=usr_local_bin
     _clb_dest=/usr/local/bin
-    msg_3 "><> ls $_clb_src_dir | grep -q $_clb_rel_src"
     if find "$_clb_src_dir" | grep -q "$_clb_rel_src"; then
         mkdir -p "$_clb_dest"
         rsync_chown "$_clb_src_dir/$_clb_rel_src/*" "$_clb_dest" silent
@@ -476,7 +475,6 @@ copy_local_bins() {
 
     _clb_rel_src=usr_local_sbin
     _clb_dest=/usr/local/sbin
-    msg_3 "><> ls $_clb_src_dir | grep -q $_clb_rel_src"
     if find "$_clb_src_dir" | grep -q "$_clb_rel_src"; then
         mkdir -p "$_clb_dest"
         rsync_chown "$_clb_src_dir/$_clb_rel_src/*" "$_clb_dest" silent

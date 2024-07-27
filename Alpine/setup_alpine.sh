@@ -76,7 +76,6 @@ handle_apks() {
     fi
 
     min_release "3.19" && {
-        msg_1 "><> older apks"
         # 3.19 and higher will insta-die if a modern sudo is used....
         use_older_apk https://dl-cdn.alpinelinux.org/alpine/v3.18/community/x86/sudo-1.9.13_p3-r2.apk
         # 3.19 and higher has stability issues with modern sqlite
