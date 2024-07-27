@@ -237,17 +237,6 @@ setup_cron_env
 
 replace_home_dirs
 
-#
-#  Depending on if prebuilt or not, either setup final tasks to run
-#  on first boot or now.
-#
-if deploy_state_is_it "$deploy_state_pre_build"; then
-    set_new_etc_profile "$setup_final"
-    is_prebuilt=1 # shorthand to avoid doing the above check again
-else
-    "$setup_final"
-fi
-
 additional_prebuild_tasks
 
 /usr/local/bin/check-env-compatible
@@ -259,12 +248,4 @@ msg_1 "Setup complete!"
 duration="$(($(date +%s) - tsa_start))"
 display_time_elapsed "$duration" "Setup Alpine"
 
-if [ -n "$is_prebuilt" ]; then
-    msg_1 "Prebuild completed, exiting"
-    exit 123
-else
-    msg_1 "Please reboot/restart this app now!"
-    echo "/etc/inittab was changed during the install."
-    echo "In order for this new version to be used, a restart is needed."
-    echo
-fi
+complete_initial_setup
