@@ -40,11 +40,8 @@ This automates hostname allocation if you run iSH on multiple devices,
 or run both iSH and iSH-AOK on the same device.
 
 If $f_hostname_aok_suffix is present,
-instances running the kernel iSH-AOK will be given the suffix -aok to
-their hostname, unless alrady present.
-
-To see an example of how to create the shortcut needed that feeds this
-check https://github.com/jaclu/AOK-Filesystem-Tools/Docs/hostname-shortcut.md
+instances running the kernel iSH-AOK will have the suffix -aok to appended
+to their hostname, unless alrady present.
 
 Available options:
 
