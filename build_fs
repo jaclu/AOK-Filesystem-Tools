@@ -388,7 +388,6 @@ prebuild_fs() {
 }
 
 consider_generating_tarball() {
-    msg_2 "consider_generating_tarball()"
     #
     #  Consider to generate a tarball
     #
