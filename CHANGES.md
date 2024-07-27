@@ -4,6 +4,8 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in devel branch
 
+- v0.19.9
+- tweaked aok settings and hostname detection
 - v0.19.8
 - handle AOK_HOSTNAME_SUFFIX in prebuild
 - v0.19.7
