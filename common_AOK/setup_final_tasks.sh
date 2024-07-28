@@ -213,6 +213,8 @@ else
     aok -C off -l aok
 fi
 
+user_interactions # mount iCloud & set TZ
+ensure_path_items_are_available
 set_hostname # it might have changed since pre-build...
 
 hostfs_name="$(hostfs_detect)"
@@ -246,9 +248,6 @@ if test -f /AOK; then
     msg_1 "Removing obsoleted /AOK new location is /opt/AOK"
     rm -rf /AOK
 fi
-
-user_interactions
-ensure_path_items_are_available
 
 #
 #  Currently Debian doesnt seem to have to take the iSH app into

@@ -4,6 +4,8 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in devel branch
 
+- v0.19.10
+- mount /iCloud before set hostname
 - v0.19.9
 - tweaked aok settings and hostname detection
 - v0.19.8
