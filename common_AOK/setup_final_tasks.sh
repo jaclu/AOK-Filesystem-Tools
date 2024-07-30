@@ -289,6 +289,7 @@ msg_1 "File system deploy completed"
 
 /usr/local/bin/aok-versions
 
+echo
 echo "Setup has completed the last deploy steps and is ready!
 You are recomended to reboot in order to ensure that all services are started,
 and your environment is used."

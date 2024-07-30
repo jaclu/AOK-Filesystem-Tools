@@ -4,6 +4,9 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in devel branch
 
+- v0.19.11
+- Disabled build options for select and Devuan, since they dont
+work ATM
 - v0.19.10
 - mount /iCloud before set hostname
 - v0.19.9

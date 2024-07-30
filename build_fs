@@ -27,9 +27,7 @@ Available options:
 
 -h  --help         Print this help and exit
 -v  --verbose      Displays extra info, like untaring/taring progress
--s  --select       Offer selection between Alpine, Debian & Devuan on first boot.
 -d  --debian       Build a Debian FS.
--D  --devuan       Build a Devuan FS.
 -p  --prebuilt     Build the entire FS on the running platform, making
                    for quicker imports on target device, but up to 10
                    times larger image file.
@@ -40,6 +38,10 @@ Available options:
 -C  --full_clear   Do a clear, and in addition clear the download cache
 -N  --no_compress  Terminates when FS is prepared, without generating
                    a FS tarball.
+
+<*  temporarilly disabled options  *>
+-s  --select       Offer selection between Alpine, Debian & Devuan on first boot.
+-D  --devuan       Build a Devuan FS.
 
 A newly created FS is located at: $d_build_root
 
@@ -110,26 +112,26 @@ parse_arguments() { # Multi OK 1
             build_target="$distro_debian"
             ;;
 
-        "-D" | "--devuan")
-            if [ "$build_target" = "$destfs_select" ]; then
-                echo "Can not be combined: -D and -s"
-                exit 1
-            fi
-            build_target="$distro_devuan"
-            ;;
+        #"-D" | "--devuan")
+        #    if [ "$build_target" = "$destfs_select" ]; then
+        #        echo "Can not be combined: -D and -s"
+        #        exit 1
+        #    fi
+        #    build_target="$distro_devuan"
+        #    ;;
 
-        "-s" | "--select")
-            if [ "$build_target" = "$distro_debian" ] ||
-                [ "$build_target" = "$distro_devuan" ]; then
-                echo "Can not be combined: -d/-D and -s"
-                exit 1
-            fi
-            if $pre_build_FS; then
-                echo "Can not be combined: -p and -s"
-                exit 1
-            fi
-            build_target="$destfs_select"
-            ;;
+        #"-s" | "--select")
+        #    if [ "$build_target" = "$distro_debian" ] ||
+        #        [ "$build_target" = "$distro_devuan" ]; then
+        #        echo "Can not be combined: -d/-D and -s"
+        #       exit 1
+        #   fi
+        #   if $pre_build_FS; then
+        #       echo "Can not be combined: -p and -s"
+        #        exit 1
+        #    fi
+        #    build_target="$destfs_select"
+        #    ;;
 
         "-p" | "--prebuilt")
             if [ "$build_target" = "$destfs_select" ]; then
