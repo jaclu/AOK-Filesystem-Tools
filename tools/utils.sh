@@ -419,7 +419,7 @@ rsync_chown() {
         fi
     fi
 
-    _r_params="-ah --exclude="'*~'" --chown=root:root $src $d_dest"
+    _r_params="-ah --exclude="'*~'" --chown=root: $src $d_dest"
     if [ -n "$_silent_mode" ]; then
         #  shellcheck disable=SC2086 # in this case variable should expand
         rsync $_r_params >/dev/null || {
@@ -728,9 +728,7 @@ additional_prebuild_tasks() {
 
 #---------------------------------------------------------------
 #
-#   lsb-release
-#
-#   get_lsb_release will install lsb-release tools if not present
+#   simulate: lsb_release -a
 #   and set the two variables:
 #      lsb_DistributorID
 #      lsb_Release
@@ -739,72 +737,13 @@ additional_prebuild_tasks() {
 
 #  shellcheck disable=SC2120
 get_lsb_release() {
-    #
-    #  If param 1 is chroot, then this will display lsb info for the
-    #  dest fs, such as when compressing an FS
-    #
-    _do_chroot="$1"
-
     if destfs_is_alpine; then
-        ! min_release "3.17" && {
-            # lsb_release not available on older Alpines
-            lsb_DistributorID="Alpine"
-            lsb_Release="$ALPINE_VERSION"
-            return
-        }
-    fi
-
-    f_lsb_bin=/usr/bin/lsb_release
-    _f=/tmp/aok-lsb_info.tmp
-
-    if [ "$_do_chroot" = "chroot" ]; then
-        #  Install lsb_release if not available
-        if ! /opt/AOK/tools/do_chroot.sh "which lsb_release" >/dev/null 2>&1; then
-            msg_4 "lsb-release-minimal will be installed!"
-            if destfs_is_alpine; then
-                /opt/AOK/tools/do_chroot.sh "apk add lsb-release-minimal" >/dev/null 2>&1 ||
-                    error_msg "Failed to install lsb-release-minimal" -1
-                return 1
-            elif destfs_is_devuan || destfs_is_debian; then
-                /opt/AOK/tools/do_chroot.sh "apt install -y lsb-release" >/dev/null 2>&1 ||
-                    error_msg "Failed to install lsb-release" -1
-                return 1
-            else
-                error_msg "Don't know how to install lsb-release on this platform"
-            fi
-        fi
-        /opt/AOK/tools/do_chroot.sh "$f_lsb_bin -a" >"$_f" 2>/dev/null
+        lsb_DistributorID="Alpine"
+        lsb_Release="$ALPINE_VERSION"
     else
-        if ! command -v lsb_release >/dev/null 2>&1; then
-            msg_4 "lsb-release-minimal will be installed!"
-            if destfs_is_alpine; then
-                apk add lsb-release-minimal || error_msg "Failed to install lsb-release-minimal"
-            elif destfs_is_devuan || destfs_is_debian; then
-                apt install -y lsb-release || error_msg "Failed to install lsb-release"
-            else
-                error_msg "Don't know how to install lsb-release on this platform"
-            fi
-        fi
-        lsb_release -a 2>/dev/null >"$_f"
+        lsb_DistributorID="Debian"
+        lsb_Release="$(cat "$d_build_root"/etc/debian_version)"
     fi
-
-    while IFS=':' read -r key value; do
-        key=$(printf '%s' "$key" | tr -d '[:space:]')
-        case "$key" in
-        DistributorID) lsb_DistributorID="$(strip_str "$value")" ;;
-        Release) lsb_Release="$(strip_str "$value")" ;;
-        *) ;;
-        esac
-    done <"$_f"
-    [ -z "$lsb_DistributorID" ] && error_msg "no DistributorID lsb record found"
-    [ -z "$lsb_Release" ] && error_msg "no Release lsb record found"
-
-    rm -f "$_f" || error_msg "Failed to remove tmp file: $_f"
-
-    unset _do_chroot
-    unset _f
-    unset key
-    unset value
 }
 
 #---------------------------------------------------------------
