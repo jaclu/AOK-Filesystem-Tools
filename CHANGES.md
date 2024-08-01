@@ -4,6 +4,9 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in devel branch
 
+- v0.19.13
+- tools needed to support aok_launcher when not prebuilding
+- aok_launcher - handling of extra vterms during deploy
 - v0.19.12
 - tweaked get_lsb_release() & untar_file()
 - v0.19.11
