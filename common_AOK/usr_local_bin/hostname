@@ -78,7 +78,6 @@ error_msg() {
     exit 1
 }
 
-#read_source_file_name() {
 get_sync_file_fn() {
     if [ -z "$f_hostname_source_fname" ] || [ ! -f "$f_hostname_source_fname" ]; then
         # f_src_file=""
@@ -180,6 +179,7 @@ while [ -n "$1" ]; do
             error_msg "-S / --sourcefile file not found: $sync_file"
         fi
 
+	mkdir -p "$(dirname "$f_hostname_source_fname")"
         echo "$sync_file" | sudo tee "$f_hostname_source_fname" >/dev/null
         read_syncfile
         ;;
