@@ -544,6 +544,14 @@ fi
 
 if $pre_build_FS; then
     prebuild_fs
+else
+    msg_3 "Install stuff needed for bootup if aok_launcher is used"
+    rsync_chown /opt/AOK/common_AOK/usr_local_bin/logger \
+        "$d_build_root"/usr/local/bin/
+    rsync_chown /opt/AOK/common_AOK/usr_local_bin/network-check.sh \
+        "$d_build_root"/usr/local/bin/
+    rsync_chown /opt/AOK/common_AOK/usr_local_sbin/aok_launcher \
+        "$d_build_root"/usr/local/sbin/
 fi
 
 msg_2 "The filesystem is ready!"
