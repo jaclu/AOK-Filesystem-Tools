@@ -798,7 +798,24 @@ verify_devs
 recovery_mode_probe main2
 
 #  If deploy has not completed - handle it
-[ -f "$f_deploy_state" ] && deploy_aok
+[ -f "$f_deploy_state" ] && {
+    if $this_is_pts0; then
+        deploy_aok
+    else
+        echo "New vterm started during deploy - $(tty)"
+        if [ -f /bin/ash ]; then
+            echo "Using /bin/ash"
+            /bin/ash
+        elif [ -f /bin/bash ]; then
+            echo "Using /bin/bash"
+            /bin/bash
+        else
+            echo "Neither bash nor ash available - starting /bin/sh"
+            /bin/sh
+        fi
+        exit
+    fi
+}
 
 if $this_is_pts0; then
     bootup # if /dev/console is used, pts/0 will not exit this
