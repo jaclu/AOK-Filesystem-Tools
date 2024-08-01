@@ -135,7 +135,7 @@ display_time_elapsed() {
     [ "$dte_seconds" -lt 10 ] && dte_seconds="0$dte_seconds"
 
     echo
-    echo "display_time_elapsed - Time elapsed: $dte_mins:$dte_seconds - $dte_label"
+    echo "display_time_elapsed - $dte_mins:$dte_seconds - $dte_label"
     echo
 
     unset dte_t_in
@@ -147,44 +147,43 @@ display_time_elapsed() {
 }
 
 untar_file() {
+    #
+    #  Using pigz for untaring a file, gives fairly small benefits, since the
+    #  actual untaring is just done in one thread. But will create three
+    #  other threads for reading, writing, and check calculation, still giving
+    #  a speedup of 10-20%
+    #
     _tarball="$1"
-    _tar_params="${2:-z}"
-    _no_exit="$3" # set to NO_EXIT_ON_ERROR if untar failures should not cause abort
-
     [ -z "$_tarball" ] && error_msg "untar_file() - no param"
-
-    if [ "${#_tarball}" -lt 15 ]; then
-        msg_3 "Unpacking $_tarball into: $(pwd)"
+    if [ "$2" = "NO_EXIT_ON_ERROR" ]; then
+	_tar_fail_ex_code=-1
     else
-        msg_3 "Unpacking: $_tarball"
-        msg_3 "     into: $(pwd)"
+	_tar_fail_ex_code=1
     fi
-
     cmd_pigz="$(command -v pigz)"
 
-    if [ -z "$cmd_pigz" ] && [ -x /home/linuxbrew/.linuxbrew/bin/pigz ]; then
+    msg_3 "Unpacking: $_tarball"
+    msg_3 "     into: $(pwd)"
+
+    # On linux, in scripts the homebrew bin path tends to not be missed
+    [ -z "$cmd_pigz" ] && [ -x /home/linuxbrew/.linuxbrew/bin/pigz ] && {
         cmd_pigz=/home/linuxbrew/.linuxbrew/bin/pigz
-        error_msg "><> using linuxbrew pigz [$cmd_pigz]"
-    fi
+    }
 
     if [ -n "$cmd_pigz" ]; then
-        # pigz -dc your_archive.tgz | tar -xf -
         msg_4 "Using $cmd_pigz"
-        # pigz doesnt need z or j params
-        _tar_params="$(echo "$_tar_params" | sed 's/z//' | sed 's/j//')"
-        $cmd_pigz -dc "$_tarball" | tar -xf"$_tar_params" - || {
-            [ "$_no_exit" != "NO_EXIT_ON_ERROR" ] && error_msg "Failed to untar $_tarball"
+        $cmd_pigz -dc "$_tarball" | tar -xf - || {
+            error_msg "Failed to untar $_tarball" "$_tar_fail_ex_code"
         }
     else
         msg_4 "No pigz"
-        tar "xf${_tar_params}" "$_tarball" || {
-            [ "$_no_exit" != "NO_EXIT_ON_ERROR" ] && error_msg "Failed to untar $_tarball"
+        tar "xf" "$_tarball" || {
+            error_msg "Failed to untar $_tarball" "$_tar_fail_ex_code"
         }
     fi
 
     unset _tarball
-    unset _tar_params
-    unset _no_exit
+    unset _tar_fail_ex_code
     msg_4 "Unpacking - done"
 }
 
@@ -209,37 +208,23 @@ create_fs() {
         error_msg "Failed to cd into: $_cf_fs_location"
     }
 
-    msg_3 "Extracting tarball, unpack time will be displayed"
-    case "$src_tarball" in
-    *alpine*) _cf_time_estimate="A minirootfs should not take that long" ;;
-    *)
-        _cf_time_estimate="will take a while (iPad 5th:8, iPad 7th:4 minutes)"
-        ;;
-    esac
-    msg_3 "  $_cf_time_estimate"
-    unset _cf_time_estimate
-
-    if test "${_cf_tarball#*tgz}" != "$_cf_tarball" || test "${_cf_tarball#*tar.gz}" != "$_cf_tarball"; then
-        _cf_filter="z"
-    else
-        msg_3 "detected bzip2 format"
-        _cf_filter="j"
-    fi
+    msg_3 "Extracting FS tarball"
 
     t_img_extract_start="$(date +%s)"
-    untar_file "$_cf_tarball" "${_cf_verbose}${_cf_filter}"
-
+    untar_file "$_cf_tarball"
     t_img_extract_duration="$(($(date +%s) - t_img_extract_start))"
-    display_time_elapsed "$t_img_extract_duration" "Extract image"
+    [ "$t_img_extract_duration" -gt 2  ] && {
+	display_time_elapsed "$t_img_extract_duration" "Extract image"
+    }
     unset t_img_extract_start
     unset t_img_extract_duration
-
-    deploy_state_set "$deploy_state_initializing"
-
     unset _cf_tarball
     unset _cf_fs_location
     unset _cf_verbose
     unset _cf_filter
+
+    deploy_state_set "$deploy_state_initializing"
+
     # echo "^^^ create_fs() - done"
 }
 
@@ -840,7 +825,7 @@ replace_home_user() {
             msg_2 "Replacing /home/$USER_NAME"
             cd "/home" || error_msg "Failed cd /home"
             rm -rf "$USER_NAME"
-            untar_file "$HOME_DIR_USER" z # NO_EXIT_ON_ERROR
+            untar_file "$HOME_DIR_USER" # NO_EXIT_ON_ERROR
             touch "$f_home_user_replaced"
         else
             error_msg "HOME_DIR_USER file not found: $HOME_DIR_USER" no_exit
@@ -858,7 +843,7 @@ replace_home_root() {
             msg_2 "Replacing /root"
             mv /root /ORG.root
             cd / || error_msg "Failed to cd into: /"
-            untar_file "$HOME_DIR_ROOT" z # NO_EXIT_ON_ERROR
+            untar_file "$HOME_DIR_ROOT" # NO_EXIT_ON_ERROR
             touch "$f_home_root_replaced"
         else
             error_msg "HOME_DIR_ROOT file not found: $HOME_DIR_ROOT" no_exit
