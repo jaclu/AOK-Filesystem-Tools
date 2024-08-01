@@ -108,20 +108,6 @@ handle_apks() {
         apk del $AOK_PKGS_SKIP || error_msg "Failed to delete AOK_PKGS_SKIP"
         echo
     fi
-    #
-    #  Install some custom apks, where the current repo version cant
-    #  be used, so we use the last known to work on Debian version
-    #  Since they are installed as a file, they are pinned, and wont
-    #  be replaced by an apk upgrade
-    #
-    msg_2 "Custom apks"
-    if wget https://dl-cdn.alpinelinux.org/alpine/v3.10/main/x86/mtr-0.92-r0.apk >/dev/null 2>&1; then
-        msg_3 "mtr - a full screen traceroute"
-        #  shellcheck disable=SC2015
-        apk add ./mtr-0.92-r0.apk && rm mtr-0.92-r0.apk || {
-            error_msg "apk add mtr failed"
-        }
-    fi
 
     echo
     Mapk || error_msg "Mapk reported error"
