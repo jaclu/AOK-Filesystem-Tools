@@ -936,6 +936,26 @@ complete_initial_setup() {
 #===============================================================
 
 #
+#  Detecting build environments
+#  0 = other, not able to chroot to complete image
+#  1 = iSH
+#  2 = Linux (x86)
+#
+#  >0   != "$be_other"  - no chroot
+
+be_ish="Build env iSH"
+be_linux="Build env x86 Linux"
+be_other="Build env other"
+if this_is_ish; then
+    build_env="$be_ish" # 1
+elif uname -a | grep -qi linux && uname -a | grep -q -e x86 -e i686; then
+    build_env="$be_linux" # 2
+else
+    build_env="$be_other" # chroot not possible 0
+fi
+
+
+#
 #  Import default settings
 #
 _f=/opt/AOK/AOK_VARS
@@ -979,25 +999,6 @@ fi
 
 f_dest_fs_is_chrooted="${d_build_root}${f_host_fs_is_chrooted}"
 f_dest_fs_deploy_state="${d_build_root}${f_host_deploy_state}"
-
-#
-#  Detecting build environments
-#  0 = other, not able to chroot to complete image
-#  1 = iSH
-#  2 = Linux (x86)
-#
-#  >0   != "$be_other"  - no chroot
-
-be_ish="Build env iSH"
-be_linux="Build env x86 Linux"
-be_other="Build env other"
-if this_is_ish; then
-    build_env="$be_ish" # 1
-elif uname -a | grep -qi linux && uname -a | grep -q -e x86 -e i686; then
-    build_env="$be_linux" # 2
-else
-    build_env="$be_other" # chroot not possible 0
-fi
 
 #
 #  Locations for "other" stuff
