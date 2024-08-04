@@ -21,7 +21,7 @@
 #
 wait_for_bootup() {
     # msg_2 "wait_for_bootup()"
-    if [ "$(get_launch_cmd)" != "$launch_cmd_AOK" ]; then
+    if [ "$(get_kernel_default launch_command)" != "$launch_cmd_AOK" ]; then
         if deploy_state_is_it "$deploy_state_pre_build" &&
             ! hostfs_is_devuan &&
             ! this_fs_is_chrooted; then

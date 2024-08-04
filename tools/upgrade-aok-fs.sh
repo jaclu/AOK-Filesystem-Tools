@@ -27,6 +27,23 @@ Available options:
     exit 0
 }
 
+verify_launch_cmd() {
+    this_is_ish || return
+
+    msg_2 "Verifying expected 'Launch cmd'"
+
+    launch_cmd_current="$(get_kernel_default launch_command)"
+    if [ "$launch_cmd_current" != "$launch_cmd_AOK" ]; then
+        msg_1 "'Launch cmd' is not the default for AOK"
+        echo "Current 'Launch cmd': '$launch_cmd_current'"
+        echo
+        echo "To set the default, run this, it will display the updated content:"
+        echo
+        echo "aok --launch-cmd aok"
+        echo
+    fi
+}
+
 restore_to_aok_state() {
     src="$1"
     dst="$2"
@@ -359,7 +376,6 @@ msg_2 "Ensuring no incompatabilies are detected"
 /usr/local/bin/check-env-compatible
 
 cmd_post_update=/etc/opt/AOK/post-update.sh
-
 
 [ -x "$cmd_post_update" ] && {
     msg_2 "Running $cmd_post_update"

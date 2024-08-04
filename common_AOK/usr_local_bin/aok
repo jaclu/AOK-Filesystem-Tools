@@ -20,6 +20,7 @@ Available options:
 -a --autologin     Auto-login as user [disable|username]
                    disable  - Will give login prompt
                    username - Will auto-login as username
+-b --boot-cmd      Choose Init cmd: $boot_cmd_options
 -c --continous     New login prompt after vterm logout [on|off]
 -l --launch-cmd    Choose Launch cmd: $launch_cmd_options
                    Launch cmd has very strict syntax requirements.
@@ -50,6 +51,7 @@ iSH-AOK options:
 Current settings:
 $(
         autologin_display
+        boot_cmd_display
         continous_sessions_display
         launch_cmd_display
         profile_hints_display
@@ -201,45 +203,27 @@ continous_sessions_display() {
 
 #===============================================================
 #
-#       Launch Cmd
+#       Boot Cmd
 #
 #===============================================================
 
-launch_cmd_change() {
-    lnch_cmd="$1"
+boot_cmd_change() {
+    boot_cmd="$1"
 
-    [ -z "$lnch_cmd" ] && {
-        error_msg "launch_cmd_change() - no param given, options are on/off"
+    [ -z "$boot_cmd" ] && {
+        error_msg "boot_cmd_change() - no param given"
     }
-    this_fs_is_chrooted && error_msg "Can't change launch-cmd on chrooted system"
+    this_fs_is_chrooted && error_msg "Can't change boot_command on chrooted system"
 
-    case "$lnch_cmd" in
-    "default")
-        set_launch_cmd "$launch_cmd_default"
-        [ -f "$f_pts_0_as_console" ] && {
-            echo
-            echo "WARNING: With the default launcher, using console"
-            echo "         will not work great!"
-            echo
-        }
-        ;;
-    "aok") set_launch_cmd "$launch_cmd_AOK" ;;
-
-    *) launch_cmd_custom "$lnch_cmd" ;;
+    case "$boot_cmd" in
+    "default") set_kernel_default boot_command '[ "/sbin/init" ]' ;;
+    *) set_kernel_default boot_command "$boot_cmd" ;;
     esac
-    launch_cmd_display syslog
+    boot_cmd_display syslog
 }
 
-launch_cmd_custom() {
-    custom_cmd="$1"
-    [ -z "$custom_cmd" ] && {
-        error_msg "launch_cmd_custom() - no param given"
-    }
-    set_launch_cmd "$custom_cmd" || error_msg "aok failed to set custom Launch cmd"
-}
-
-launch_cmd_display() {
-    _m="Launch cmd:    '$(get_launch_cmd)'"
+boot_cmd_display() {
+    _m="Boot cmd:      '$(get_kernel_default boot_command)'"
     if [ "$1" = "syslog" ]; then
         syslog "$_m"
     else
@@ -248,55 +232,51 @@ launch_cmd_display() {
     unset _m
 }
 
-restore_launch_cmd() {
-    #
-    #  In case something goes wrong use this to (hopefully) ensure
-    #  it's restored
-    #
+boot_cmd_options="default|'[ \"custom_cmd\" ]'"
 
-    #  Does not use set_launch_cmd in order to prevent risk for infinite loops
-    echo "$launch_cmd_default" >"$f_launch_cmd"
+#===============================================================
+#
+#       Launch Cmd
+#
+#===============================================================
 
-    # is safe to call even here in a "exception handler"
-    _slc_current="$(get_launch_cmd)"
-    if [ "$_slc_current" != "$launch_cmd_default" ]; then
-        echo
-        echo "ERROR: Failed to restore launch cmd!"
-        echo
-        echo "Current launch cmd: $_slc_current"
-        echo "Intended default:   $launch_cmd_default"
-        echo
-        echo "Make sure to set it manually, otherwise iSH will probably"
-        echo "fail to start!"
-        exit 1
-    fi
-    unset _slc_current
+launch_cmd_change() {
+    lnch_cmd="$1"
+
+    [ -z "$lnch_cmd" ] && {
+        error_msg "launch_cmd_change() - no param given"
+    }
+    this_fs_is_chrooted && error_msg "Can't change launch_command on chrooted system"
+
+    case "$lnch_cmd" in
+    "default")
+        set_kernel_default launch_command "$launch_cmd_default"
+        [ -f "$f_pts_0_as_console" ] && {
+            echo
+            echo "WARNING: With the default launcher, using console"
+            echo "         will not work great!"
+            echo
+        }
+        ;;
+    "aok") set_kernel_default launch_command "$launch_cmd_AOK" ;;
+
+    *) set_kernel_default launch_command "$lnch_cmd" ;;
+    esac
+    launch_cmd_display syslog
 }
 
-set_launch_cmd() {
-    _slc_cmd="$1"
-    [ -z "$_slc_cmd" ] && error_msg "set_launch_cmd() - no param"
-    if this_fs_is_chrooted; then
-        echo "Launch cmd not available when chrooted"
-        exit
+launch_cmd_display() {
+    _m="Launch cmd:    '$(get_kernel_default launch_command)'"
+    if [ "$1" = "syslog" ]; then
+        syslog "$_m"
+    else
+        echo "$_m"
     fi
-    echo "$_slc_cmd" >"$f_launch_cmd"
-    _slc_current="$(get_launch_cmd)"
-    [ "$_slc_current" = "$_slc_cmd" ] || {
-        echo
-        echo "ERROR: Failed to set Launch cmd"
-        echo
-        echo "Sample syntax: '$launch_cmd_default'"
-        echo "intended: '$_slc_cmd'"
-        echo "current:  '$_slc_current'"
-        restore_launch_cmd "Failed to set a launch command"
-        exit 1
-    }
-    unset _slc_cmd
-    unset _slc_current
+    unset _m
 }
 
 launch_cmd_options="aok|default|'[ \"custom_cmd\" ]'"
+launch_cmd_default='[ "/bin/login", "-f", "root" ]'
 
 #===============================================================
 #
@@ -425,7 +405,7 @@ console_mode_change() {
             }
         fi
 
-        [ "$(get_launch_cmd)" = "$launch_cmd_default" ] && {
+        [ "$(get_kernel_default launch_command)" = "$launch_cmd_default" ] && {
             echo
             echo "WARNING: With the default launcher, using console"
             echo "         will not work great!"
@@ -609,44 +589,20 @@ while [ -n "$1" ]; do
         fi
         ;;
 
+    "-b" | "--boot-cmd")
+        if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
+            boot_cmd_change "$2"
+            shift # get rid of extra option
+        fi
+        boot_cmd_display
+        ;;
+
     "-c" | "--continous")
         if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
             continous_sessions_change "$2"
             shift # get rid of extra option
         fi
         continous_sessions_display
-        ;;
-
-    "-l" | "--launch-cmd")
-        if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
-            launch_cmd_change "$2"
-            shift # get rid of extra option
-        fi
-        launch_cmd_display
-        ;;
-
-    "-H" | "--profile-hints")
-        if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
-            profile_hints_change "$2"
-            shift # get rid of extra option
-        fi
-        profile_hints_display
-        ;;
-
-    "-s" | "--aoksuffix")
-        if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
-            aok_suffix_change "$2"
-            shift # get rid of extra option
-        fi
-        aok_suffix_display
-        ;;
-
-    "-C" | "--console")
-        if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
-            console_mode_change "$2"
-            shift # get rid of extra option
-        fi
-        console_mode_display
         ;;
 
     "-e" | "--extra_locking")
@@ -657,12 +613,44 @@ while [ -n "$1" ]; do
         extralocking_display
         ;;
 
+    "-l" | "--launch-cmd")
+        if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
+            launch_cmd_change "$2"
+            shift # get rid of extra option
+        fi
+        launch_cmd_display
+        ;;
+
     "-m" | "--multicore")
         if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
             multicore_change "$2"
             shift # get rid of extra option
         fi
         multicore_display
+        ;;
+
+    "-s" | "--aoksuffix")
+        if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
+            aok_suffix_change "$2"
+            shift # get rid of extra option
+        fi
+        aok_suffix_display
+        ;;
+
+    "-H" | "--profile-hints")
+        if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
+            profile_hints_change "$2"
+            shift # get rid of extra option
+        fi
+        profile_hints_display
+        ;;
+
+    "-C" | "--console")
+        if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
+            console_mode_change "$2"
+            shift # get rid of extra option
+        fi
+        console_mode_display
         ;;
 
     *)

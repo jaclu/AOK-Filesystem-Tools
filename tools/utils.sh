@@ -156,9 +156,9 @@ untar_file() {
     _tarball="$1"
     [ -z "$_tarball" ] && error_msg "untar_file() - no param"
     if [ "$2" = "NO_EXIT_ON_ERROR" ]; then
-	_tar_fail_ex_code=-1
+        _tar_fail_ex_code=-1
     else
-	_tar_fail_ex_code=1
+        _tar_fail_ex_code=1
     fi
     cmd_pigz="$(command -v pigz)"
 
@@ -213,8 +213,8 @@ create_fs() {
     t_img_extract_start="$(date +%s)"
     untar_file "$_cf_tarball"
     t_img_extract_duration="$(($(date +%s) - t_img_extract_start))"
-    [ "$t_img_extract_duration" -gt 2  ] && {
-	display_time_elapsed "$t_img_extract_duration" "Extract image"
+    [ "$t_img_extract_duration" -gt 2 ] && {
+        display_time_elapsed "$t_img_extract_duration" "Extract image"
     }
     unset t_img_extract_start
     unset t_img_extract_duration
@@ -525,46 +525,65 @@ this_is_aok_kernel() {
 
 #---------------------------------------------------------------
 #
-#   Launch Command
+#   Kernel Defaults
 #
 #---------------------------------------------------------------
 
-verify_launch_cmd() {
-    this_is_ish || return
-
-    msg_2 "Verifying expected 'Launch cmd'"
-
-    launch_cmd_current="$(get_launch_cmd)"
-    if [ "$launch_cmd_current" != "$launch_cmd_AOK" ]; then
-        msg_1 "'Launch cmd' is not the default for AOK"
-        echo "Current 'Launch cmd': '$launch_cmd_current'"
-        echo
-        echo "To set the default, run this, it will display the updated content:"
-        echo
-        echo "aok --launch-cmd aok"
-        # echo "sudo echo '$launch_cmd_AOK' > $f_launch_cmd"
-        echo
-    fi
-}
-
-get_launch_cmd() { # ok
+get_kernel_default() {
     #
     #  It is reported as a multiline, here it is wrapped into a one-line
     #  notation, to make it easier to compare vs the launch_md_XXX
     #  templates
     #
-    if this_fs_is_chrooted; then
-        echo "Launch cmd not available when chrooted"
-        exit
-    fi
-    tr -d '\n' <"$f_launch_cmd" | sed 's/  \+/ /g' | sed 's/"]/" ]/'
+    [ -z "$1" ] && error_msg "get_kernel_default() - missing 1st param"
+    _f=/proc/ish/defaults/"$1"
+    [ -f "$_f" ] || error_msg "get_kernel_default() - Not found: $_f"
+    this_fs_is_chrooted && {
+        error_msg "get_kernel_default() not available when chrooted"
+    }
+
+    tr -d '\n' <"$_f" | sed 's/  \+/ /g' | sed 's/"]/" ]/'
+
+    unset _f
 }
 
-# each param MUST be wrapped in ""...
+set_kernel_default() {
+    _fname="$1"
+    _param="$2"
+    _lbl="$3"
 
-f_launch_cmd="/proc/ish/defaults/launch_command"
+    [ -z "$_fname" ] && error_msg "set_kernel_default() - missing param 1 _fname"
+    [ -z "$_param" ] && error_msg "set_kernel_default() - missing param 2 _param"
+    _f="/proc/ish/defaults/$_fname"
+    [ -f "$_f" ] || error_msg "set_kernel_default() - No such file: $_f"
+    this_fs_is_chrooted && {
+        error_msg "set_kernel_default() not available when chrooted"
+    }
+
+    [ -n "$_lbl" ] && msg_3 "$_lbl"
+    echo "$_param" >"$_f" || error_msg "Failed to set $_f as $_param"
+
+    _setting="$(tr -d '\n' <"$_f" | sed 's/  \+/ /g' | sed 's/"]/" ]/')"
+    if [ "$_setting" = "$_param" ]; then
+        msg_4 "$_fname set to: $_setting"
+    else
+        error_msg "value is <$_setting> - expected <$_param>"
+    fi
+
+    unset _fname
+    unset _param
+    unset _lbl
+    unset _f
+}
+
+#---------------------------------------------------------------
+#
+#   Launch Command
+#
+#---------------------------------------------------------------
+
+#  Used by multiple tools
 launch_cmd_AOK='[ "/usr/local/sbin/aok_launcher" ]'
-launch_cmd_default='[ "/bin/login", "-f", "root" ]'
 
 #---------------------------------------------------------------
 #
@@ -953,7 +972,6 @@ elif uname -a | grep -qi linux && uname -a | grep -q -e x86 -e i686; then
 else
     build_env="$be_other" # chroot not possible 0
 fi
-
 
 #
 #  Import default settings

@@ -4,6 +4,8 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in devel branch
 
+- v0.19.14
+- aok - Added handling of Boot cmd
 - v0.19.13
 - tools needed to support aok_launcher when not prebuilding
 - aok_launcher - handling of extra vterms during deploy
