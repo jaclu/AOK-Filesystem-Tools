@@ -4,6 +4,9 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in devel branch
 
+- v0.19.15
+- changed network-check to use amazon.com since ping google.com often fails for
+ipv6 dns on Debian
 - v0.19.14
 - aok - Added handling of Boot cmd
 - v0.19.13
