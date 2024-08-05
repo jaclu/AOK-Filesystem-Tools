@@ -4,6 +4,7 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in devel branch
 
+- aok - isolate available options
 - preventing iSH-AOK from using Alpine 3.20
 - Alpine & Debin update cmds
 - debian_apt_update & alpine_apk_update
