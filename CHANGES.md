@@ -4,6 +4,7 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in devel branch
 
+- reactivated -s Select Distro, options are Alpine/Debian
 - v0.19.15
 - changed network-check to use amazon.com since ping google.com often fails for
 ipv6 dns on Debian
