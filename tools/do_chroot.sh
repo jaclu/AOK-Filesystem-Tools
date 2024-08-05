@@ -81,6 +81,7 @@ can_chroot_run_now() {
         if [ -n "$ch_procs" ]; then
             echo "There are left-over processes from a previous run of this chroot"
             echo "processes: $ch_procs"
+            echo "$ch_procs" | xargs -n 1 ps -p | grep -v "PID TTY"
             display_cleanup_procedure=true
         # else
         #     unmount_systen_folders
