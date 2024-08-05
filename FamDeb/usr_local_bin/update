@@ -2,7 +2,7 @@
 #
 #  Part of https://github.com/jaclu/AOK-Filesystem-Tools
 #
-#  Copyright (c) 2021-2024: Jacob.Lundqvist@gmail.com
+#  Copyright (c) 2024: Jacob.Lundqvist@gmail.com
 #
 #  License: MIT
 #
@@ -19,5 +19,5 @@ fi
 
 msg_1 "Making sure System is fully updated"
 
-alpine_apk_update
-Mapk
+debian_apt_update
+Mapt
