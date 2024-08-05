@@ -34,20 +34,20 @@ Available options:
 
 -h  --help         Print this help and exit
 -v  --verbose      Displays extra info, like untaring/taring progress
--d  --debian       Build a Debian FS.
 -p  --prebuilt     Build the entire FS on the running platform, making
                    for quicker imports on target device, but up to 10
                    times larger image file.
-                   This can only be done on iSH or Linux (x86)!
+                   This can only be done on iSH itself or Linux (x86)!
 -N  --no_compress  Terminates when FS is prepared, without generating
                    a FS tarball.
+-d  --debian       Build a Debian FS.
+-s  --select       Offer selection between Alpine, Debian & Devuan on first boot.
 -f  --force        Force do_chroot.sh to run, despite any warnings
                    it displays.
 -c  --clear        Empty the build env ($d_build_root)
 -C  --full_clear   Do a clear, and in addition clear the download cache
 
 <*  temporarilly disabled options  *>
--s  --select       Offer selection between Alpine, Debian & Devuan on first boot.
 -D  --devuan       Build a Devuan FS.
 
 A newly created FS is located at: $d_build_root
@@ -127,18 +127,18 @@ parse_arguments() { # Multi OK 1
         #    build_target="$distro_devuan"
         #    ;;
 
-        #"-s" | "--select")
-        #    if [ "$build_target" = "$distro_debian" ] ||
-        #        [ "$build_target" = "$distro_devuan" ]; then
-        #        echo "Can not be combined: -d/-D and -s"
-        #       exit 1
-        #   fi
-        #   if $pre_build_FS; then
-        #       echo "Can not be combined: -p and -s"
-        #        exit 1
-        #    fi
-        #    build_target="$destfs_select"
-        #    ;;
+        "-s" | "--select")
+            if [ "$build_target" = "$distro_debian" ] ||
+                [ "$build_target" = "$distro_devuan" ]; then
+                echo "Can not be combined: -d/-D and -s"
+                exit 1
+            fi
+            if $pre_build_FS; then
+                echo "Can not be combined: -p and -s"
+                exit 1
+            fi
+            build_target="$destfs_select"
+            ;;
 
         "-p" | "--prebuilt")
             if [ "$build_target" = "$destfs_select" ]; then
@@ -332,18 +332,6 @@ select_distro_on_1st_boot() {
     #  will be run on 1st boot, a slight delay, but end result is
     #  the same.
     #
-    if [ "$build_env" != "$be_other" ]; then
-        [ -n "$force_chroot" ] && msg_3 "Forcing chroot to run"
-        if ! /opt/AOK/tools/do_chroot.sh "$force_chroot" /etc/profile; then
-            error_msg "Error in chroot, aborting build!"
-        fi
-    else
-        echo
-        msg_2 "***  Could not chroot, did not run: $setup_select_distro_prepare  ***"
-        msg_2 "This means that this image will have to run the preparatory"
-        msg_2 "step, before displaying the Distro selection dialog"
-        echo
-    fi
     # msg_3 "select_distro_on_1st_boot()  done"
 }
 
