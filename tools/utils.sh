@@ -164,6 +164,9 @@ untar_file() {
 
     msg_3 "Unpacking: $_tarball"
     msg_3 "     into: $(pwd)"
+    this_is_ish && echo "$_tarball" | grep -q "Debian" && {
+        msg_3 "This will take up 5-10 minutes depending on device..."
+    }
 
     # On linux, in scripts the homebrew bin path tends to not be missed
     [ -z "$cmd_pigz" ] && [ -x /home/linuxbrew/.linuxbrew/bin/pigz ] && {
@@ -537,7 +540,7 @@ this_is_ish() {
 }
 
 this_is_aok_kernel() {
-    ! this_is_ish && return 1
+    this_is_ish || return 1
     grep -qi aok /proc/ish/version 2>/dev/null
 }
 
@@ -557,8 +560,9 @@ get_kernel_default() {
     _f=/proc/ish/defaults/"$1"
     [ -f "$_f" ] || error_msg "get_kernel_default() - Not found: $_f"
     this_fs_is_chrooted && {
-        error_msg "get_kernel_default() not available when chrooted"
+        error_msg "get_kernel_default() not available when chrooted" -1
     }
+    this_is_ish || error_msg "get_kernel_default($1) - this is not iSH" -1
 
     tr -d '\n' <"$_f" | sed 's/  \+/ /g' | sed 's/"]/" ]/'
 
@@ -569,6 +573,7 @@ set_kernel_default() {
     _fname="$1"
     _param="$2"
     _lbl="$3"
+    _silent="$4"
 
     [ -z "$_fname" ] && error_msg "set_kernel_default() - missing param 1 _fname"
     [ -z "$_param" ] && error_msg "set_kernel_default() - missing param 2 _param"
@@ -580,10 +585,13 @@ set_kernel_default() {
 
     [ -n "$_lbl" ] && msg_3 "$_lbl"
     echo "$_param" >"$_f" || error_msg "Failed to set $_f as $_param"
+    [ -n "$_silent" ] && [ "$_silent" != "silent" ] && {
+        error_msg "set_kernel_default() - param 4 ($_silent) must be unset or silent"
+    }
 
     _setting="$(tr -d '\n' <"$_f" | sed 's/  \+/ /g' | sed 's/"]/" ]/')"
     if [ "$_setting" = "$_param" ]; then
-        msg_4 "$_fname set to: $_setting"
+        [ "$_silent" != "silent" ] && msg_4 "$_fname set to: $_setting"
     else
         error_msg "value is <$_setting> - expected <$_param>"
     fi

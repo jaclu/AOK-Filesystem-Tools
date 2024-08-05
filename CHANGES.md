@@ -4,6 +4,7 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in devel branch
 
+- utils.sh - improved handling of set/get kernel defaults
 - aok - isolate available options
 - preventing iSH-AOK from using Alpine 3.20
 - Alpine & Debin update cmds
