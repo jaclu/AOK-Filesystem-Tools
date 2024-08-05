@@ -382,7 +382,7 @@ monitor_log_files() {
     trap 'kill_console_tail' INT
     while true; do
         select_log_files_to_monitor
-        if [ -f "$f_rel_alpine" ]; then
+        if hostfs_is_alpine; then
             # allow restart of tail cmd
             restart_mthd="Press Ctrl-C to re-read logfiles"
         else
@@ -429,19 +429,19 @@ display_header() {
         aok_vers=Unknown
     fi
 
-    if test -f "$f_rel_alpine"; then
+    if hostfs_is_alpine; then
         fs_name="Alpine $(cat "$f_rel_alpine" 2>/dev/null)" ||
             fs_name="Alpine Unknown"
-    elif test -f "$f_rel_devuan"; then
+    elif hostfs_is_debian; then
+        fs_name="Debian $(cat "$f_rel_debian" 2>/dev/null)" ||
+            fs_name="Debian Unknown"
+    elif hostfs_is_devuan; then
         #
         #  Devuan must come before Debian, since it also has the
         #  f_rel_debian file
         #
         fs_name="Devuan $(cat "$f_rel_devuan" 2>/dev/null)" ||
             fs_name="Devuan Unknown"
-    elif test -f "$f_rel_debian"; then
-        fs_name="Debian $(cat "$f_rel_debian" 2>/dev/null)" ||
-            fs_name="Debian Unknown"
     else
         fs_name=Unknown
     fi
@@ -687,10 +687,17 @@ handle_etc_issue() {
 #---------------------------------------------------------------
 
 error_msg() {
+    _em_msg="$1"
+    _em_exit_code="${2:-1}"
     echo
-    echo "ERROR[$0]: $1"
+    echo "ERROR[$0]: $_em_msg"
     echo
     log_it "$1"
+    [ "$_em_exit_code" -gt -1 ] && {
+        echo "Due to error dropping to /bin/sh - after exit system will reboot"
+        /bin/sh
+        exit "$_em_exit_code"
+    }
 }
 
 log_it() {
@@ -719,6 +726,28 @@ print_log() {
     #  here for now, later check if it is needed
     #
     log_it "$1"
+}
+
+hostfs_is_alpine() {
+    test -f "$f_rel_alpine"
+}
+
+hostfs_is_devuan() {
+    test -f "$f_rel_devuan"
+}
+
+hostfs_is_debian() {
+    test -f "$f_rel_debian" && ! hostfs_is_devuan
+}
+
+this_is_aok_kernel() {
+    [ -d /proc/ish ] || return 1
+    grep -qi aok /proc/ish/version 2>/dev/null
+}
+
+is_alpine_3_20() {
+    hostfs_is_alpine || return 1
+
 }
 
 #===============================================================
@@ -786,14 +815,19 @@ recovery_mode_enable
     /usr/local/bin/logger "$prog_name" "===  System startup  ==="
     /usr/local/sbin/reset-run-dir
     /usr/local/sbin/rotate-logs.sh
-    [ -f "$f_rel_alpine" ] && {
-        /usr/local/sbin/update-motd
-    }
+    hostfs_is_alpine && /usr/local/sbin/update-motd
 }
 
-[ -f "$f_rel_debian" ] && update_deb_log_kill_cmd
+hostfs_is_debian && update_deb_log_kill_cmd
 display_header
 recovery_mode_probe main1
+
+this_is_aok_kernel && hostfs_is_alpine && grep -q 3.20 "$f_rel_alpine" && {
+    echo
+    echo "On iSH-AOK rsync and other core bins will fail in Alpine 3.20"
+    error_msg "For now using Alpine 3.19 or older is recomended" -1
+}
+
 verify_devs
 recovery_mode_probe main2
 
