@@ -17,8 +17,7 @@ d_here="$(dirname "$0")"
 # shellcheck source=/dev/null
 . "$d_here"/img_build_utils.sh
 
-msg_1 "Doing apt update"
-apt update
+debian_apt_update
 
 msg_1 "Removing stuff that should not be here"
 rm -f /etc/aok_release # obsolete file that might be around in some minim files

@@ -4,6 +4,7 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in devel branch
 
+- debian_apt_update & alpine_apk_update
 - do_chorot - show details for colliding pids
 - reactivated -s Select Distro, options are Alpine/Debian
 - v0.19.15

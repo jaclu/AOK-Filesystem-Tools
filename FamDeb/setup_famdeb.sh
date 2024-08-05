@@ -52,9 +52,7 @@ handle_apts() {
     #  Not normally needed, unless /var/cache/apt had been cleared,
     #  so in this case, better safe than sorry
     #
-    msg_1 "apt update"
-    apt update -y
-
+    debian_apt_update
     msg_1 "apt upgrade"
     apt upgrade -y || {
         error_msg "apt upgrade failed"

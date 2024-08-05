@@ -48,6 +48,7 @@ use_older_apk() {
 
 handle_apks() {
 
+    alpine_apk_update
     msg_1 "apk upgrade"
     apk upgrade || {
         error_msg "apk upgrade failed"

@@ -374,6 +374,24 @@ set_new_etc_profile() {
     # echo "^^^ set_new_etc_profile() - done"
 }
 
+alpine_apk_update() {
+    #
+    # Do an update if last update was more than 30 mins ago
+    # First check is weather apk update has been run ever
+    #
+    [ "$(find /var/cache/apk | wc -l)" -gt 1 ] &&
+        [ -n "$(find /var/cache/apk -mmin -30)" ] && return 1
+    msg_1 "Doing apk update"
+    apk update || error_msg "apk update issue"
+}
+
+debian_apt_update() {
+    # Do an update if last update was more than 30 mins ago
+    [ -n "$(find /var/cache/apt -mmin -30)" ] && return 1
+    msg_1 "Doing apt update"
+    apt update || error_msg "apt update issue"
+}
+
 rsync_chown() {
     #
     #  params: src dest [silent]
@@ -394,10 +412,10 @@ rsync_chown() {
     if [ -z "$(command -v rsync)" ]; then
         msg_3 "Installing rsync"
         if destfs_is_alpine; then
+            alpine_apk_update
             apk add rsync >/dev/null 2>&1 || error_msg "Failed to install rsync"
         else
-            # Debian imgs normally have it already installed, this is just in case
-            msg_3 "Ensuring rsync is available"
+            debian_apt_update
             apt install rsync >/dev/null 2>&1 || {
                 error_msg "Failed to install rsync"
             }

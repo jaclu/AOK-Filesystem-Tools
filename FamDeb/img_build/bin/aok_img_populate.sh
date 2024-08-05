@@ -30,9 +30,7 @@ d_here="$(dirname "$0")"
 #  Since the minim FS comes with caches cleared, an apt update
 #  is needed to repopulate the cache for the packet manager
 #
-# msg_1 "Do update in cashe caches are gone"
-# apt update
-
+# debian_apt_update
 #
 #  This needs to be synced with AOK_VARS from time to time, to ensure
 #  the Debian install is as similar as possible to the Alpine
