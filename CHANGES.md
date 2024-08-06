@@ -4,6 +4,7 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in devel branch
 
+- aok - improved option handling when chrooted
 - iSH-AOK check for 3.20 only when FS is Alpine
 - v0.19.16
 - utils.sh - improved handling of set/get kernel defaults

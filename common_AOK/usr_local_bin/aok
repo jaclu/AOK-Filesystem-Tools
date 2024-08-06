@@ -17,7 +17,6 @@ Without options, current settings are displayed.
 Available options:
 
 -h --help          Print this help and exit
--d --defaults      Set defaults where applicable
 -a --autologin     Auto-login as user [disable|username]
                    disable  - Will give login prompt
                    username - Will auto-login as username
@@ -28,7 +27,8 @@ Available options:
                    Ignored on regular iSH
 "
     this_fs_is_chrooted || {
-        txt="${txt}-C --console       Use first vterm (/dev/pts/0) as console,
+        txt="${txt}-d --defaults      Set defaults where applicable
+-C --console       Use first vterm (/dev/pts/0) as console,
                    disabling logins on this vterm
 "
     }
@@ -86,7 +86,7 @@ show_on_off_by_file() {
 }
 
 current_settings() {
-    echo "Current settings:"
+    echo "---  Current settings  ---"
     autologin_display
     continous_sessions_display
     profile_hints_display
@@ -99,11 +99,14 @@ current_settings() {
 }
 
 set_defaults() {
-    _opts="-a disable -c off"
-    this_fs_is_chrooted || _opts="$_opts -C off"
-    this_is_ish && _opts="$_opts -b default -l default"
-    eval aok "$_opts"
-    unset _opts
+    opts=""
+    this_fs_is_chrooted || opts="$opts -C off"
+    this_is_ish && opts="$opts -b default -l default"
+    if [ -n "$opts" ]; then
+	eval aok "$opts"
+    else
+	echo "No options can be defaulted when chrooted"
+    fi
 }
 
 #---------------------------------------------------------------
@@ -633,6 +636,19 @@ while [ -n "$1" ]; do
         continous_sessions_display
         ;;
 
+    "-C" | "--console")
+        if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
+            if this_fs_is_chrooted; then
+                msg_4 "Can't set console mode on chrooted systems"
+
+            else
+                console_mode_change "$2"
+            fi
+            shift # get rid of extra option
+        fi
+        this_fs_is_chrooted || console_mode_display
+        ;;
+
     "-d" | "--defaults") set_defaults ;;
 
     "-l" | "--launch-cmd")
@@ -673,19 +689,6 @@ while [ -n "$1" ]; do
             shift # get rid of extra option
         fi
         profile_hints_display
-        ;;
-
-    "-C" | "--console")
-        if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
-            if this_fs_is_chrooted; then
-                msg_4 "Can't set console mode on chrooted systems"
-
-            else
-                console_mode_change "$2"
-            fi
-            shift # get rid of extra option
-        fi
-        this_fs_is_chrooted || console_mode_display
         ;;
 
     *) msg_2 "ERROR: Bad option: $1" ;;
