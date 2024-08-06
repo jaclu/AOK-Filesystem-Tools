@@ -25,7 +25,7 @@
 #  Label for AOK builds, is also displayed by motd to indicate what
 #  AOK FS release is being used
 #
-AOK_VERSION="0.19.16b"
+AOK_VERSION="0.19.16c"
 
 #
 #  If defined this will be created as a no-password sudo capable user
@@ -179,7 +179,7 @@ CORE_APKS="$pkgs_tools $pkgs_shells $pkgs_services $pkgs_net_tools \
 #  Will only be installed if the kernel is identified as iSH-AOK
 #  on first boot at dest device,
 #  not 3.17
-AOK_APKS="nload nload-doc"
+AOK_APKS="nload"
 
 #
 #  Packages that should be removed, typically this would make most

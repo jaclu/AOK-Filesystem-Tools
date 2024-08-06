@@ -88,7 +88,7 @@ aok_kernel_consideration() {
     fi
 
     [ -n "$AOK_APKS" ] && {
-        msg_3 "Install packages only for AOK kernel"
+        msg_3 "Install packages only for AOK kernel: $AOK_APKS"
         # In this case we want the variable to expand into its components
         # shellcheck disable=SC2086 # in this case variable should expand
         apk add $AOK_APKS || {
