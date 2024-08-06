@@ -379,18 +379,18 @@ set_new_etc_profile() {
 
 alpine_apk_update() {
     #
-    # Do an update if last update was more than 30 mins ago
+    # Do an update if last update was more than 60 mins ago
     # First check is weather apk update has been run ever
     #
     [ "$(find /var/cache/apk | wc -l)" -gt 1 ] &&
-        [ -n "$(find /var/cache/apk -mmin -30)" ] && return 1
+        [ -n "$(find /var/cache/apk -mmin -60)" ] && return 1
     msg_1 "Doing apk update"
     apk update || error_msg "apk update issue"
 }
 
 debian_apt_update() {
-    # Do an update if last update was more than 30 mins ago
-    [ -n "$(find /var/cache/apt -mmin -30)" ] && return 1
+    # Do an update if last update was more than 60 mins ago
+    [ -n "$(find /var/cache/apt -mmin -60)" ] && return 1
     msg_1 "Doing apt update"
     apt update || error_msg "apt update issue"
 }
