@@ -235,11 +235,13 @@ update_etc_opt_references() {
 obsolete_files() {
     msg_2 "Ensuring no obsolete files are present"
 
+    # undated
     is_obsolete_file_present /etc/aok-release
     is_obsolete_file_present /etc/init.d/bat_charge_log
     is_obsolete_file_present /etc/opt/AOK-login_method
     is_obsolete_file_present /etc/opt/hostname_cached
 
+    # undated
     is_obsolete_file_present /etc/update-motd.d/11-aok-release
     is_obsolete_file_present /etc/update-motd.d/12-deb-vers
     is_obsolete_file_present /etc/update-motd.d/13-ish-release
@@ -247,6 +249,9 @@ obsolete_files() {
     is_obsolete_file_present /etc/update-motd.d/26-deb-vers
     is_obsolete_file_present /etc/update-motd.d/27-ish-release
 
+    # 240807
+    is_obsolete_file_present /usr/local/bin/battery-charge
+    # undated
     is_obsolete_file_present /usr/local/bin/aok_groups
     is_obsolete_file_present /usr/local/bin/apk_find_pkg
     is_obsolete_file_present /usr/local/bin/battery_charge
@@ -265,6 +270,8 @@ obsolete_files() {
     is_obsolete_file_present /usr/local/bin/vnc_start
     is_obsolete_file_present /usr/local/bin/vnc_stop
     is_obsolete_file_present /usr/local/bin/what_owns
+
+    # undated
     is_obsolete_file_present /usr/local/sbin/aok-launcher
     is_obsolete_file_present /usr/local/sbin/bat_charge_leveld
     is_obsolete_file_present /usr/local/sbin/bat_monitord
@@ -277,6 +284,7 @@ obsolete_files() {
     is_obsolete_file_present /usr/local/sbin/reset-run-dir.sh
     is_obsolete_file_present /usr/local/sbin/update_motd
     is_obsolete_file_present /usr/local/sbin/wait_for_console
+
 }
 
 check_softlinks() {

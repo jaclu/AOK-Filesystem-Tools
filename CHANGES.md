@@ -4,6 +4,8 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in devel branch
 
+- added exit codes in common_AOK/usr_local_bin/network-check.sh
+- removed obsoleted common_AOK/usr_local_bin/battery-charge
 - aok - improved option handling when chrooted
 - iSH-AOK check for 3.20 only when FS is Alpine
 - v0.19.16
