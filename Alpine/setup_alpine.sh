@@ -128,6 +128,18 @@ prepare_env_etc() {
         ln /etc/init.d/devfs /etc/init.d/dev
     fi
 
+    min_release 3.20 && {
+	#
+	#  Starting with this release, an empty Last Password Change
+	#  for root in /etc/shadow will trigger the harmless warning
+	#    Warning: your password will expire in 0 days.
+	#  to be displayed when doing: sudo su
+	# Setting it to anything but the default 0 will solve this.
+	#
+	msg_2 "Fixing warning about password expire when doing sudo su"
+	sed -i '/^root/c\root:*:1:0:::::' /etc/shadow
+    }
+
     #
     #  If edge/testing isnt added to the repositoris, testing apks can
     #  still be installed. Using mdcat as an example:
