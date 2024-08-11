@@ -612,7 +612,7 @@ login_with_param_check() {
     #
     #  Do this for each login, in case changes have been made
     #
-    echo "><> login_with_param_check()"
+    # echo "><> login_with_param_check()"
     login_ex_code=0
     if [ "$ignore_login_params" != "1" ] &&
         [ -f "$f_login_default_user" ]; then
@@ -642,12 +642,12 @@ login_with_param_check() {
 
         recovery_mode_disable login_param_checks
         print_log "Starting login with params: [$login_params]" noecho
-        print_log "><> $(date) login with params: $f_login_prog $login_params"
+        #print_log "><> $(date) login with params: $f_login_prog $login_params"
         # shellcheck disable=SC2086  # in this case variable should expand
         $f_login_prog $login_params || {
             login_ex_code="$?"
             echo
-            print_log "><> $(date) login failed"
+            # print_log "><> $(date) login failed"
             _s="ERROR: $f_login_prog exited with#1: $login_ex_code,"
             _s="$_s trying to use params: $login_params"
             print_log "$_s"
@@ -666,15 +666,15 @@ login_with_param_check() {
         # print_log "Using bare bones login with no parameters"
         handle_etc_issue
         print_log "Starting login with no params" noecho
-        print_log "><> $(date) login no params: $f_login_prog"
+        #print_log "><> $(date) login no params: $f_login_prog"
         "$f_login_prog" || {
             login_ex_code="$?"
-            print_log "><> $(date) login failed"
+            # print_log "><> $(date) login failed"
             error_msg "login exited with#2: $login_ex_code"
         }
-        print_log "><> $(date) post login no params"
+        # print_log "><> $(date) post login no params"
     fi
-    print_log "><> $(date) logged out from login with params"
+    # print_log "><> $(date) logged out from login with params"
 }
 
 handle_etc_issue() {
