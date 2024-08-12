@@ -441,11 +441,15 @@ rsync_chown() {
         #
         # rsync -P $_r_params | grep -v -e '\^./$' -e '^sending incremental' -e '^\[[:space:]]' || {
         rsync_output=/tmp/aok-rsync-chown-output
+        rm -f "$rsync_output"
         #  shellcheck disable=SC2086 # in this case variable should expand
         rsync -P $_r_params >"$rsync_output" || {
             error_msg "rsync_chown($src, $d_dest) failed"
         }
         grep -v -e '^./$' -e '^sending incremental' -e '^[[:space:]]' "$rsync_output"
+        rm -f "$rsync_output"
+        unset rsync_output
+
         case "$?" in
         0 | 1) ;; # 0=something found 1=nothing found
         *)        # actual error
@@ -453,11 +457,9 @@ rsync_chown() {
             ;;
         esac
     fi
-    rm -f "$rsync_output"
     unset src
     unset d_dest
     unset _silent_mode
-    unset rsync_output
     # echo "^^^ rsync_chown() - done"
 }
 
