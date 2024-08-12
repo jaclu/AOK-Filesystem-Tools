@@ -981,6 +981,9 @@ complete_initial_setup() {
 #
 #   Main
 #
+#  Env variables
+#  aok_this_is_dest_fs="Y"  -  Indicates this is running in dest FS
+#
 #===============================================================
 
 #
@@ -1038,10 +1041,16 @@ d_aok_etc=/etc/opt/AOK
 f_host_fs_is_chrooted="$d_aok_etc"/this_fs_is_chrooted
 f_host_deploy_state="$d_aok_etc"/deploy_state
 
-if ! this_fs_is_chrooted && [ ! -f "$f_host_deploy_state" ]; then
-    d_build_root="$TMPDIR"/aok_fs
-else
+# if ! this_fs_is_chrooted && [ ! -f "$f_host_deploy_state" ]; then
+#     d_build_root="$TMPDIR"/aok_fs
+# else
+#     d_build_root=""
+# fi
+
+if [ "$aok_this_is_dest_fs" = "Y" ] || (this_fs_is_chrooted && [ -f "$f_host_deploy_state" ]); then
     d_build_root=""
+else
+    d_build_root="$TMPDIR"/aok_fs
 fi
 
 f_dest_fs_is_chrooted="${d_build_root}${f_host_fs_is_chrooted}"
