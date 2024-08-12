@@ -4,6 +4,9 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in devel branch
 
+- env aok_this_is_dest_fs="Y"
+- ensure_ish_or_chrooted prefix
+- fixed ownership of rsync output
 - fixed root password will expire in 0 days warning
 - added exit codes in common_AOK/usr_local_bin/network-check.sh
 - removed obsoleted common_AOK/usr_local_bin/battery-charge
