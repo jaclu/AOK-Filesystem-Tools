@@ -502,9 +502,10 @@ ensure_ish_or_chrooted() {
     #
     #  Simple test to make sure this is not run on a non iSH host
     #
+    _s="${1:-"Can only run on iSH or when chrooted"}"
     this_is_ish && return
     this_fs_is_chrooted && return
-    error_msg "Can only run on iSH or when chrooted"
+    error_msg "$s"
 }
 
 strip_str() {
