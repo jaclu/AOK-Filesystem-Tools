@@ -77,7 +77,7 @@ ensure_path_items_are_available() {
 aok_kernel_consideration() {
     msg_2 "aok_kernel_consideration()"
     if ! this_is_aok_kernel || this_fs_is_chrooted; then
-        msg_3 "Not aok kernel!"
+        msg_3 "Not direct aok kernel!"
         #min_release 3.18 || {
         #    msg_3 "procps wont work on regular iSH for Alpine < 3.18"
         #    apk del procps || {
@@ -104,9 +104,7 @@ start_cron_if_active() {
     #  shellcheck disable=SC2154
     [ "$USE_CRON_SERVICE" != "Y" ] && return
 
-    if this_fs_is_chrooted || ! this_is_ish; then
-        error_msg "Cant attempt to start cron on a chrooted/non-iSH device"
-    fi
+    ensure_ish_or_chrooted "Cant attempt to start cron on a chrooted/non-iSH device"
 
     cron_service="/etc/init.d"
     if hostfs_is_alpine; then

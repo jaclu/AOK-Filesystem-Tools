@@ -329,7 +329,7 @@ update_aok_release() {
 # shell check source=/dev/null
 hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
 
-. /opt/AOK/tools/utils.sh
+[ -z "$d_aok_etc" ] && aok_this_is_dest_fs="Y" . /opt/AOK/tools/utils.sh
 
 . /opt/AOK/tools/multi_use.sh
 
@@ -350,7 +350,7 @@ while [ -n "$1" ]; do
     shift
 done
 
-ensure_ish_or_chrooted
+ensure_ish_or_chrooted ""
 
 if hostfs_is_alpine; then
     distro_prefix="/opt/AOK/Alpine"
