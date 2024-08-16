@@ -9,8 +9,20 @@
 #  Reports network status
 #
 
-if ping -c 2 8.8.8.8 >/dev/null 2>&1; then
-    if ping -c 2 amazon.com >/dev/null 2>&1; then
+ping_tst_node=8.8.8.8
+dns_tst_node=amazon.com
+
+#
+#  When chrooted ping must be run with sudo - odd ...
+#
+if [ -f /etc/opt/AOK/this_fs_is_chrooted ]; then
+    cmd="sudo ping"
+else
+    cmd="ping"
+fi
+
+if $cmd -c 2 "$ping_tst_node" >/dev/null 2>&1; then
+    if $cmd -c 2 "$dns_tst_node" >/dev/null 2>&1; then
         echo "Connected to the Internet and DNS is resolving!"
 	ex_code=0
     else
