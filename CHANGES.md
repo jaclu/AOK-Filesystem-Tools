@@ -4,6 +4,7 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in devel branch
 
+- fixed network-check.sh when run chrooted
 - env aok_this_is_dest_fs="Y"
 - ensure_ish_or_chrooted prefix
 - fixed ownership of rsync output
