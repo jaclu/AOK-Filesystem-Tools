@@ -273,7 +273,7 @@ display_header() {
 bootup() {
     # at bootup also log it
 
-    /usr/local/bin/network-check.sh
+    /usr/local/bin/network-check
 
     if [ -f "$f_pts_0_as_console" ]; then
         # also done in profile for interactive vterms
@@ -374,7 +374,7 @@ deploy_aok() {
     echo "*                                                    *"
     echo "******************************************************"
     echo
-    /usr/local/bin/network-check.sh
+    /usr/local/bin/network-check
 
     da_depl_step="$(cat "$f_deploy_state")"
     /usr/local/bin/logger aok_launcher Triggering deploy step: "$da_depl_step"
@@ -862,7 +862,7 @@ recovery_mode_probe main2
 if $this_is_pts0; then
     bootup # if /dev/console is used, pts/0 will not exit this
 else
-    /usr/local/bin/network-check.sh
+    /usr/local/bin/network-check
 fi
 
 # recovery_mode_disable "End of main"
