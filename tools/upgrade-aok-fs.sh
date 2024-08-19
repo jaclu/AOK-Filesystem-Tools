@@ -249,6 +249,8 @@ obsolete_files() {
     is_obsolete_file_present /etc/update-motd.d/26-deb-vers
     is_obsolete_file_present /etc/update-motd.d/27-ish-release
 
+    # 240819
+    is_obsolete_file_present /usr/local/bin/network-check.sh
     # 240807
     is_obsolete_file_present /usr/local/bin/battery-charge
     # undated
