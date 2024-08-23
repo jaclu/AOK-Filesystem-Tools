@@ -295,7 +295,7 @@ create_user() {
 
 . /opt/AOK/tools/multi_use.sh
 
-ensure_ish_or_chrooted
+ensure_ish_or_chrooted ""
 
 msg_script_title "setup_common_env.sh  Common AOK setup steps"
 

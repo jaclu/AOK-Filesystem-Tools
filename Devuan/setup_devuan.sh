@@ -72,7 +72,7 @@ tsd_start="$(date +%s)"
 
 [ -z "$d_aok_etc" ] && . /opt/AOK/tools/utils.sh
 
-ensure_ish_or_chrooted
+ensure_ish_or_chrooted ""
 
 msg_script_title "setup_devuan.sh  Devuan specific AOK env"
 initiate_deploy Devuan "$(cat /etc/devuan_version)"
