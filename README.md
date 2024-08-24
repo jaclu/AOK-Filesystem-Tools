@@ -38,7 +38,7 @@ For general usage, it is recommended to use the latest release, as mentioned
 in the Disclaimer. Once you have downloaded it, follow these steps (please note
 that release numbers change over time):
 
-```sh
+```bssh
 unzip AOK-Filesystem-Tools-0.9.2.zip
 sudo rm -rf /opt/AOK  # Remove the previous instance if present
 sudo mv AOK-Filesystem-Tools-0.9.2 /opt/AOK
@@ -46,7 +46,7 @@ sudo mv AOK-Filesystem-Tools-0.9.2 /opt/AOK
 
 To try out the latest changes:
 
-```sh
+```bash
 git clone https://github.com/jaclu/AOK-Filesystem-Tools.git
 sudo rm -rf /opt/AOK  # Remove the previous instance if present
 sudo mv AOK-Filesystem-Tools /opt/AOK
@@ -86,7 +86,7 @@ include the man tools.
 Since it is normally expected to be present on a Debian, if you wan't
 to enable man you can achieve this by adding the following to your config
 
-```sh
+```bash
 DEB_PKGS="man-db"
 ```
 
@@ -98,13 +98,13 @@ the destination platform.
 
 In an already deployed Debian 10, instead do:
 
-```sh
+```bash
 apt install man-db
 ```
 
 If the delays of the man-db trigger becomes an issue, just disable man by doing
 
-```sh
+```bash
 apt remove man-db
 ```
 
@@ -119,7 +119,7 @@ is a limited solution to the DNS issue.
 
 For instructions on how to build an AOK File System, run:
 
-```sh
+```bash
 ./build_fs -h
 ```
 
@@ -128,7 +128,7 @@ For instructions on how to build an AOK File System, run:
 To create a File system allowing you to choose between Alpine, Debian,
 or Devuan when iSH first boots it up use:
 
-```sh
+```bash
 build_fs -s
 ```
 
