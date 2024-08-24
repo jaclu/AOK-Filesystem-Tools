@@ -680,6 +680,10 @@ hostfs_is_devuan() {
     test -f /etc/devuan_version
 }
 
+hostfs_is_gentoo() {
+    test -f /etc/gentoo-release
+}
+
 hostfs_detect() {
     #
     #
@@ -1074,6 +1078,7 @@ d_icloud_archive=/iCloud/AOK_Archive
 #
 debian_src_tb="$(echo "$DEBIAN_SRC_IMAGE" | cut -d'?' -f1 | grep -oE '[^/]+$')"
 devuan_src_tb="$(echo "$DEVUAN_SRC_IMAGE" | cut -d'?' -f1 | grep -oE '[^/]+$')"
+gentoo_src_tb="$(echo "$GENTOO_SRC_IMAGE" | cut -d'?' -f1 | grep -oE '[^/]+$')"
 
 #
 #  Extract the release/branch/major version, from the requested Alpine,
@@ -1106,6 +1111,7 @@ setup_alpine_scr=/opt/AOK/Alpine/setup_alpine.sh
 setup_famdeb_scr=/opt/AOK/FamDeb/setup_famdeb.sh
 setup_debian_scr=/opt/AOK/Debian/setup_debian.sh
 setup_devuan_scr=/opt/AOK/Devuan/setup_devuan.sh
+setup_gentoo_scr=/opt/AOK/Gentoo/setup_gentoo.sh
 setup_select_distro_prepare=/opt/AOK/choose_distro/select_distro_prepare.sh
 setup_select_distro=/opt/AOK/choose_distro/select_distro.sh
 setup_final=/opt/AOK/common_AOK/setup_final_tasks.sh
@@ -1116,6 +1122,7 @@ setup_final=/opt/AOK/common_AOK/setup_final_tasks.sh
 distro_alpine=Alpine
 distro_debian=Debian
 distro_devuan=Devuan
+distro_gentoo=Gentoo
 
 deploy_state_na="FS not awailable"       # FS has not yet been created
 deploy_state_initializing="initializing" # making FS ready for 1st boot

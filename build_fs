@@ -41,6 +41,7 @@ Available options:
 -N  --no_compress  Terminates when FS is prepared, without generating
                    a FS tarball.
 -d  --debian       Build a Debian FS.
+-g  --gentoo       Build a Gentoo FS.
 -s  --select       Offer selection between Alpine, Debian & Devuan on first boot.
 -f  --force        Force do_chroot.sh to run, despite any warnings
                    it displays.
@@ -117,6 +118,14 @@ parse_arguments() { # Multi OK 1
                 exit 1
             fi
             build_target="$distro_debian"
+            ;;
+
+        -g | --gentoo)
+            if [ "$build_target" = "$destfs_select" ]; then
+                echo "Can not be combined: -g and -s"
+                exit 1
+            fi
+            build_target="$distro_gentoo"
             ;;
 
         #"-D" | "--devuan")
@@ -230,6 +239,8 @@ display_build_target() { # Multi OK 1
         release_msg="Debian"
     elif [ "$build_target" = "$distro_devuan" ]; then
         release_msg="Devuan"
+    elif [ "$build_target" = "$distro_gentoo" ]; then
+        release_msg="Gentoo"
     else
         [ -z "$ALPINE_VERSION" ] && error_msg "ALPINE_VERSION is undefined"
         release_msg="Alpine: $ALPINE_VERSION"
@@ -245,6 +256,8 @@ display_build_target() { # Multi OK 1
 
 cache_fs_image() {
     msg_2 "cache_fs_image()"
+    msg_3 "><> src_image [$src_image]"
+    msg_3 "><> src_tarball [$src_tarball]"
     [ -z "$src_image" ] && error_msg "cache_fs_image() no src_image supplied"
     [ -z "$src_tarball" ] && error_msg "cache_fs_image() no src_taball supplied"
 
@@ -255,17 +268,19 @@ cache_fs_image() {
         error_msg "Failed to cd to $d_src_img_cache"
     }
     if [ ! -f "$d_src_img_cache/$src_tarball" ]; then
-        cmd="wget --no-check-certificate $src_image"
+        cmd="wget --no-check-certificate \"$src_image\""
         #  Ensure basename for tar ball is used
         case "$build_target" in
-        "$distro_alpine" | "$destfs_select") cmd="$cmd -O $alpine_src_tb" ;;
-        "$distro_debian") cmd="$cmd -O $debian_src_tb" ;;
-        "$distro_devuan") cmd="$cmd -O $devuan_src_tb" ;;
+
+        "$distro_alpine" | "$destfs_select") ;; # cmd="$cmd -O $alpine_src_tb" ;;
+        "$distro_debian") ;;                    # cmd="$cmd -O $debian_src_tb" ;;
+        "$distro_devuan") ;;                    # cmd="$cmd -O $devuan_src_tb" ;;
+        "$distro_gentoo") ;;                    #cmd="wget '$src_image' -O $gentoo_src_tb" ;;
         *)
             error_msg "Invalid build_target: $build_target"
             ;;
         esac
-        $cmd || {
+        wget --no-check-certificate "$src_image" -O "$src_tarball" || {
             echo "ERROR: Failed to download $src_image"
             exit 1
         }
@@ -317,6 +332,13 @@ setup_Devuan_on_1st_boot() {
     set_new_etc_profile "$setup_devuan_scr"
 
     # msg_3 "setup_Devuan_on_1st_boot() done"
+}
+
+setup_Gentoo_on_1st_boot() {
+    msg_2 "setup_Gentoo_on_1st_boot()"
+    cp -a /opt/AOK/Gentoo/etc/inittab "$d_build_root"/etc
+    set_new_etc_profile "$setup_gentoo_scr"
+    # msg_3 "setup_Gentoo_on_1st_boot() done"
 }
 
 select_distro_on_1st_boot() {
@@ -476,6 +498,9 @@ if [ "$build_target" = "$distro_debian" ]; then
 elif [ "$build_target" = "$distro_devuan" ]; then
     src_image="$DEVUAN_SRC_IMAGE"
     src_tarball="$devuan_src_tb"
+elif [ "$build_target" = "$distro_gentoo" ]; then
+    src_image="$GENTOO_SRC_IMAGE"
+    src_tarball="$gentoo_src_tb"
 else
     src_image="$alpine_src_image"
     src_tarball="$alpine_src_tb"
@@ -524,6 +549,8 @@ if [ "$build_target" = "$distro_debian" ]; then
     setup_Debian_on_1st_boot
 elif [ "$build_target" = "$distro_devuan" ]; then
     setup_Devuan_on_1st_boot
+elif [ "$build_target" = "$distro_devuan" ]; then
+    setup_Gentoo_on_1st_boot
 elif [ "$build_target" = "$destfs_select" ]; then
     select_distro_on_1st_boot
 else

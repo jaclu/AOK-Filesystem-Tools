@@ -142,7 +142,7 @@ AOK_HOSTNAME_SUFFIX="Y"
 # ALPINE_VERSION=3.17.9  # End of Alpine support 2024-11-22
 # ALPINE_VERSION=3.18.8  # End of Alpine support 2025-05-09
 # ALPINE_VERSION=3.19.3  # End of Alpine support 2025-11-01 # TestFlight iSH
-ALPINE_VERSION=3.20.2  # End of Alpine support 2026-04-01
+ALPINE_VERSION=3.20.2 # End of Alpine support 2026-04-01
 
 #
 #  For edge releases - Current development tree
@@ -288,3 +288,11 @@ DEVU_PKGS_SKIP=""
 #  If pre-build is used, this will happen on the build host.
 #
 DEVU_PKGS=""
+
+########################################################################
+#
+#                   Gentoo Specific
+#
+########################################################################
+
+GENTOO_SRC_IMAGE="https://www.dropbox.com/scl/fi/ixb87vjva33ahgceuyuot/gentoo-1.tgz?rlkey=3wge1arg1s8qahuo4pdoncu81&dl=0"

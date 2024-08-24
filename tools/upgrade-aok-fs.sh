@@ -168,6 +168,9 @@ general_upgrade() {
         rsync_chown "$_s" /usr/local/sbin
         msg_3 "/etc/init.d/rc"
         rsync_chown "$distro_fam_prefix"/etc/init.d/rc /etc/init.d
+    elif hostfs_is_gentoo; then
+        msg_2 "Debian/Devuan specifics"
+        msg_3 "Nothing here so far..."
     else
         error_msg "Failed to recognize Distro, aborting."
     fi
@@ -363,8 +366,11 @@ elif hostfs_is_devuan; then
 elif hostfs_is_debian; then
     distro_prefix="/opt/AOK/Debian"
     distro_fam_prefix="/opt/AOK/FamDeb"
+elif hostfs_is_gentoo; then
+    distro_prefix="/opt/AOK/Gentoo"
+    distro_fam_prefix="/opt/AOK/Gentoo"
 else
-    error_msg "cron service not available for this FS"
+    error_msg "FS type not recognized"
 fi
 
 d_new_etc_opt_prefix="/etc/opt/AOK"

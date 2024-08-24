@@ -22,6 +22,8 @@ elif test -f /etc/devuan_version; then
     echo "Devuan version:  $(cat /etc/devuan_version)"
 elif test -f /etc/debian_version; then
     echo "Debian version:  $(cat /etc/debian_version)"
+elif test -f /etc/gentoo-release; then
+    echo "Gentoo version:  $(cat /etc/gentoo-release)"
 else
     echo "***  Failed to detect FS  ***"
 fi
@@ -33,6 +35,5 @@ echo "iSH release:     $ish_version"
 aok_release="$(cat /etc/aok-fs-release 2>/dev/null)"
 [ -z "$aok_release" ] && aok_release="Not found: /etc/aok-fs-release"
 echo "AOK-FS release:  $aok_release"
-
 
 # printf "\e[0m" # clear color
