@@ -70,7 +70,7 @@ Then just import this into iSH!
     exit 0
 }
 
-check_dependencies() {
+check_initial_dependencies() {
     _deps=""
     [ -z "$(command -v rsync)" ] && _deps="$_deps rsync"
     _wget_cmd="$(command -v wget)"
@@ -84,7 +84,7 @@ check_dependencies() {
 
     msg_1 "In order for this to work some dependencies will be installed"
 
-    case "$(hostfs_detect)" in
+    case "$(detect_fs)" in
 
     "$distro_alpine")
         #  shellcheck disable=SC2086 # in this case it should expand
@@ -477,7 +477,7 @@ aok_files="${d_build_root}"/opt/AOK
 
 parse_arguments "$@"
 
-check_dependencies
+check_initial_dependencies
 
 this_fs_is_chrooted && error_msg "You can't build an FS when already chrooted!"
 

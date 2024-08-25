@@ -162,6 +162,11 @@ sudo_check() {
 f_etc_hostname=/etc/hostname
 f_hostname_source_fname=/etc/opt/AOK/hostname_source_fname
 f_hostname_aok_suffix=/etc/opt/AOK/hostname-aok-suffix
+f_aok_fs_release=/etc/aok-fs-release
+
+test -f "$f_aok_fs_release" || {
+    error_msg "Should only be run on AOK installations!"
+}
 
 while [ -n "$1" ]; do
 
@@ -179,7 +184,7 @@ while [ -n "$1" ]; do
             error_msg "-S / --sourcefile file not found: $sync_file"
         fi
 
-	mkdir -p "$(dirname "$f_hostname_source_fname")"
+        mkdir -p "$(dirname "$f_hostname_source_fname")"
         echo "$sync_file" | sudo tee "$f_hostname_source_fname" >/dev/null
         read_syncfile
         ;;

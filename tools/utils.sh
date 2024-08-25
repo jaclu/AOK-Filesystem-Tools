@@ -538,6 +538,14 @@ fix_stdio() {
 #
 #---------------------------------------------------------------
 
+this_is_fs_with_aok() {
+    #
+    #  This system is using AOK FS extensions, prevents stuff
+    #  from running on Linux outside chroot
+    #
+    test -f "$f_aok_fs_release"
+}
+
 this_is_ish() {
     test -d /proc/ish
 }
@@ -664,7 +672,7 @@ destfs_clear_chrooted() {
 #
 #   Host FS
 #
-#  What this FS is
+#  What FS is running
 #
 #---------------------------------------------------------------
 
@@ -684,22 +692,24 @@ fs_is_gentoo() {
     test -f "$f_gentoo_version"
 }
 
-hostfs_detect() {
+detect_fs() {
     #
     #
     #  Since a select env also looks like Alpine, this must fist
     #  test if it matches the test criteria
     #
-    #error_msg 'abort in hostfs_detect()'
+    #error_msg 'abort in detect_fs()'
     if fs_is_alpine; then
         echo "$distro_alpine"
     elif fs_is_debian; then
         echo "$distro_debian"
     elif fs_is_devuan; then
         echo "$distro_devuan"
+    elif fs_is_gentoo; then
+        echo "$distro_gentoo"
     else
         #  Failed to detect
-        echo
+        error_msg "Failed to detect FS"
     fi
 }
 
@@ -885,7 +895,7 @@ replace_home_user() {
 
     [ -n "$HOME_DIR_USER" ] && {
         if [ -f "$HOME_DIR_USER" ]; then
-            [ -z "$USER_NAME" ] && error_msg "USER_HOME_DIR defined, but not USER_NAME"
+            [ -z "$USER_NAME" ] && error_msg "HOME_DIR_USER defined, but not USER_NAME"
             msg_2 "Replacing /home/$USER_NAME"
             cd "/home" || error_msg "Failed cd /home"
             rm -rf "$USER_NAME"

@@ -221,7 +221,7 @@ user_interactions # mount iCloud & set TZ
 ensure_path_items_are_available
 set_hostname # it might have changed since pre-build...
 
-hostfs_name="$(hostfs_detect)"
+hostfs_name="$(detect_fs)"
 f_fs_final_tasks=/opt/AOK/"$hostfs_name"/setup_final_tasks.sh
 [ -f "$f_fs_final_tasks" ] && {
     msg_1 "Running $hostfs_name final tasks"

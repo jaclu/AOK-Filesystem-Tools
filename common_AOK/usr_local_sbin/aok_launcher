@@ -418,6 +418,20 @@ deploy_aok() {
     sleep 3
 }
 
+new_deploy_vterm() {
+    echo "New vterm started during deploy - $(tty)"
+    if [ -f /bin/ash ]; then
+        echo "Using /bin/ash"
+        /bin/ash
+    elif [ -f /bin/bash ]; then
+        echo "Using /bin/bash"
+        /bin/bash
+    else
+        echo "Neither bash nor ash available - starting /bin/sh"
+        /bin/sh
+    fi
+}
+
 set_deploy_aok_abort() {
     trap '' INT # abort capturing Ctrl-C
     echo
@@ -844,18 +858,8 @@ recovery_mode_probe main2
     if $this_is_pts0; then
         deploy_aok
     else
-        echo "New vterm started during deploy - $(tty)"
-        if [ -f /bin/ash ]; then
-            echo "Using /bin/ash"
-            /bin/ash
-        elif [ -f /bin/bash ]; then
-            echo "Using /bin/bash"
-            /bin/bash
-        else
-            echo "Neither bash nor ash available - starting /bin/sh"
-            /bin/sh
-        fi
-        exit
+        new_deploy_vterm
+        exit # kill this extra vterm
     fi
 }
 

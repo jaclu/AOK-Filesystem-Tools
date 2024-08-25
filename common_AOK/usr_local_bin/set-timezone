@@ -18,7 +18,7 @@ do_clear() {
     [[ "$dialog_app" = "whiptail" ]] && clear
 }
 
-check_dependencies() {
+check_tz_dependencies() {
     #
     #  Ensure needed stuff is installed
     #
@@ -163,7 +163,7 @@ if [[ "$(whoami)" != "root" ]]; then
     exit 0
 fi
 
-check_dependencies
+check_tz_dependencies
 
 main
 

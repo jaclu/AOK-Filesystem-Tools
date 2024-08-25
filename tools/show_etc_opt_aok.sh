@@ -22,7 +22,7 @@ ensure_ish_or_chrooted
 
 echo "Show status for /etc/opt for Host and Dest FS"
 
-echo "Host is: $(hostfs_detect)"
+echo "Host is: $(detect_fs)"
 destfs="$(destfs_detect)"
 if [[ -n "$destfs" ]]; then
     echo "Dest FS type: $destfs"

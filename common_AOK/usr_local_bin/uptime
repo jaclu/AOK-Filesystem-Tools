@@ -49,7 +49,6 @@ is_busybox_uptime() {
     [ -x "$cmd_busybox" ] && [ "$(realpath /usr/bin/uptime)" = "$cmd_busybox" ]
 }
 
-
 org_uptime() {
     $dbg && echo ">org_uptime()" >/dev/stderr
 
@@ -144,9 +143,9 @@ show_version() {
     if $force_ios_uptime && is_busybox_uptime; then
         $cmd_busybox uptime -V 2>&1 | grep ^BusyBox
     else
-	_f=/etc/aok-fs-release
-	aok_vers=$(cat "$_f" 2>/dev/null || echo "unknown AOK-FS version")
-	echo "uptime from AOK-FS $aok_vers"
+        _f=/etc/aok-fs-release
+        aok_vers=$(cat "$_f" 2>/dev/null || echo "unknown AOK-FS version")
+        echo "uptime from AOK-FS $aok_vers"
     fi
     exit 0
 }
@@ -185,6 +184,12 @@ force_ios_uptime=false
 display_mode="default"
 dbg=false
 
+f_aok_fs_release=/etc/aok-fs-release
+
+test -f "$f_aok_fs_release" || {
+    error_msg "Should only be run on AOK installations!"
+}
+
 while [ -n "$1" ]; do
     case "$1" in
     -h | --help) show_help ;;
@@ -205,12 +210,12 @@ done
 calculate_uptime
 
 case "$display_mode" in
-    version) show_version ;;
-    default) default_view ;;
-    pretty) show_pretty ;;
-    since) show_since ;;
-    load) display_sysload ;;
-    *)
-	echo "Invalid display_mode [$display_mode]"
-	;;
+version) show_version ;;
+default) default_view ;;
+pretty) show_pretty ;;
+since) show_since ;;
+load) display_sysload ;;
+*)
+    echo "Invalid display_mode [$display_mode]"
+    ;;
 esac
