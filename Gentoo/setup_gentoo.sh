@@ -50,6 +50,7 @@ fake_sudo() {
         cp /opt/AOK/Gentoo/fake_sudo "$f_sudo"
     }
     unset f_sudo
+    groupadd -g 29 sudo
 }
 
 #===============================================================
@@ -67,11 +68,17 @@ ensure_ish_or_chrooted ""
 msg_script_title "setup_gentoo.sh  Gentoo specific AOK env"
 initiate_deploy Gentoo "$(cat /etc/gentoo-release)"
 
+fake_sudo
+
+#
+#  Common deploy, used for all distros
+#
+$setup_common_aok || error_msg "in $setup_common_aok"
+
 # msg_3 "Create /var/log/wtmp"
 # touch /var/log/wtmp
 
 prepare_env_etc
-fake_sudo
 # handle_apts
 
 rsync_chown /opt/AOK/FamDeb/etc/init.d/rc /etc/init.d silent
