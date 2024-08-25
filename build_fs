@@ -268,7 +268,6 @@ cache_fs_image() {
         error_msg "Failed to cd to $d_src_img_cache"
     }
     if [ ! -f "$d_src_img_cache/$src_tarball" ]; then
-        cmd="wget --no-check-certificate \"$src_image\""
         #  Ensure basename for tar ball is used
         case "$build_target" in
 
@@ -549,7 +548,7 @@ if [ "$build_target" = "$distro_debian" ]; then
     setup_Debian_on_1st_boot
 elif [ "$build_target" = "$distro_devuan" ]; then
     setup_Devuan_on_1st_boot
-elif [ "$build_target" = "$distro_devuan" ]; then
+elif [ "$build_target" = "$distro_gentoo" ]; then
     setup_Gentoo_on_1st_boot
 elif [ "$build_target" = "$destfs_select" ]; then
     select_distro_on_1st_boot

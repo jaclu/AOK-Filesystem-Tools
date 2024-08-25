@@ -23,7 +23,7 @@ wait_for_bootup() {
     # msg_2 "wait_for_bootup()"
     if [ "$(get_kernel_default launch_command)" != "$launch_cmd_AOK" ]; then
         if deploy_state_is_it "$deploy_state_pre_build" &&
-            ! hostfs_is_devuan &&
+            ! fs_is_devuan &&
             ! this_fs_is_chrooted; then
             msg_2 "Waiting for runlevel default to be ready, normally < 10s"
             msg_3 "iSH sometimes fails this, so if this doesnt move on, try restarting iSH"
@@ -107,9 +107,9 @@ start_cron_if_active() {
     ensure_ish_or_chrooted "Cant attempt to start cron on a chrooted/non-iSH device"
 
     cron_service="/etc/init.d"
-    if hostfs_is_alpine; then
+    if fs_is_alpine; then
         cron_service="$cron_service/dcron"
-    elif hostfs_is_debian; then
+    elif fs_is_debian; then
         cron_service="$cron_service/cron"
     else
         error_msg "cron service not available for this FS"
@@ -197,7 +197,7 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 . /opt/AOK/tools/ios_version.sh
 . /opt/AOK/tools/user_interactions.sh
 
-this_is_aok_kernel && hostfs_is_alpine && min_release "3.20" && {
+this_is_aok_kernel && fs_is_alpine && min_release "3.20" && {
     echo
     echo "On iSH-AOK rsync and other core bins will fail in Alpine 3.20"
     error_msg "For now using Alpine 3.19 or older is recomended"
@@ -257,11 +257,11 @@ fi
 #  Currently Debian doesnt seem to have to take the iSH app into
 #  consideration
 #
-hostfs_is_alpine && aok_kernel_consideration
+fs_is_alpine && aok_kernel_consideration
 
-if hostfs_is_alpine; then
+if fs_is_alpine; then
     next_etc_profile="/opt/AOK/Alpine/etc/profile"
-elif hostfs_is_debian || hostfs_is_devuan; then
+elif fs_is_debian || fs_is_devuan; then
     next_etc_profile="/opt/AOK/FamDeb/etc/profile"
 else
     error_msg "Undefined Distro, cant set next_etc_profile"

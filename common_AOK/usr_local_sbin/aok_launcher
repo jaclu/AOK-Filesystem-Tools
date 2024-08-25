@@ -233,13 +233,13 @@ display_header() {
         aok_vers=Unknown
     fi
 
-    if hostfs_is_alpine; then
+    if fs_is_alpine; then
         fs_name="Alpine $(cat "$f_rel_alpine" 2>/dev/null)" ||
             fs_name="Alpine Unknown"
-    elif hostfs_is_debian; then
+    elif fs_is_debian; then
         fs_name="Debian $(cat "$f_rel_debian" 2>/dev/null)" ||
             fs_name="Debian Unknown"
-    elif hostfs_is_devuan; then
+    elif fs_is_devuan; then
         #
         #  Devuan must come before Debian, since it also has the
         #  f_rel_debian file
@@ -511,7 +511,7 @@ monitor_log_files() {
     trap 'kill_console_tail' INT
     while true; do
         select_log_files_to_monitor
-        if hostfs_is_alpine; then
+        if fs_is_alpine; then
             # allow restart of tail cmd
             restart_mthd="Press Ctrl-C to re-read logfiles"
         else
@@ -736,16 +736,16 @@ print_log() {
     log_it "$1"
 }
 
-hostfs_is_alpine() {
+fs_is_alpine() {
     test -f "$f_rel_alpine"
 }
 
-hostfs_is_devuan() {
+fs_is_devuan() {
     test -f "$f_rel_devuan"
 }
 
-hostfs_is_debian() {
-    test -f "$f_rel_debian" && ! hostfs_is_devuan
+fs_is_debian() {
+    test -f "$f_rel_debian" && ! fs_is_devuan
 }
 
 this_is_aok_kernel() {
@@ -754,7 +754,7 @@ this_is_aok_kernel() {
 }
 
 is_alpine_3_20() {
-    hostfs_is_alpine || return 1
+    fs_is_alpine || return 1
 
 }
 
@@ -823,14 +823,14 @@ recovery_mode_enable
     /usr/local/bin/logger "$prog_name" "===  System startup  ==="
     /usr/local/sbin/reset-run-dir
     /usr/local/sbin/rotate-logs.sh
-    hostfs_is_alpine && /usr/local/sbin/update-motd
+    fs_is_alpine && /usr/local/sbin/update-motd
 }
 
-hostfs_is_debian && update_deb_log_kill_cmd
+fs_is_debian && update_deb_log_kill_cmd
 display_header
 recovery_mode_probe main1
 
-this_is_aok_kernel && hostfs_is_alpine && grep -q 3.20 "$f_rel_alpine" && {
+this_is_aok_kernel && fs_is_alpine && grep -q 3.20 "$f_rel_alpine" && {
     echo
     echo "On iSH-AOK rsync and other core bins will fail in Alpine 3.20"
     error_msg "For now using Alpine 3.19 or older is recomended" -1

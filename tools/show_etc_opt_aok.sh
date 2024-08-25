@@ -20,12 +20,6 @@ hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
 
 ensure_ish_or_chrooted
 
-# destfs_is_alpine && echo "is alpine" || echo "NOT alpine"
-# destfs_is_select && echo "is select" || echo "NOT select"
-# destfs_is_devuan && echo "is devuan" || echo "NOT devuan"
-# destfs_is_debian && echo "is debian" || echo "NOT debian"
-# echo "Detected: [$(destfs_detect)]"
-
 echo "Show status for /etc/opt for Host and Dest FS"
 
 echo "Host is: $(hostfs_detect)"

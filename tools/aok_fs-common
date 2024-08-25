@@ -26,7 +26,7 @@ mkdir -p "$d_aok_completed" || {
     error_msg "d_aok_completed is not a dir: $d_aok_completed"
 }
 
-if hostfs_is_alpine; then
+if fs_is_alpine; then
     chs_procs="$(lsof 2>/dev/null | grep "$d_aok_fs" |
         awk '{print $1 }' | sort | uniq | tr '\n' ' ')"
 else

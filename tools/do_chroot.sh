@@ -240,7 +240,7 @@ set_ch_procs() {
     # filtering is done
     #
 
-    if hostfs_is_alpine; then
+    if fs_is_alpine; then
         ch_procs="$(lsof 2>/dev/null | grep "$CHROOT_TO" |
             awk '{print $1 }' | sort | uniq | tr '\n' ' ')"
     else
@@ -494,7 +494,7 @@ This will continue in $cleanup_sleep secnods,hit Ctrl-C if you want to abort
     shift
 done
 
-if this_is_ish && hostfs_is_debian && [ "$force_this" != "1" ]; then
+if this_is_ish && fs_is_debian && [ "$force_this" != "1" ]; then
     echo "************"
     echo "ish running Debian - this does not seem able to do chroot. You have been warned..."
     echo "                     Run this with -f if you still want to go ahead"

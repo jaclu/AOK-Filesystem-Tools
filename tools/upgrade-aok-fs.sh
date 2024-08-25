@@ -83,13 +83,13 @@ restore_configs() {
     restore_to_aok_state "$distro_fam_prefix"/etc/inittab /etc/inittab
     restore_to_aok_state "$distro_fam_prefix"/etc/profile /etc/profile
     restore_to_aok_state /opt/AOK/common_AOK/etc/skel /etc
-    if hostfs_is_alpine; then
+    if fs_is_alpine; then
         restore_to_aok_state "$distro_prefix"/etc/motd_template /etc/motd_template
-    elif hostfs_is_debian; then
+    elif fs_is_debian; then
         restore_to_aok_state "$distro_fam_prefix"/etc/pam.d /etc
         restore_to_aok_state "$distro_fam_prefix"/etc/update-motd.d /etc
         restore_to_aok_state "$distro_prefix"/etc/update-motd.d /etc
-    elif hostfs_is_devuan; then
+    elif fs_is_devuan; then
         restore_to_aok_state "$distro_fam_prefix"/etc/pam.d /etc
         restore_to_aok_state "$distro_prefix"/etc/update-motd.d /etc
     fi
@@ -151,14 +151,14 @@ general_upgrade() {
     #
     #  Copy distro specific stuff
     #
-    if hostfs_is_alpine; then
+    if fs_is_alpine; then
         msg_2 "Alpine specifics"
         msg_3 "/usr/local/bin"
         rsync_chown /opt/AOK/Alpine/usr_local_bin/ /usr/local/bin
         msg_3 "/usr/local/sbin"
         rsync_chown /opt/AOK/Alpine/usr_local_sbin/ /usr/local/sbin
 
-    elif hostfs_is_debian || hostfs_is_devuan; then
+    elif fs_is_debian || fs_is_devuan; then
         msg_2 "Debian/Devuan specifics"
         msg_3 "/usr/local/bin"
         rsync_chown "$distro_fam_prefix"/usr_local_bin/ /usr/local/bin
@@ -168,7 +168,7 @@ general_upgrade() {
         rsync_chown "$_s" /usr/local/sbin
         msg_3 "/etc/init.d/rc"
         rsync_chown "$distro_fam_prefix"/etc/init.d/rc /etc/init.d
-    elif hostfs_is_gentoo; then
+    elif fs_is_gentoo; then
         msg_2 "Debian/Devuan specifics"
         msg_3 "Nothing here so far..."
     else
@@ -319,7 +319,7 @@ update_aok_release() {
         #  Update the release file
         echo "$new_rel" >"$f_aok_release"
         msg_1 "Changed $f_aok_release to: $new_rel"
-        if hostfs_is_alpine; then
+        if fs_is_alpine; then
             /usr/local/sbin/update-motd
         fi
     }
@@ -357,16 +357,16 @@ done
 
 ensure_ish_or_chrooted ""
 
-if hostfs_is_alpine; then
+if fs_is_alpine; then
     distro_prefix="/opt/AOK/Alpine"
     distro_fam_prefix="/opt/AOK/Alpine"
-elif hostfs_is_devuan; then
+elif fs_is_devuan; then
     distro_prefix="/opt/AOK/Devuan"
     distro_fam_prefix="/opt/AOK/FamDeb"
-elif hostfs_is_debian; then
+elif fs_is_debian; then
     distro_prefix="/opt/AOK/Debian"
     distro_fam_prefix="/opt/AOK/FamDeb"
-elif hostfs_is_gentoo; then
+elif fs_is_gentoo; then
     distro_prefix="/opt/AOK/Gentoo"
     distro_fam_prefix="/opt/AOK/Gentoo"
 else

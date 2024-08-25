@@ -668,20 +668,20 @@ destfs_clear_chrooted() {
 #
 #---------------------------------------------------------------
 
-hostfs_is_alpine() {
-    test -f /etc/alpine-release
+fs_is_alpine() {
+    test -f "$f_alpine_release"
 }
 
-hostfs_is_debian() {
-    test -f /etc/debian_version && ! hostfs_is_devuan
+fs_is_debian() {
+    test -f "$f_debian_version" && ! fs_is_devuan
 }
 
-hostfs_is_devuan() {
-    test -f /etc/devuan_version
+fs_is_devuan() {
+    test -f "$f_devuan_version"
 }
 
-hostfs_is_gentoo() {
-    test -f /etc/gentoo-release
+fs_is_gentoo() {
+    test -f "$f_gentoo_version"
 }
 
 hostfs_detect() {
@@ -691,11 +691,11 @@ hostfs_detect() {
     #  test if it matches the test criteria
     #
     #error_msg 'abort in hostfs_detect()'
-    if hostfs_is_alpine; then
+    if fs_is_alpine; then
         echo "$distro_alpine"
-    elif hostfs_is_debian; then
+    elif fs_is_debian; then
         echo "$distro_debian"
-    elif hostfs_is_devuan; then
+    elif fs_is_devuan; then
         echo "$distro_devuan"
     else
         #  Failed to detect
@@ -712,15 +712,19 @@ hostfs_detect() {
 #---------------------------------------------------------------
 
 destfs_is_alpine() {
-    ! destfs_is_select && test -f "$f_alpine_release"
+    ! destfs_is_select && test -f "$d_build_root/$f_alpine_release"
 }
 
 destfs_is_debian() {
-    test -f "$f_debian_version" && ! destfs_is_devuan
+    test -f "$d_build_root/$f_debian_version" && ! destfs_is_devuan
 }
 
 destfs_is_devuan() {
-    test -f "$f_devuan_version"
+    test -f "$d_build_root/$f_devuan_version"
+}
+
+destfs_is_gentoo() {
+    test -f "$d_build_root/$f_gentoo_version"
 }
 
 destfs_is_select() {
@@ -777,9 +781,17 @@ get_lsb_release() {
     if destfs_is_alpine; then
         lsb_DistributorID="Alpine"
         lsb_Release="$ALPINE_VERSION"
-    else
+    elif destfs_is_gentoo; then
+        lsb_DistributorID="Gentoo"
+        lsb_Release="$(cat "$f_gentoo_version")"
+    elif destfs_is_debian; then
         lsb_DistributorID="Debian"
-        lsb_Release="$(cat "$d_build_root"/etc/debian_version)"
+        lsb_Release="$(cat "$f_debian_version")"
+    elif destfs_is_devuan; then
+        lsb_DistributorID="Devuan"
+        lsb_Release="$(cat "$f_devuan_version")"
+    else
+        error_msg "Unregognized FS"
     fi
 }
 
@@ -945,7 +957,7 @@ set_hostname() {
     elif ! this_fs_is_chrooted && [ -f "$f_chroot_hostname" ]; then
         msg_3 "was pre-built chrooted, but now runs native"
         rm -f "$f_chroot_hostname"
-        if hostfs_is_alpine; then
+        if fs_is_alpine; then
             hname="$(busybox hostname)"
         elif command -v ORG.hostname >/dev/null; then
             hname="$(ORG.hostname)"
@@ -1094,10 +1106,11 @@ else
     alpine_src_image="https://dl-cdn.alpinelinux.org/alpine/v${alpine_release}/releases/x86/$alpine_src_tb"
 fi
 
-#  Where to find native FS version
-f_alpine_release="$d_build_root"/etc/alpine-release
-f_debian_version="$d_build_root"/etc/debian_version
-f_devuan_version="$d_build_root"/etc/devuan_version
+#  Where to find native FS version  # "$d_build_root"
+f_alpine_release=/etc/alpine-release
+f_debian_version=/etc/debian_version
+f_devuan_version=/etc/devuan_version
+f_gentoo_version=/etc/gentoo-release
 
 #  Placeholder, to store what version of AOK that was used to build FS
 f_aok_fs_release="$d_build_root"/etc/aok-fs-release

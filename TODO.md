@@ -147,7 +147,7 @@ done
 
 ## Make it more clear how to refer to self during deploy
 
-When the deploy starts its pretty clear what `hostfs_is_alpine` and
+When the deploy starts its pretty clear what `fs_is_alpine` and
 `destfs_is_alpine` is refering to. However when the destfs boots up and
 does a large part of the deploy itself, shouldnt it be the host?
 

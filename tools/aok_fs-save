@@ -25,6 +25,8 @@ if [ -f "$f_alpine_release" ]; then
     tar_name="Alpine-$(cat "$f_alpine_release")"
 elif [ -f "$f_debian_version" ]; then
     tar_name="Debian-$(cat "$f_debian_version")"
+elif [ -f "$f_gentoo_version" ]; then
+    tar_name="Gentoo-$(cut -d' ' -f 5 <"$f_gentoo_version")"
 else
     error_msg "failed to detect Alpine/Debian"
 fi
@@ -51,15 +53,15 @@ cmd_pigz="$(command -v pigz)"
 if [ -n "$cmd_pigz" ]; then
     msg_3 "Using $cmd_pigz"
     # time tar -cf - . | pigz -p 2 > foo.tgz
-    tar -cf - . | $cmd_pigz >"$f_tar_tmp"|| {
-	echo
-	error_msg "failed to tar"
+    tar -cf - . | $cmd_pigz >"$f_tar_tmp" || {
+        echo
+        error_msg "failed to tar"
     }
 else
     msg_3 "No pigz"
     tar cfz "$f_tar_tmp" . || {
-	echo
-	error_msg "failed to tar"
+        echo
+        error_msg "failed to tar"
     }
 fi
 
