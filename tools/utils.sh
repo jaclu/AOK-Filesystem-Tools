@@ -524,21 +524,6 @@ initiate_deploy() {
 
     # buildtype_set "$_ss_distro_name"
 
-    if [ -n "$PREBUILD_ADDITIONAL_TASKS" ]; then
-        msg_3 "At the end of the pre-build, additioal tasks will be run:"
-        echo "--------------------"
-        echo "$PREBUILD_ADDITIONAL_TASKS"
-        echo "--------------------"
-        echo
-    fi
-    if [ -n "$FIRST_BOOT_ADDITIONAL_TASKS" ]; then
-        msg_3 "At the end of the install, additioal tasks will be run:"
-        echo "--------------------"
-        echo "$FIRST_BOOT_ADDITIONAL_TASKS"
-        echo "--------------------"
-        echo
-    fi
-
     msg_1 "Setting up ${_ss_distro_name}: $_ss_vers_info"
 
     manual_runbg
@@ -768,7 +753,7 @@ set_kernel_default() {
     _f="/proc/ish/defaults/$_fname"
     [ -f "$_f" ] || error_msg "set_kernel_default($_fname) - No such file: $_f"
     is_fs_chrooted && {
-        error_msg "set_kernel_default($_fnamem) not available when chrooted"
+        error_msg "set_kernel_default($_fnamem) not available when chrooted" -1
     }
 
     [ -n "$_lbl" ] && msg_3 "$_lbl"

@@ -4,6 +4,7 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in devel branch
 
+- moved notification of additional deploy scripts
 - v0.19.18
 - code cleanup
 - destfs_is_... -> fs_is_... for tasks always running on dest

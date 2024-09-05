@@ -235,7 +235,7 @@ display_build_target() { # Multi OK 1
         [ -z "$ALPINE_VERSION" ] && error_msg "ALPINE_VERSION is undefined"
         release_msg="Alpine: $ALPINE_VERSION"
     fi
-    msg_1 "Building iSH-AOK $release_msg filesystem - $AOK_VERSION"
+    msg_1 "Building iSH-AOK $release_msg FileSystem - AOK vers: $AOK_VERSION"
     [ "$release_msg" = "$distro_gentoo" ] && {
         echo "###"
         echo "###   Gentoo builds are in early beta so will proabably not be usefull"
@@ -249,12 +249,18 @@ display_build_target() { # Multi OK 1
     [ -n "$HOME_DIR_ROOT" ] && msg_4 "HOME_DIR_ROOT: $HOME_DIR_ROOT"
     [ -n "$POPULATE_FS" ] && msg_4 "POPULATE_FS:   $POPULATE_FS"
     [ -n "$PREBUILD_ADDITIONAL_TASKS" ] && {
+	echo
+        msg_3 "After the first stage of deploy, additioal tasks will be run."
+	msg_3 "If pre-build is used this will be done on the build-host."
+	msg_3 "Nothing that depends on destination platform should be done here:"
+	echo
         msg_4 "PREBUILD_ADDITIONAL_TASKS:   $PREBUILD_ADDITIONAL_TASKS"
     }
     [ -n "$FIRST_BOOT_ADDITIONAL_TASKS" ] && {
+	echo
+        msg_3 "At the end of the first boot on dest platform, additioal tasks will be run:"
         msg_4 "FIRST_BOOT_ADDITIONAL_TASKS: $FIRST_BOOT_ADDITIONAL_TASKS"
     }
-
     if ! $aok_FS_do_compress; then
         echo
         msg_2 "*** Will not create the compressed image! ***"
