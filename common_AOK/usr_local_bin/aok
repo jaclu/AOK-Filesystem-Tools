@@ -69,11 +69,6 @@ iSH-AOK options:
     echo "$txt"
 }
 
-#  shellcheck disable=SC2317
-destfs_is_alpine() {
-    test -f /etc/alpine-release
-}
-
 show_on_off_by_file() {
     [ -z "$1" ] && {
         error_msg "show_on_off_by_file() - no param given"

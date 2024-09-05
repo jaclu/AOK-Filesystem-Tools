@@ -87,7 +87,7 @@ removing_original_hostname_service() {
         msg_2 "Disabling hostname service not working on iSH"
         mv -f "$hostn_service" /etc/init.d/NOT-hostname
     fi
-    if destfs_is_debian || destfs_is_devuan; then
+    if fs_is_debian || fs_is_devuan; then
         msg_3 "Removing hostname service files not meaningfull on iSH"
         rm -f /etc/init.d/hostname
         rm -f /etc/init.d/hostname.sh
@@ -138,7 +138,8 @@ disabling_default_services() {
     mkdir /etc/init.d
     mv /etc/NOT /etc/init.d
     #  Keep the files we actually need
-    if destfs_is_alpine; then
+
+    if fs_is_alpine; then
         cp -a /etc/init.d/NOT/sshd /etc/init.d
     else
         cp -a /etc/init.d/NOT/ssh /etc/init.d

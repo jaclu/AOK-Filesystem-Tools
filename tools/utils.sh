@@ -312,7 +312,8 @@ initiate_deploy() {
 
     manual_runbg
 
-    if destfs_is_alpine; then
+    if fs_is_alpine; then
+        add_alpine_testing_repo # do it before the 1st apk update
         copy_local_bins Alpine
     else
         copy_local_bins FamDeb

@@ -58,7 +58,7 @@ handle_apts() {
         error_msg "apt upgrade failed"
     }
 
-    if destfs_is_debian; then
+    if fs_is_debian; then
         apts_to_add="$DEB_PKGS"
         apts_to_remove="$DEB_PKGS_SKIP"
         distro_name="Debian"

@@ -58,11 +58,11 @@ should_icloud_be_mounted() {
         sibm_dependency="$_sibm_dlg_app"
         msg_3 "Installing dependency: $sibm_dependency"
 
-        if [ "$sibm_dependency" = "whiptail" ] && destfs_is_alpine; then
+        if [ "$sibm_dependency" = "whiptail" ] && fs_is_alpine; then
             # whiptail is in package newt in Alpine
             sibm_dependency="newt"
         fi
-        if destfs_is_alpine; then
+        if fs_is_alpine; then
             apk add "$sibm_dependency"
         elif [ -f "$f_debian_version" ]; then
             apt install "$sibm_dependency"
