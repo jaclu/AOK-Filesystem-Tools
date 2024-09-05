@@ -47,6 +47,12 @@ hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
 prog_name=$(basename "$0")
 verbose=false
 
+#
+#  If this is built on an iSH node, and iCloud is mounted, the image is
+#  copied to this location
+#
+d_icloud_archive=/iCloud/AOK_Archive
+
 while [ -n "$1" ]; do
 
     case "$1" in
@@ -150,16 +156,18 @@ else
 fi
 ex_code="$?"
 
-#
-# copy it to /iCloud if this runs on iSH
-#
+if [ "$ex_code" = 0 ]; then
+    #
+    # copy it to /iCloud if this runs on iSH
+    #
+    if this_is_ish && [ "$(find /iCloud/ -maxdepth 1 | wc -l)" -gt 1 ]; then
+        msg_2 "Creating additional copy: $d_icloud_archive/$tarball_fn"
+        mkdir -p "$d_icloud_archive"
+        cp "$tarball" "$d_icloud_archive"
+    fi
 
-if this_is_ish && [ "$(find /iCloud/ -maxdepth 1 | wc -l)" -gt 1 ]; then
-    msg_2 "Creating additional copy: $d_icloud_archive/$tarball_fn"
-    mkdir -p "$d_icloud_archive"
-    cp "$tarball" "$d_icloud_archive"
+    msg_3 "Image is ready: $tarball"
+else
+    msg_1 "tar cmd exited with: $ex_code"
 fi
-
-msg_3 "Image is ready: $tarball"
-
 exit "$ex_code" #  Propagate any tar error

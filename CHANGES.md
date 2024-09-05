@@ -4,6 +4,7 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in devel branch
 
+- only list compression as successfull if it actually was
 - renamed network-check.sh -> network-check to allign with iSH-IP-stats repo
 - fixed network-check.sh when run chrooted
 - env aok_this_is_dest_fs="Y"
