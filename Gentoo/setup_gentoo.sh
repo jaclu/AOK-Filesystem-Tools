@@ -73,7 +73,7 @@ fake_sudo
 #
 #  Common deploy, used for all distros
 #
-$setup_common_aok || error_msg "in $setup_common_aok"
+$scr_setup_common_env || error_msg "in $scr_setup_common_env"
 
 # msg_3 "Create /var/log/wtmp"
 # touch /var/log/wtmp

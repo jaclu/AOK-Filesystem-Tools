@@ -32,213 +32,32 @@
 #
 _fnc_calls=0
 
-show_help() {
-    # msg_2 "show_help()"
+#---------------------------------------------------------------
+#
+#   Primitives
+#
+#---------------------------------------------------------------
 
-    #region help text
-    echo "
-Usage: $prog_name [-h] [-c] [-p dir] [-f] [command]
-
-Available options:
-
--h  --help      Print this help and exit
--c  --cleanup   Cleanup env if something crashed whilst sudoed
--f, --force     Run this despite a warning indicating it will likely
-                not work.
--p, --path      What dir to chroot into, defaults to: $d_build_root
-
-command         Defaults to the shell used by root within the env
-
-chroot with env setup so this works on both Linux & iSH
-
-Normally this will clear up the env even if the chroot crashes.
-If it does  fail to clean up, and a custom path was used.
--p must be given BEFORE -c in order for this to know what mount point
-to clean up!
-
-"
-    #endregion
-    # msg_3 "show_help() - done"
-}
-
-can_chroot_run_now() {
-    [ "$_fnc_calls" -gt 0 ] && msg_2 "can_chroot_run_now()"
-
-    display_cleanup_procedure=false
-
-    define_chroot_env
-
-    [ ! -d "$CHROOT_TO" ] && error_msg "chroot destination does not exist: $CHROOT_TO"
-
-    if [ -f "$f_is_chrooted" ]; then
-        echo "$CHROOT_TO is already chrooted!"
-        echo
-        echo "If the system crashed as a chroot was active, this situation"
-        echo "would not be unlikely."
-        display_cleanup_procedure=true
-    else
-        set_ch_procs
-        if [ -n "$ch_procs" ]; then
-            echo "There are left-over processes from a previous run of this chroot"
-            echo "processes: $ch_procs"
-            echo "$ch_procs" | xargs -n 1 ps -p | grep -v "PID TTY"
-            display_cleanup_procedure=true
-        # else
-        #     unmount_systen_folders
-        fi
-    fi
-
-    $display_cleanup_procedure && {
-        echo
-        echo "This chroot and all its processes can be cleaned up by running:"
-        if [ "$CHROOT_TO" = "$d_build_root" ]; then
-            echo "$cmd_line -c"
-        else
-            echo "$cmd_line -p $CHROOT_TO -c"
-        fi
-        echo
-        exit 1
-    }
-
-    [ "$_fnc_calls" = 2 ] && msg_3 "can_chroot_run_now() - done"
-}
-
-defined_and_existing() {
-    [ "$_fnc_calls" -gt 0 ] && msg_2 "defined_and_existing($1)"
+folder_exits() {
+    [ "$_fnc_calls" -gt 0 ] && msg_2 "folder_exits($1)"
 
     _dae="$1"
-    [ -z "$_dae" ] && error_msg "defined_and_existing() no param provided"
-    [ ! -d "$_dae" ] && error_msg "defined_and_existing($_dae) no such folder"
+    [ -z "$_dae" ] && error_msg "folder_exits() no param provided"
+    [ ! -d "$_dae" ] && error_msg "folder_exits($_dae) no such folder"
     unset _dae
-
-    [ "$_fnc_calls" = 2 ] && msg_3 "defined_and_existing($1) - done"
 }
 
-ensure_dev_paths_are_defined() {
-    #
-    #  This ensures that all the system path variables have been defined,
-    #  to minimize risk of having to abort half way through a procedure
-    #
-    [ "$_fnc_calls" -gt 0 ] && msg_2 "ensure_dev_paths_are_defined($1)"
-
-    defined_and_existing "$CHROOT_TO"
-    defined_and_existing "$d_proc"
-    defined_and_existing "$d_dev"
-    if [ "$build_env" = "$be_linux" ]; then
-        defined_and_existing "$d_sys"
-        if [ "$1" = "skip_pts" ]; then
-            #
-            #  Before mounting the resources dev/pts will not exist, so
-            #  preparational checks will need to handle /dev/pts as a special case.
-            #  At that point all that can be done is to verify that it has been set
-            #
-            [ -z "$d_dev_pts" ] && error_msg "ensure_dev_paths_are_defined() - d_dev_pts undefined"
-        else
-            defined_and_existing "$d_dev_pts"
-        fi
-    fi
-
-    [ "$_fnc_calls" = 2 ] && msg_3 "ensure_dev_paths_are_defined($1) - done"
-}
-
-define_chroot_env() {
-    [ "$_fnc_calls" -gt 0 ] && msg_2 "define_chroot_env()"
-
-    [ -z "$CHROOT_TO" ] && error_msg "define_chroot_env() CHROOT_TO not defined!"
-    [ ! -d "$CHROOT_TO" ] && error_msg "define_chroot_env() - path does not exist: $CHROOT_TO"
-
-    f_is_chrooted="${CHROOT_TO}$f_host_fs_is_chrooted"
-
-    #
-    #  Must be called whenever CHROOT_TO is changed, like by param -p
-    #
-    d_proc="${CHROOT_TO}/proc" #; exists_and_empty "$d_proc"
-    d_dev="${CHROOT_TO}/dev"   #; exists_and_empty "$d_dev"
-
-    if [ "$build_env" = "$be_linux" ]; then
-        d_sys="${CHROOT_TO}/sys" #   ; exists_and_empty "$d_sys"
-        d_dev_pts="${CHROOT_TO}/dev/pts"
-    fi
-    ensure_dev_paths_are_defined "skip_pts"
-
-    [ "$_fnc_calls" = 2 ] && msg_3 "define_chroot_env() - done"
-}
-
-find_default_cmd() {
-    #
-    #  Since no command was specified, first check if this
-    #  chroot has a defined default command in /.chroot_default_cmd
-    #  If this is not found, try to login as root with root's shell.
-    #  This to ensue we dont try to use a shell that is either not
-    #  available, or not found in the expeted location
-    #
-    [ "$_fnc_calls" -gt 0 ] && msg_2 "find_default_cmd()"
-    _f="${CHROOT_TO}/.chroot_default_cmd"
-    if [ -f "$_f" ]; then
-        cmd_w_params="$(cat "$_f")"
-        [ "$_fnc_calls" -gt 0 ] && msg_3 "Found a default cmd: $cmd_w_params"
-    else
-        [ "$_fnc_calls" -gt 0 ] && msg_2 "Trying to use root shell as default cmd"
-        _f="${CHROOT_TO}/etc/passwd"
-        [ ! -f "$_f" ] && error_msg "Trying to find chrooted root shell in its /etc/passwd failed"
-        cmd_w_params="$(awk -F: '/^root:/ {print $NF" -l"}' "$_f")"
-        [ "$_fnc_calls" -gt 0 ] && msg_3 "use_root_shell_as_default_cmd() - done"
-    fi
-    [ "$_fnc_calls" = 2 ] && msg_3 "find_default_cmd()"
-}
-
-#use_root_shell_as_default_cmd
-env_prepare() {
-    [ "$_fnc_calls" -gt 0 ] && msg_2 "env_prepare()"
-
-    ensure_dev_paths_are_defined "skip_pts"
-
-    _err="$prog_name is running! - this should have already been caught!"
-    [ -f "$f_is_chrooted" ] && error_msg "$_err"
-    unset _err
-
-    [ ! -d "$CHROOT_TO" ] && error_msg "chroot location [$CHROOT_TO] is not a directory!"
-
-    msg_3 "Mounting system resources"
-
-    mount -t proc proc "$d_proc"
-
-    if [ "$build_env" = "$be_ish" ]; then
-        #
-        #  I havent figured out how to mount /dev on iSH for the
-        #  chrooted env, so for now, I simply copy the host /dev files
-        #  into the chroot env. And remove them when exiting
-        #
-        cp -a /dev/* "$d_dev"
-    elif [ "$build_env" = "$be_linux" ]; then
-        #	mount -t sysfs sys "$d_sys"
-        mount -o bind /dev "$d_dev"
-        mount -o bind /dev/pts "$d_dev_pts"
-    fi
-
-    # msg_3 "copying current /etc/resolv.conf"
-    cp /etc/resolv.conf "$CHROOT_TO/etc"
-
-    [ "$_fnc_calls" = 2 ] && msg_3 "env_prepare() - done"
-}
-
-exists_and_empty() {
-    [ "$_fnc_calls" -gt 0 ] && msg_2 "exists_and_empty($1)"
-
-    _eae="$1"
-    defined_and_existing "$_eae"
-    [ "$(find "$_eae" | wc -l)" -gt 1 ] && error_msg "exists_and_empty($_eae) -Not empty"
-    unset _eae
-
-    [ "$_fnc_calls" = 2 ] && msg_3 "exists_and_empty($1) - done"
-}
+#---------------------------------------------------------------
+#
+#   process checks
+#
+#---------------------------------------------------------------
 
 #  shellcheck disable=SC2120
 set_ch_procs() {
-    #
-    # Since this is used in multiple places, use a func to ensure same
-    # filtering is done
-    #
+    [ "$_fnc_calls" -gt 0 ] && msg_2 "set_ch_procs()"
+
+    # Create a list of all processes asociated with the chroot folder
 
     if fs_is_alpine; then
         ch_procs="$(lsof 2>/dev/null | grep "$CHROOT_TO" |
@@ -282,8 +101,178 @@ kill_remaining_procs() {
     [ "$_fnc_calls" = 2 ] && msg_3 "kill_remaining_procs() - done"
 }
 
+#---------------------------------------------------------------
+#
+#   unsorted
+#
+#---------------------------------------------------------------
+
+show_help() {
+    # msg_2 "show_help()"
+
+    #region help text
+    echo "
+Usage: $prog_name [-h] [-c] [-p dir] [-f] [command]
+
+Available options:
+
+-h  --help      Print this help and exit
+-c  --cleanup   Cleanup env if something crashed whilst sudoed
+-f, --force     Run this despite a warning indicating it will likely
+                not work.
+-p, --path      What dir to chroot into, defaults to: $d_build_root
+
+command         Defaults to the shell used by root within the env
+
+chroot with env setup so this works on both Linux & iSH
+
+Normally this will clear up the env even if the chroot crashes.
+If it does  fail to clean up, and a custom path was used.
+-p must be given BEFORE -c in order for this to know what mount point
+to clean up!
+
+"
+    #endregion
+    # msg_3 "show_help() - done"
+}
+
+can_chroot_run_now() {
+    [ "$_fnc_calls" -gt 0 ] && msg_2 "can_chroot_run_now()"
+
+    display_cleanup_procedure=false
+
+    # define_chroot_env # should already have been done
+
+    [ ! -d "$CHROOT_TO" ] && error_msg "chroot destination does not exist: $CHROOT_TO"
+
+    # TODO: Fix chrooted already check
+
+    # if [ -f "$f_is_chrooted" ]; then
+    #     echo "$CHROOT_TO is already chrooted!"
+    #     echo
+    #     echo "If the system crashed as a chroot was active, this situation"
+    #     echo "would not be unlikely."
+    #     display_cleanup_procedure=true
+    # else
+    set_ch_procs
+    if [ -n "$ch_procs" ]; then
+        echo "There are left-over processes from a previous run of this chroot"
+        echo "processes: $ch_procs"
+        echo "$ch_procs" | xargs -n 1 ps -p | grep -v "PID TTY"
+        display_cleanup_procedure=true
+    # else
+    #     unmount_systen_folders
+    fi
+    # fi
+
+    $display_cleanup_procedure && {
+        echo
+        echo "This chroot and all its processes can be cleaned up by running:"
+        if [ "$CHROOT_TO" = "$d_build_root" ]; then
+            echo "$cmd_line -c"
+        else
+            echo "$cmd_line -p $CHROOT_TO -c"
+        fi
+        echo
+        exit 1
+    }
+
+    [ "$_fnc_calls" = 2 ] && msg_3 "can_chroot_run_now() - done"
+}
+
+ensure_dev_paths_are_defined() {
+    #
+    #  This ensures that all the system path variables have been defined,
+    #  to minimize risk of having to abort half way through a procedure
+    #
+    [ "$_fnc_calls" -gt 0 ] && msg_2 "ensure_dev_paths_are_defined($1)"
+
+    folder_exits "$CHROOT_TO"
+    folder_exits "$d_proc"
+    folder_exits "$d_dev"
+    if [ "$build_env" = "$be_linux" ]; then
+        folder_exits "$d_sys"
+        if [ "$1" = "skip_pts" ]; then
+            #
+            #  Before mounting the resources dev/pts will not exist, so
+            #  preparational checks will need to handle /dev/pts as a special case.
+            #  At that point all that can be done is to verify that it has been set
+            #
+            [ -z "$d_dev_pts" ] && error_msg "ensure_dev_paths_are_defined() - d_dev_pts undefined"
+        else
+            folder_exits "$d_dev_pts"
+        fi
+    fi
+
+    [ "$_fnc_calls" = 2 ] && msg_3 "ensure_dev_paths_are_defined($1) - done"
+}
+
+define_chroot_env() {
+    [ "$_fnc_calls" -gt 0 ] && msg_2 "define_chroot_env()"
+
+    [ -z "$CHROOT_TO" ] && error_msg "define_chroot_env() CHROOT_TO not defined!"
+    [ ! -d "$CHROOT_TO" ] && error_msg "define_chroot_env() - path does not exist: $CHROOT_TO"
+
+    # f_is_chrooted="${CHROOT_TO}$f_host_fs_is_chrooted"
+
+    #
+    #  Must be called whenever CHROOT_TO is changed, like by param -p
+    #
+    d_proc="${CHROOT_TO}/proc" #; exists_and_empty "$d_proc"
+    d_dev="${CHROOT_TO}/dev"   #; exists_and_empty "$d_dev"
+
+    if [ "$build_env" = "$be_linux" ]; then
+        d_sys="${CHROOT_TO}/sys" #   ; exists_and_empty "$d_sys"
+        d_dev_pts="${CHROOT_TO}/dev/pts"
+    fi
+    ensure_dev_paths_are_defined "skip_pts"
+
+    [ "$_fnc_calls" = 2 ] && msg_3 "define_chroot_env() - done"
+}
+
+find_default_cmd() {
+    #
+    #  Since no command was specified, first check if this
+    #  chroot has a defined default command in /.chroot_default_cmd
+    #  If this is not found, try to login as root with root's shell.
+    #  This to ensue we dont try to use a shell that is either not
+    #  available, or not found in the expeted location
+    #
+    [ "$_fnc_calls" -gt 0 ] && msg_2 "find_default_cmd()"
+    _f="${CHROOT_TO}/.chroot_default_cmd"
+    if [ -f "$_f" ]; then
+        cmd_w_params="$(cat "$_f")"
+        [ "$_fnc_calls" -gt 0 ] && msg_3 "Found a default cmd: $cmd_w_params"
+    else
+        [ "$_fnc_calls" -gt 0 ] && msg_2 "Trying to use root shell as default cmd"
+        _f="${CHROOT_TO}/etc/passwd"
+        [ ! -f "$_f" ] && error_msg "Trying to find chrooted root shell in its /etc/passwd failed"
+        cmd_w_params="$(awk -F: '/^root:/ {print $NF" -l"}' "$_f")"
+        [ "$_fnc_calls" -gt 0 ] && msg_3 "use_root_shell_as_default_cmd() - done"
+    fi
+    [ "$_fnc_calls" = 2 ] && msg_3 "find_default_cmd()"
+    unset _f
+}
+
+#---------------------------------------------------------------
+#
+#   Environment checks,
+#
+#---------------------------------------------------------------
+
+exists_and_empty() {
+    [ "$_fnc_calls" -gt 0 ] && msg_2 "exists_and_empty($1)"
+
+    _eae="$1"
+    folder_exits "$_eae"
+    [ "$(find "$_eae" | wc -l)" -gt 1 ] && error_msg "exists_and_empty($_eae) -Not empty"
+    unset _eae
+
+    [ "$_fnc_calls" = 2 ] && msg_3 "exists_and_empty($1) - done"
+}
+
 cleanout_dir() {
-    [ "$_fnc_calls" -gt 0 ] && msg_2 "cleanout_dir($1)"
+    [ "$_fnc_calls" -gt 0 ] && msg_2 "cleanout_dir()"
 
     d_clear="$1"
     [ -z "$d_clear" ] && error_msg "cleanout_dir() no param provided"
@@ -303,8 +292,6 @@ cleanout_dir() {
         rm -rf "${d_clear:?}"/*
     fi
     unset d_clear
-
-    [ "$_fnc_calls" = 2 ] && msg_3 "cleanout_dir($1) - done"
 }
 
 umount_mounted() {
@@ -323,6 +310,7 @@ umount_mounted() {
 }
 
 unmount_systen_folders() {
+    [ "$_fnc_calls" -gt 0 ] && msg_2 "unmount_systen_folders()"
     umount_mounted "$d_proc"
     if [ "$build_env" = "$be_ish" ]; then
         rm -rf "${d_dev:?}"/*
@@ -333,6 +321,54 @@ unmount_systen_folders() {
         umount_mounted "$d_dev_pts"
         umount_mounted "$d_dev"
     fi
+    [ "$_fnc_calls" = 2 ] && msg_3 "unmount_systen_folders() - done"
+}
+
+#---------------------------------------------------------------
+#
+#   Environment handling
+#
+#---------------------------------------------------------------
+
+is_chroot_being_used() {
+    [ "$_fnc_calls" -gt 0 ] && msg_2 "is_chroot_being_used()"
+    [ -z "$CHROOT_TO" ] && error_msg "is_chroot_being_used() CHROOT_TO not defined!"
+    _d="${CHROOT_TO}"/proc
+    [ ! -d "$_d" ] && error_msg "Folder: $_d does not exist!"
+
+    [ "$(find "$_d" | wc -l)" -gt 1 ] && {
+        error_msg "$CHROOT_TO is already chrooted into by something!"
+    }
+}
+
+#use_root_shell_as_default_cmd
+env_prepare() {
+    [ "$_fnc_calls" -gt 0 ] && msg_2 "env_prepare()"
+
+    ensure_dev_paths_are_defined "skip_pts"
+
+    [ ! -d "$CHROOT_TO" ] && error_msg "chroot location [$CHROOT_TO] is not a directory!"
+
+    msg_3 "Mounting system resources"
+    mount -t proc proc "$d_proc"
+
+    if [ "$build_env" = "$be_ish" ]; then
+        #
+        #  I havent figured out how to mount /dev on iSH for the
+        #  chrooted env, so for now, I simply copy the host /dev files
+        #  into the chroot env. And remove them when exiting
+        #
+        cp -a /dev/* "$d_dev"
+    elif [ "$build_env" = "$be_linux" ]; then
+        #	mount -t sysfs sys "$d_sys"
+        mount -o bind /dev "$d_dev"
+        mount -o bind /dev/pts "$d_dev_pts"
+    fi
+
+    # msg_3 "copying current /etc/resolv.conf"
+    cp /etc/resolv.conf "$CHROOT_TO/etc"
+
+    [ "$_fnc_calls" = 2 ] && msg_3 "env_prepare() - done"
 }
 
 env_restore() {
@@ -340,11 +376,11 @@ env_restore() {
     #  This would normally be called as a mount session is terminating
     #  Assume that if we get here we can do the cleanup.
     #
+    [ "$_fnc_calls" -gt 0 ] && msg_2 "env_restore()"
     if [ -n "$env_restore_started" ]; then
         msg_1 "env_restore() has already been called, skipping"
         return
     fi
-    [ "$_fnc_calls" -gt 0 ] && msg_2 "env_restore()"
 
     env_restore_started=1
     ensure_dev_paths_are_defined skip_pts
@@ -364,31 +400,26 @@ env_restore() {
     [ "$_fnc_calls" = 2 ] && msg_3 "env_restore() - done"
 }
 
-#
-#  Since this is called via a parameterized trap, shellcheck doesnt
-#  recognize this code is in use..
-#
-# shellcheck disable=SC2317  # Don't warn about unreachable code
-cleanup() {
+sig_handler() {
     [ "$_fnc_calls" -gt 0 ] && msg_2 "cleanup($1)"
 
     _signal="$1" # this was triggered by trap
     case "$_signal" in
 
     INT)
-        echo "Ctrl+C (SIGINT) was caught."
+        msg_1 "Ctrl+C (SIGINT) was caught."
         ;;
 
     TERM)
-        echo "Termination (SIGTERM) was caught."
+        msg_1 "Termination (SIGTERM) was caught."
         ;;
 
     HUP)
-        echo "Hangup (SIGHUP) was caught."
+        msg_1 "Hangup (SIGHUP) was caught."
         ;;
 
     *)
-        echo "Unknown signal ($_signal) was caught."
+        msg_1 "Unknown signal ($_signal) was caught."
         ;;
 
     esac
@@ -468,7 +499,6 @@ This will continue in $cleanup_sleep secnods,hit Ctrl-C if you want to abort
 
         define_chroot_env
         env_restore
-        rm -f "$f_is_chrooted" # ensure its gone if left
         exit 0
         ;;
 
@@ -494,6 +524,8 @@ This will continue in $cleanup_sleep secnods,hit Ctrl-C if you want to abort
     shift
 done
 
+is_chroot_being_used
+
 if this_is_ish && fs_is_debian && [ "$force_this" != "1" ]; then
     echo "************"
     echo "ish running Debian - this does not seem able to do chroot. You have been warned..."
@@ -508,8 +540,9 @@ can_chroot_run_now
 #
 #  In case something fails, always try to unmount
 #
-trap 'cleanup INT' INT
-trap 'cleanup TERM' TERM
+trap 'sig_handler INT' INT
+trap 'sig_handler TERM' TERM
+trap 'sig_handler HUP' HUP
 
 [ -z "$d_build_root" ] && error_msg "d_build_root empty!" 1
 
@@ -538,8 +571,8 @@ env_prepare
 
 msg_1 "chrooting: $CHROOT_TO ($cmd_w_params)"
 
-mkdir -p "$(dirname "$f_is_chrooted")"
-touch "$f_is_chrooted"
+# mkdir -p "$(dirname "$f_is_chrooted")"
+# touch "$f_is_chrooted"
 
 #
 #  Here we must disable all env variables that should not be passed into
@@ -550,7 +583,7 @@ touch "$f_is_chrooted"
 TMPDIR="" SHELL="" LANG="" chroot "$CHROOT_TO" $cmd_w_params
 chroot_exit_code="$?"
 
-rm -f "$f_is_chrooted"
+# rm -f "$f_is_chrooted"
 
 # else
 #     msg_2 "Clearing alt chroot flag: [$f_is_chrooted]"

@@ -26,7 +26,7 @@ Available options:
                    on iSH-AOK kernels [on|off]
                    Ignored on regular iSH
 "
-    this_fs_is_chrooted || {
+    this_is_ish && {
         txt="${txt}-d --defaults      Set defaults where applicable
 -C --console       Use first vterm (/dev/pts/0) as console,
                    disabling logins on this vterm
@@ -86,8 +86,8 @@ current_settings() {
     continous_sessions_display
     profile_hints_display
     aok_suffix_display
-    this_fs_is_chrooted || console_mode_display
     this_is_ish && {
+        console_mode_display
         boot_cmd_display
         launch_cmd_display
     }
@@ -95,12 +95,10 @@ current_settings() {
 
 set_defaults() {
     opts=""
-    this_fs_is_chrooted || opts="$opts -C off"
-    this_is_ish && opts="$opts -b default -l default"
-    if [ -n "$opts" ]; then
-	eval aok "$opts"
+    if this_is_ish; then
+        eval aok "$opts -C off -b default -l default"
     else
-	echo "No options can be defaulted when chrooted"
+        echo "No options can be defaulted when chrooted"
     fi
 }
 
@@ -175,7 +173,7 @@ continous_sessions_change() {
     }
     case "$continous_mode" in
     "on")
-        if this_fs_is_chrooted; then
+        if this_is_ish; then
             continous_sessions_change "off"
         fi
         touch "$f_logins_continous"
@@ -229,7 +227,7 @@ boot_cmd_change() {
     [ -z "$boot_cmd" ] && {
         error_msg "boot_cmd_change() - no param given"
     }
-    this_fs_is_chrooted && error_msg "Can't change boot_command on chrooted system"
+    this_is_ish || error_msg "Can't change boot_command on chrooted system"
 
     case "$boot_cmd" in
     "default") set_kernel_default boot_command "$boot_cmd_default" "" silent ;;
@@ -263,7 +261,7 @@ launch_cmd_change() {
     [ -z "$lnch_cmd" ] && {
         error_msg "launch_cmd_change() - no param given"
     }
-    this_fs_is_chrooted && error_msg "Can't change launch_command on chrooted system"
+    this_is_ish || error_msg "Can't change launch_command on chrooted system"
 
     case "$lnch_cmd" in
     "default")
@@ -380,7 +378,7 @@ console_mode_change() {
     [ -z "$use_console" ] && {
         error_msg "console_mode_change() - no param given, options are on/off"
     }
-    this_fs_is_chrooted && error_msg "Can't change console on chrooted system"
+    this_is_ish || error_msg "Can't change console on chrooted system"
 
     case "$use_console" in
     "on")
@@ -485,7 +483,7 @@ extralocking_change() {
     [ -z "$do_elock" ] && {
         error_msg "extralocking_change() - no param given, options are on/off"
     }
-    this_fs_is_chrooted && error_msg "Can't change extra_locking on chrooted system"
+    this_is_ish || error_msg "Can't change extra_locking on chrooted system"
     this_is_aok_kernel || {
         error_msg "extralocking_change() only usable on iSH-AOK kernels"
     }
@@ -536,7 +534,7 @@ multicore_change() {
     [ -z "$do_multicore" ] && {
         error_msg "multicore_change() - no param given, options are on/off"
     }
-    this_fs_is_chrooted && error_msg "Can't change multicore on chrooted system"
+    this_is_ish || error_msg "Can't change multicore on chrooted system"
     this_is_aok_kernel || {
         error_msg "multicore_change() only usable on iSH-AOK kernels"
     }
@@ -633,15 +631,14 @@ while [ -n "$1" ]; do
 
     "-C" | "--console")
         if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
-            if this_fs_is_chrooted; then
+            if ! this_is_ish; then
                 msg_4 "Can't set console mode on chrooted systems"
-
             else
                 console_mode_change "$2"
             fi
             shift # get rid of extra option
         fi
-        this_fs_is_chrooted || console_mode_display
+        this_is_ish && console_mode_display
         ;;
 
     "-d" | "--defaults") set_defaults ;;

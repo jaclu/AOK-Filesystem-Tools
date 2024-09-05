@@ -77,7 +77,7 @@ ensure_ish_or_chrooted ""
 msg_script_title "setup_devuan.sh  Devuan specific AOK env"
 initiate_deploy Devuan "$(cat /etc/devuan_version)"
 
-$setup_famdeb_scr || error_msg "in $setup_famdeb_scr"
+$scr_setup_famdeb || error_msg "in $scr_setup_famdeb"
 
 rsync_chown /opt/AOK/Devuan/etc/update-motd.d /etc
 

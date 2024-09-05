@@ -303,7 +303,7 @@ update_aok_release() {
     msg_2 "Updating $f_aok_release to current release"
     read -r old_release <"$f_aok_release"
     if [ -z "$old_release" ]; then
-        error_msg "Failed to read old release, leaving it as is" noexit
+        error_msg "Failed to read old release, leaving it as is" -1
         return
     fi
 

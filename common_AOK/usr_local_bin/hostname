@@ -108,19 +108,23 @@ read_syncfile() {
     #
     #  Copies last line of sync file to /etc/hosts
     #
+    echo "><> pre sudo_check" >/dev/stderr
     sudo_check
-
+    echo "><> post sudo_check" >/dev/stderr
     #
     #  First find sync file
     #
     fn_sync_file="$(get_sync_file_fn)"
+    echo "><> post get_sync_file_fn: $fn_sync_file" >/dev/stderr
     [ -z "$fn_sync_file" ] && error_msg "No sync file defined!"
     [ -f "$fn_sync_file" ] || error_msg "sync file '$fn_sync_file' not found!"
 
     #
     #  Use last line of sync file as hostname
     #
+    echo "><> pre awk" >/dev/stderr
     awk 'END {print $1}' "$fn_sync_file" | sudo tee /etc/hostname >/dev/null
+    echo "><> post awk" >/dev/stderr
 
     #
     #  Since only the last line is of interest, and the shortcut keeps

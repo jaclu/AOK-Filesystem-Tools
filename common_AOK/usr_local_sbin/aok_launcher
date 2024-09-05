@@ -35,7 +35,7 @@ fix_stdio_device() {
     [ -z "$1" ] && error_msg "fix_stdio_device() - no param 1"
     [ -z "$2" ] && error_msg "fix_stdio_device($fsd_src,) - no param 2"
 
-    [ -f "$f_this_is_chrooted" ] && {
+    is_fs_chrooted && {
         error_msg "fix_stdio_device($1, $2) can not be used when chrooted"
     }
     [ -c "$fsd_name" ] || {
@@ -70,7 +70,7 @@ verify_device() {
     [ -z "$vd_maj" ] && error_msg "verify_device($vd_dev_name,,) - no param 2"
     [ -z "$vd_min" ] && error_msg "verify_device($vd_dev_name,$vd_maj,) - no param 3"
 
-    [ -f "$f_this_is_chrooted" ] && {
+    is_fs_chrooted && {
         error_msg "verify_device($1, $2, $3) can not be used when chrooted"
     }
 
@@ -95,9 +95,10 @@ verify_devs() {
     #
     #  Make sure all /dev entries are reasonable
     #
-
-    # Can only run on non-chrooted iSH
-    [ -f "$f_this_is_chrooted" ] && [ ! -d /proc/ish ] && return
+    if is_fs_chrooted || [ ! -d /proc/ish ]; then
+        # verify_devs() can only be run on non-chrooted iSH
+        return
+    fi
 
     fix_stdio_device /proc/self/fd/0 stdin
     fix_stdio_device /proc/self/fd/1 stdout
@@ -198,10 +199,11 @@ recovery_mode_trigger() {
 ===  recovery-mode selected  ===
 ---  Starting rescue shell - On exit, App will terminate.
 ---  Be aware, this is  /bin/sh  in order to maximize chances of recovery
----  in case shell init-scripts are faulty. Most likely PATH is minimal!
+---  in case shell init-scripts are faulty. Most likely PATH is limited!
 EOF
     #endregion
-    [ ! -f "$f_pts_0_as_console" ] && [ ! -f "$f_this_is_chrooted" ] && {
+
+    ! is_fs_chrooted && [ ! -f "$f_pts_0_as_console" ] && {
         echo "---  inittab acions cancelled by recovery-mode are logged in:"
         echo "---    $f_recovery_mode_log"
         echo "---  This file will be removed when exiting recovery-mode!"
@@ -262,7 +264,7 @@ display_header() {
         fi
         echo "$header_msg"
     }
-    if $this_is_pts0 || [ -f "$f_this_is_chrooted" ]; then
+    if $this_is_pts0 || is_fs_chrooted; then
         echo "Press 'r' during bootup for recovery-mode"
         echo
     fi
@@ -272,8 +274,6 @@ display_header() {
 
 bootup() {
     # at bootup also log it
-
-    /usr/local/bin/network-check
 
     if [ -f "$f_pts_0_as_console" ]; then
         # also done in profile for interactive vterms
@@ -300,12 +300,12 @@ bootup() {
     fi
     # recovery_mode_disable "bootup completed"
 
-    if [ ! -f "$f_this_is_chrooted" ]; then
-        runlevel_wait
-    else
+    if is_fs_chrooted; then
         echo
         echo "This is chrooted, so runlevel_wait & network check are skipped"
         echo
+    else
+        runlevel_wait
     fi
 }
 
@@ -335,6 +335,7 @@ runlevel_wait() {
     done
     trap '' INT # abort capturing Ctrl-C
     print_log "runlevel_wait completed, runlevel is now: $(rc-status -r)"
+
 }
 
 set_abort_runlevel_wait() {
@@ -359,7 +360,7 @@ deploy_aok() {
     #  During deploy triggered by aok, you can hit Ctrl-C to get a shell
     #  if you need to inspect something
     #
-    trap 'set_deploy_aok_abort' INT
+    # trap 'set_deploy_aok_abort' INT # << seems to trigger by something
     #
     #  This is a new AOK-FS that has not yet completed its setup
     #  continue the deploy
@@ -374,7 +375,6 @@ deploy_aok() {
     echo "*                                                    *"
     echo "******************************************************"
     echo
-    /usr/local/bin/network-check
 
     da_depl_step="$(cat "$f_deploy_state")"
     /usr/local/bin/logger aok_launcher Triggering deploy step: "$da_depl_step"
@@ -581,7 +581,7 @@ handle_logins() {
         #  post login session, decide to exit or contimue
         #
 
-        if [ -f "$f_this_is_chrooted" ]; then
+        if is_fs_chrooted; then
             _s="This is chrooted, always terminating on logout,"
             _s="$_s this should also exit the chroot"
             print_log "$_s"
@@ -657,6 +657,7 @@ login_with_param_check() {
         recovery_mode_disable login_param_checks
         print_log "Starting login with params: [$login_params]" noecho
         #print_log "><> $(date) login with params: $f_login_prog $login_params"
+        # /usr/local/bin/network-check
         # shellcheck disable=SC2086  # in this case variable should expand
         $f_login_prog $login_params || {
             login_ex_code="$?"
@@ -742,12 +743,24 @@ print_log() {
     #  statuses during startup
     #  For log only items, give noecho as 2nd param
     #
-    [ "$2" != "noecho" ] && echo "$1"
+    [ "$2" != "noecho" ] && echo "$1" >/dev/stderr
     #
     #  Since other tools launched by this might have changed it, set it
     #  here for now, later check if it is needed
     #
     log_it "$1"
+}
+
+this_is_ish() {
+    test -d /proc/ish
+}
+
+is_fs_chrooted() {
+    # this quick and simple check doesnt work on ish
+    # so lets pretend for now chroot does not happen on ish
+    this_is_ish && return 1                  # would never happen here :)
+    [ "$(uname -s)" != "Linux" ] && return 1 # can only chroot this on Linux
+    ! grep -q " / / " /proc/self/mountinfo
 }
 
 fs_is_alpine() {
@@ -798,7 +811,6 @@ f_login_default_user="$state_prefix"/login-default-username
 f_profile_hints="$state_prefix"/show_profile_hints
 f_pts_0_as_console="$state_prefix"/pts_0_as_console
 f_recovery_mode="$state_prefix"/recovery-mode
-f_this_is_chrooted="$state_prefix"/this_fs_is_chrooted
 
 f_aok_release=/etc/aok-fs-release
 f_rel_alpine=/etc/alpine-release
@@ -832,7 +844,7 @@ prog_name=$(basename "$0")
 
 recovery_mode_enable
 
-[ -f "$f_this_is_chrooted" ] && {
+is_fs_chrooted && {
     # When chrooted, initttab wont exexute so do such tasks here
     /usr/local/bin/logger "$prog_name" "===  System startup  ==="
     /usr/local/sbin/reset-run-dir
@@ -866,6 +878,8 @@ recovery_mode_probe main2
 if $this_is_pts0; then
     bootup # if /dev/console is used, pts/0 will not exit this
 else
+    # it works direcly as user session starts, but not here, on iSH.
+    # It does work when chrooted
     /usr/local/bin/network-check
 fi
 

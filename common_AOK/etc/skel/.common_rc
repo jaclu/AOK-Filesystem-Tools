@@ -10,6 +10,10 @@
 #  Common settings that can be used by most shells
 #
 
+fs_is_chrooted() {
+    ! grep -q " / / " /proc/self/mountinfo
+}
+
 prepend_path() {
     extra_p="$1"
 
@@ -102,7 +106,8 @@ prompt_colors() {
     #  It should also not be pointlessly in your face if you are using
     #  the iSH console
     #
-    if [ -n "$SSH_CLIENT" ] || [ -f /etc/opt/AOK/this_fs_is_chrooted ]; then
+
+    if [ -n "$SSH_CLIENT" ] || fs_is_chrooted; then
         PCOL_HOSTNAME=222
     else
         PCOL_HOSTNAME=34

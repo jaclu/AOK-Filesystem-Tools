@@ -21,29 +21,17 @@ find_fastest_mirror() {
 }
 
 removing_unwanted_package() {
+    # removes all packages listed as params
     rup_pkg="$1"
-    _s="removing_unwanted_package() - called without param"
-    [ -z "$rup_pkg" ] && error_msg "$_s"
-
-    msg_3 "removing $rup_pkg from CORE_APKS"
-    CORE_APKS="$(echo "$CORE_APKS" | sed "s/$rup_pkg//")"
-}
-
-use_older_apk() {
-    url="$1"
-    pkg_name="$(echo "$url" | sed 's#/# #g' | awk '{print $NF}')"
-    pkg_base_name="$(echo "$pkg_name" | sed 's/-[0-9].*//')"
-    msg_2 "For Alpine > 3.18, an older $pkg_base_name must be used"
-    removing_unwanted_package "$pkg_base_name"
-
-    msg_3 "Installing fixed vers - $pkg_name"
-    wget "$url" 2>/dev/null || error_msg "Failed to download: $url"
-    apk del "$pkg_base_name" >/dev/null
-    apk add "$pkg_name" >/dev/null || error_msg "Failed to install $pkg_name"
-    msg_3 "$pkg_name installed and version locked"
-    rm "$pkg_name" || {
-        error_msg "Failed to remove downloaded $pkg_name after installing it"
+    [ -z "$1" ] && {
+        error_msg "removing_unwanted_package() - called without param"
     }
+    while [ -n "$1" ]; do
+        rup_pkg="$1"
+        msg_3 "removing $rup_pkg from CORE_APKS"
+        CORE_APKS="$(echo "$CORE_APKS" | sed "s/$rup_pkg//")"
+        shift
+    done
 }
 
 handle_apks() {
@@ -58,30 +46,35 @@ handle_apks() {
     if ! min_release "3.16"; then
         if [ -z "${CORE_APKS##*shadow-login*}" ]; then
             msg_2 "Excluding packages not yet availabe before 3.16"
-            removing_unwanted_package "shadow-login"
-            removing_unwanted_package "py3-pendulum"
-            removing_unwanted_package "zsh-completions"
-            removing_unwanted_package "zsh-history-substring-search"
+            removing_unwanted_package shadow-login
+            removing_unwanted_package py3-pendulum
+            removing_unwanted_package zsh-completions
+            removing_unwanted_package zsh-history-substring-search
         fi
     fi
     #if ! min_release 3.15; then
     #    msg_2 "Pre 3.15 procps was called procps-ng"
     #    CORE_APKS="$(echo "$CORE_APKS" | sed 's/procps/procps-ng/')"
-    # elif min_release "3.19"; then
-    #     msg_3 "Alpine >= 3.19 - procps cant be used"
-    #     removing_unwanted_package procps
     #fi
-    if min_release "3.20"; then
-        msg_2 "Alpine >= 3.20 - coreutils cant be used"
-        removing_unwanted_package coreutils
-    fi
-
     min_release "3.19" && {
-        # 3.19 and higher will insta-die if a modern sudo is used....
-        use_older_apk https://dl-cdn.alpinelinux.org/alpine/v3.18/community/x86/sudo-1.9.13_p3-r2.apk
+        msg_1 "iSH has some limitations on the latest releases..."
+
+        if min_release "3.20"; then
+            msg_2 "Alpine >= 3.20 - coreutils cant be used"
+            removing_unwanted_package coreutils
+        fi
+
+        # 3.19 and higher will insta-die if the default sudo is used....
+        msg_2 "Alpine >= 3.19 - sudo from 3.18 must be used"
+        apk add sudo=1.9.13_p3-r2 \
+            --repository=https://dl-cdn.alpinelinux.org/alpine/v3.18/community
+        removing_unwanted_package sudo
+
         # 3.19 and higher has stability issues with modern sqlite
-        use_older_apk https://dl-cdn.alpinelinux.org/alpine/v3.18/main/x86/sqlite-libs-3.41.2-r3.apk
-        use_older_apk https://dl-cdn.alpinelinux.org/alpine/v3.18/main/x86/sqlite-3.41.2-r3.apk
+        msg_2 "Alpine >= 3.19 - sqlite from 3.18 is recomended"
+        apk add sqlite=3.41.2-r3 sqlite-libs=3.41.2-r3 \
+            --repository=https://dl-cdn.alpinelinux.org/alpine/v3.18/main
+        removing_unwanted_package sqlite sqlite-libs
     }
 
     if [ -n "$CORE_APKS" ]; then
@@ -129,15 +122,15 @@ prepare_env_etc() {
     fi
 
     min_release 3.20 && {
-	#
-	#  Starting with this release, an empty Last Password Change
-	#  for root in /etc/shadow will trigger the harmless warning
-	#    Warning: your password will expire in 0 days.
-	#  to be displayed when doing: sudo su
-	# Setting it to anything but the default 0 will solve this.
-	#
-	msg_2 "Fixing warning about password expire when doing sudo su"
-	sed -i '/^root/c\root:*:1:0:::::' /etc/shadow
+        #
+        #  Starting with this release, an empty Last Password Change
+        #  for root in /etc/shadow will trigger the harmless warning
+        #    Warning: your password will expire in 0 days.
+        #  to be displayed when doing: sudo su
+        # Setting it to anything but the default 0 will solve this.
+        #
+        msg_2 "Fixing warning about password expire when doing sudo su"
+        sed -i '/^root/c\root:*:1:0:::::' /etc/shadow
     }
 }
 
@@ -193,8 +186,8 @@ handle_apks
 msg_2 "adding group sudo"
 groupadd sudo
 
-if ! "$setup_common_aok"; then
-    error_msg "$setup_common_aok reported error"
+if ! "$scr_setup_common_env"; then
+    error_msg "$scr_setup_common_env reported error"
 fi
 
 msg_2 "Copy /etc/motd_template"

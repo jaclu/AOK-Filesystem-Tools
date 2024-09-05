@@ -17,6 +17,14 @@ notification() {
     fi
 }
 
+is_fs_chrooted() {
+    # this quick and simple check doesnt work on ish
+    # so lets pretend for now chroot does not happen on ish
+    this_is_ish && return 1                  # would never happen here :)
+    [ "$(uname -s)" != "Linux" ] && return 1 # can only chroot this on Linux
+    ! grep -q " / / " /proc/self/mountinfo
+}
+
 coreutils_check() {
     #
     #  On Alpine >= 3.20  iSH fails to handle /dev if coreutils is installed
@@ -109,7 +117,7 @@ else
     use_wall=false
 fi
 
-[ ! -d /proc/ish ] && [ ! -f /etc/opt/AOK/this_fs_is_chrooted ] && {
+[ ! -d /proc/ish ] && ! is_fs_chrooted && {
     notification "---  WARNING: $(basename "$0") - should only run on iSH"
     exit 0
 }

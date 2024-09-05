@@ -141,7 +141,7 @@ initial_fs_prep_fam_deb
 # msg_2 "Set openrc to runlevel default"
 # /usr/sbin/openrc default
 
-"$setup_debian_scr"
+"$scr_setup_debian"
 
 duration="$(($(date +%s) - t_choose_distro_debian_start))"
 display_time_elapsed "$duration" "Choose Distro - Debian install"

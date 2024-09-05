@@ -70,22 +70,20 @@ Then just import this into iSH!
     exit 0
 }
 
-check_initial_dependencies() {
-    _deps=""
-    [ -z "$(command -v rsync)" ] && _deps="$_deps rsync"
+ensure_real_wget_is_installed() {
+    install_wget=false
     _wget_cmd="$(command -v wget)"
     if [ -z "$_wget_cmd" ]; then
-        _deps="$_deps wget"
+        install_wget=true
     elif [ -n "$_wget_cmd" ] && readlink "$_wget_cmd" | grep -q busybox; then
-        _deps="$_deps wget"
+        install_wget=true
         msg_3 "You need to install a real wget, the busybox one does not handle redirects"
     fi
-    [ -z "$_deps" ] && return
+    $install_wget || return
 
-    msg_1 "In order for this to work some dependencies will be installed"
+    msg_1 "In order for this to work wget will be installed"
 
     case "$(detect_fs)" in
-
     "$distro_alpine")
         #  shellcheck disable=SC2086 # in this case it should expand
         apk add $_deps
@@ -228,19 +226,37 @@ display_build_target() { # Multi OK 1
     fi
 
     if [ "$build_target" = "$distro_debian" ]; then
-        release_msg="Debian"
+        release_msg="$distro_debian"
     elif [ "$build_target" = "$distro_devuan" ]; then
-        release_msg="Devuan"
+        release_msg="$distro_devuan"
     elif [ "$build_target" = "$distro_gentoo" ]; then
-        release_msg="Gentoo"
+        release_msg="$distro_gentoo"
     else
         [ -z "$ALPINE_VERSION" ] && error_msg "ALPINE_VERSION is undefined"
         release_msg="Alpine: $ALPINE_VERSION"
     fi
     msg_1 "Building iSH-AOK $release_msg filesystem - $AOK_VERSION"
+    [ "$release_msg" = "$distro_gentoo" ] && {
+        echo "###"
+        echo "###   Gentoo builds are in early beta so will proabably not be usefull"
+        echo "###"
+        echo "###   You have been warned..."
+        echo "###"
+    }
     unset release_msg
 
+    [ -n "$HOME_DIR_USER" ] && msg_4 "HOME_DIR_USER: $HOME_DIR_USER"
+    [ -n "$HOME_DIR_ROOT" ] && msg_4 "HOME_DIR_ROOT: $HOME_DIR_ROOT"
+    [ -n "$POPULATE_FS" ] && msg_4 "POPULATE_FS:   $POPULATE_FS"
+    [ -n "$PREBUILD_ADDITIONAL_TASKS" ] && {
+        msg_4 "PREBUILD_ADDITIONAL_TASKS:   $PREBUILD_ADDITIONAL_TASKS"
+    }
+    [ -n "$FIRST_BOOT_ADDITIONAL_TASKS" ] && {
+        msg_4 "FIRST_BOOT_ADDITIONAL_TASKS: $FIRST_BOOT_ADDITIONAL_TASKS"
+    }
+
     if ! $aok_FS_do_compress; then
+        echo
         msg_2 "*** Will not create the compressed image! ***"
     fi
     echo
@@ -248,8 +264,6 @@ display_build_target() { # Multi OK 1
 
 cache_fs_image() {
     msg_2 "cache_fs_image()"
-    msg_3 "><> src_image [$src_image]"
-    msg_3 "><> src_tarball [$src_tarball]"
     [ -z "$src_image" ] && error_msg "cache_fs_image() no src_image supplied"
     [ -z "$src_tarball" ] && error_msg "cache_fs_image() no src_taball supplied"
 
@@ -271,6 +285,8 @@ cache_fs_image() {
             error_msg "Invalid build_target: $build_target"
             ;;
         esac
+
+        ensure_real_wget_is_installed
         wget --no-check-certificate "$src_image" -O "$src_tarball" || {
             echo "ERROR: Failed to download $src_image"
             exit 1
@@ -284,92 +300,80 @@ copy_AOK_to_dest() {
     #  Copy AOK content to destination
     #
     msg_2 "copy_AOK_to_dest()"
-
+    [ -z "$d_build_root" ] && {
+        error_msg "copy_AOK_to_dest() - d_build_root undefined"
+    }
+    aok_files="${d_build_root}"/opt/AOK
     mkdir -p "$aok_files"
     mkdir -p "$d_build_root"/etc/opt
-    rsync_chown /opt/AOK/ "$d_build_root"/opt/AOK silent
+    rsync_chown /opt/AOK/ "$aok_files" silent
     # msg_3 "copy_AOK_to_dest() done"
 }
 
 setup_Alpine_on_1st_boot() {
     msg_2 "setup_Alpine_on_1st_boot()"
-
-    # buildtype_set "$distro_alpine"
-    set_new_etc_profile "$setup_alpine_scr"
+    set_new_etc_profile "$scr_setup_alpine"
     # msg_3 "setup_Alpine_on_1st_boot() done"
 }
 
 setup_Debian_on_1st_boot() {
     msg_2 "setup_Debian_on_1st_boot()"
-
     # shellcheck source=/opt/AOK/FamDeb/deb_utils.sh
     . /opt/AOK/FamDeb/deb_utils.sh
     initial_fs_prep_fam_deb
-
     # buildtype_set "$distro_debian"
-    set_new_etc_profile "$setup_debian_scr"
-
+    set_new_etc_profile "$scr_setup_debian"
     # msg_3 "setup_Debian_on_1st_boot() done"
 }
 
 setup_Devuan_on_1st_boot() {
     msg_2 "setup_Devuan_on_1st_boot()"
-
     # shellcheck source=/opt/AOK/FamDeb/deb_utils.sh
     . /opt/AOK/FamDeb/deb_utils.sh
     initial_fs_prep_fam_deb
-
     # buildtype_set "$distro_devuan"
-    set_new_etc_profile "$setup_devuan_scr"
-
+    set_new_etc_profile "$scr_setup_devuan"
     # msg_3 "setup_Devuan_on_1st_boot() done"
 }
 
 setup_Gentoo_on_1st_boot() {
     msg_2 "setup_Gentoo_on_1st_boot()"
     cp -a /opt/AOK/Gentoo/etc/inittab "$d_build_root"/etc
-    set_new_etc_profile "$setup_gentoo_scr"
+    set_new_etc_profile "$scr_setup_gentoo"
     # msg_3 "setup_Gentoo_on_1st_boot() done"
 }
 
 select_distro_on_1st_boot() {
-    msg_2 "select_distro_on_1st_boot()"
-
-    # buildtype_set "$destfs_select"
-    touch "$f_destfs_select_hint"
-
-    set_new_etc_profile "$setup_select_distro_prepare"
-
     #
     #  If this build platform cant chroot, then the preparational steps
     #  will be run on 1st boot, a slight delay, but end result is
     #  the same.
     #
+    msg_2 "select_distro_on_1st_boot()"
+    touch "$f_destfs_select_hint"
+    set_new_etc_profile "$scr_select_distro_prepare"
     # msg_3 "select_distro_on_1st_boot()  done"
 }
 
 prebuild_fs() {
     msg_1 "prebuild_fs()"
+    msg_1 "><> #######  $(date)  #######"
 
     if [ "$build_env" = "$be_other" ]; then
         error_msg "Not possible to pre-build on this environment!"
     fi
-    #
-    # chrooting and doing setup
-    #
-    cd /opt/AOK || {
-        error_msg "Failed to cd into: /opt/AOK"
-    }
+
+    # In preparation for chrooting leave new FS folder
+    cd /opt/AOK || error_msg "Failed to cd into: /opt/AOK"
 
     deploy_state_set "$deploy_state_pre_build"
-
     [ -n "$force_chroot" ] && msg_3 "Forcing chroot to run"
-
     /opt/AOK/tools/do_chroot.sh "$force_chroot" /etc/profile || {
         error_msg "There was an error during prebuild"
     }
 
     msg_1 "Returned from prebuild chroot"
+    msg_1 "><> #######  $(date)  #######"
 
     #
     #  This ensures openrc doesnt detect previous runstates during
@@ -446,16 +450,12 @@ t_build_start="$(date +%s)"
 # shellcheck disable=SC1007
 prog_name=$(basename "$0")
 
-deploy_state_set "$deploy_state_na" # Dest FS not yet created
-
 #
 #  Point to AOK-Filesystem-Tools dir, in case this was run with a path
 #  to keep things relative and simple
 #
 #  shellcheck disable=SC1007
-cd /opt/AOK || {
-    error_msg "Failed to cd into: /opt/AOK"
-}
+cd /opt/AOK || error_msg "Failed to cd into: /opt/AOK"
 
 #
 #  Default for options
@@ -465,23 +465,19 @@ verbose=false                 # true displays tar/untar progress
 pre_build_FS=false            # true means generate pre-built FS
 aok_FS_do_compress=true       # compress FS at end of build_fs
 
-aok_files="${d_build_root}"/opt/AOK
-
 parse_arguments "$@"
 
-check_initial_dependencies
-
-this_fs_is_chrooted && error_msg "You can't build an FS when already chrooted!"
+is_fs_chrooted && error_msg "You can't build an FS when already chrooted!"
 
 display_build_target
 
 msg_2 "Preparing build environment"
 
-[ -z "$d_build_root" ] && error_msg "d_build_root not assigned"
-[ -d "$d_build_root" ] || error_msg "d_build_root not a folder [$d_build_root]"
-
 msg_3 "Clearing build root $d_build_root"
-rm -rf "$d_build_root"
+[ -z "$d_build_root" ] && error_msg "d_build_root not assigned"
+rm -rf "$d_build_root" || error_msg "Failed to clear out: $d_build_root"
+mkdir -p "$d_build_root" || error_msg "Failed to mkdir $d_build_root"
+deploy_state_set "$deploy_state_na" # Dest FS not yet created
 
 if [ "$build_target" = "$distro_debian" ]; then
     src_image="$DEBIAN_SRC_IMAGE"
@@ -496,7 +492,6 @@ else
     src_image="$alpine_src_image"
     src_tarball="$alpine_src_tb"
 fi
-
 cache_fs_image
 create_fs "${d_src_img_cache}/$src_tarball" "$d_build_root" "$verbose"
 
@@ -561,6 +556,7 @@ else
 fi
 
 msg_2 "The filesystem is ready!"
+msg_1 "><> #######  $(date)  #######"
 
 consider_generating_tarball
 

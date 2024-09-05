@@ -33,9 +33,9 @@ Select distro:
     1)
         echo "Alpine selected"
         echo
-        msg_1 "running $setup_alpine_scr"
+        msg_1 "running $scr_setup_alpine"
         rm -f "$f_destfs_select_hint"
-        "$setup_alpine_scr"
+        "$scr_setup_alpine"
         ;;
 
     2)
@@ -77,7 +77,7 @@ hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
 manual_runbg
 
 #  shellcheck disable=SC2009
-if ! this_fs_is_chrooted && ! ps ax | grep -v grep | grep -qw cat; then
+if ! is_fs_chrooted && ! ps ax | grep -v grep | grep -qw cat; then
     cat /dev/location >/dev/null &
     msg_1 "iSH now able to run in the background"
 fi

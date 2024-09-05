@@ -24,16 +24,13 @@ clear_AOK
 
 echo "After you exit the chroot"
 echo
-echo "1. There will be a warning about /etc/opt/AOK/this_fs_is_chrooted"
-echo "   not found. This can be ignored."
-echo
-echo "2. Consider removing /root/img_build"
+echo "1. Consider removing /root/img_build"
 echo "   rm -rf [mountpoint]/root/img_build"
 echo
-echo "3. Depending on privacy concerns, since this image is typically"
+echo "2. Depending on privacy concerns, since this image is typically"
 echo "   made available for public download, consider to check"
 echo "   [mountpont]/root/.bash_history"
 echo
-echo "4.  tar the FS into a Debian10-x-aok-y.tgz image that can be used"
+echo "3.  tar the FS into a Debian10-x-aok-y.tgz image that can be used"
 echo "    with a public url in AOK_VARS to define DEBIAN_SRC_IMAGE"
 echo

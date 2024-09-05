@@ -117,7 +117,7 @@ rm /busybox
 rm /lib/libc.musl*
 rm /lib/ld-musl*
 
-"$setup_devuan_scr"
+"$scr_setup_devuan"
 
 duration="$(($(date +%s) - tid_start))"
 display_time_elapsed "$duration" "Devuan install"

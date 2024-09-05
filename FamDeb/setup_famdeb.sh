@@ -110,7 +110,7 @@ ensure_ish_or_chrooted ""
 #
 #  Common deploy, used for all distros
 #
-$setup_common_aok || error_msg "in $setup_common_aok"
+$scr_setup_common_env || error_msg "in $scr_setup_common_env"
 
 msg_script_title "setup_famdeb.sh  Common setup steps for Debian based distros"
 

@@ -1,37 +1,91 @@
 #!/bin/sh
 #
-#  Part of https://github.com/jaclu/AOK-Filesystem-Tools
+#  Part of https://github.com/jaclu/iSH-IP-stats
 #
 #  License: MIT
 #
 #  Copyright (c) 2023-2024: Jacob.Lundqvist@gmail.com
 #
-#  Reports network status
+#  This script checks network connectivity and DNS resolution.
+#
+#  To mak it platform neutral and avoid dependency on additional tools,
+#  DNS is tested by pinging a host.
+#
+#  Exit codes:
+#   0 - Connected to the Internet with DNS resolution working
+#   1 - Not connected to the Internet
+#   2 - Connected to the Internet, but DNS resolution is not working
+#   3 - Other error, see msg
 #
 
-ping_tst_node=8.8.8.8
-dns_tst_node=amazon.com
+#  Set to false if the preference is not to use any Google service :)
+use_google=true
 
-#
-#  When chrooted ping must be run with sudo - odd ...
-#
-if [ -f /etc/opt/AOK/this_fs_is_chrooted ]; then
-    cmd="sudo ping"
+if [ "$use_google" = true ]; then
+    dns_tst=google.com
+
+    # Google DNS servers
+    ping_tst_1=8.8.8.8
+    ping_tst_2=8.8.4.4
 else
-    cmd="ping"
+    dns_tst=amazon.com
+
+    # Cloudflare DNS servers
+    ping_tst_1=1.1.1.1
+    ping_tst_2=1.0.0.1
 fi
 
-if $cmd -c 2 "$ping_tst_node" >/dev/null 2>&1; then
-    if $cmd -c 2 "$dns_tst_node" >/dev/null 2>&1; then
-        echo "Connected to the Internet and DNS is resolving!"
-	ex_code=0
-    else
-        echo "***  DNS does not seem to resolve!"
-	ex_code=2
+this_is_ish() {
+    test -d /proc/ish
+}
+
+ping_check() {
+    #
+    # Using trap prevents the shell from displaying an alarm if dns
+    # fails on MacOS. According to GPT harmles on other platforms
+    #
+    trap '' ALRM
+    $ping_cmd -c 2 "$1" >/dev/null 2>&1
+    ex_code="$?" # need to save to keep it past the trap
+    trap - ALRM
+    return "$ex_code"
+}
+
+if ! command -v ping >/dev/null 2>&1; then
+    echo "ERROR: this depends on the ping command - not found"
+    exit 3
+fi
+
+if [ "$(uname -s)" = "Linux" ]; then
+    ping_cmd="ping -W 2"
+else
+    # BSD / macOS uses a different flag for timeout, typically '-t'
+    ping_cmd="ping -t 2"
+fi
+
+# When chrooted ping must be run with sudo ...
+if this_is_ish ||
+    ( # this chroot check cant be done on iSH so juse use sudo
+        [ "$(uname -s)" = "Linux" ] &&
+            ! grep -q " / / " /proc/self/mountinfo
+    ); then
+    ping_cmd="sudo $ping_cmd"
+fi
+
+# Check connectivity
+if ! ping_check "$ping_tst_1"; then
+    echo "*** Failed to connect to: $ping_tst_1 - trying: $ping_tst_2"
+    if ! ping_check "$ping_tst_2"; then
+        echo "*** Not able to access the Internet!"
+        exit 1
     fi
-else
-    echo "***  Not able to access the Internet!"
-    ex_code=1
 fi
-echo
-exit "$ex_code"
+
+# Check DNS resolution
+if ping_check "$dns_tst"; then
+    echo "Connected to the Internet and DNS is resolving!"
+    exit 0
+else
+    echo "*** DNS does not seem to resolve!"
+    exit 2
+fi

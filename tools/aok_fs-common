@@ -11,9 +11,9 @@
 #
 
 d_aok_fs="$TMPDIR"/aok_fs
-
 d_aok_completed="$TMPDIR"/aok_completed
 
+mkdir -p "$d_aok_fs" || error_msg "Failed to create folder: $d_aok_fs"
 mkdir -p "$d_aok_completed" || {
     error_msg "Failed to create: $d_aok_completed"
 }

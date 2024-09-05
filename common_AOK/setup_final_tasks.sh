@@ -24,7 +24,7 @@ wait_for_bootup() {
     if [ "$(get_kernel_default launch_command)" != "$launch_cmd_AOK" ]; then
         if deploy_state_is_it "$deploy_state_pre_build" &&
             ! fs_is_devuan &&
-            ! this_fs_is_chrooted; then
+            ! is_fs_chrooted; then
             msg_2 "Waiting for runlevel default to be ready, normally < 10s"
             msg_3 "iSH sometimes fails this, so if this doesnt move on, try restarting iSH"
             while ! rc-status -r | grep -q default; do
@@ -76,7 +76,7 @@ ensure_path_items_are_available() {
 
 aok_kernel_consideration() {
     msg_2 "aok_kernel_consideration()"
-    if ! this_is_aok_kernel || this_fs_is_chrooted; then
+    if ! this_is_aok_kernel || is_fs_chrooted; then
         msg_3 "Not direct aok kernel!"
         #min_release 3.18 || {
         #    msg_3 "procps wont work on regular iSH for Alpine < 3.18"
@@ -99,30 +99,30 @@ aok_kernel_consideration() {
     deploy_bat_monitord
 }
 
-start_cron_if_active() {
-    msg_2 "start_cron_if_active()"
-    #  shellcheck disable=SC2154
-    [ "$USE_CRON_SERVICE" != "Y" ] && return
+# start_cron_if_active() {
+#     msg_2 "start_cron_if_active()"
+#     #  shellcheck disable=SC2154
+#     [ "$USE_CRON_SERVICE" != "Y" ] && return
 
-    ensure_ish_or_chrooted "Cant attempt to start cron on a chrooted/non-iSH device"
+#     ensure_ish_or_chrooted "Cant attempt to start cron on a chrooted/non-iSH device"
 
-    cron_service="/etc/init.d"
-    if fs_is_alpine; then
-        cron_service="$cron_service/dcron"
-    elif fs_is_debian; then
-        cron_service="$cron_service/cron"
-    else
-        error_msg "cron service not available for this FS"
-    fi
+#     cron_service="/etc/init.d"
+#     if fs_is_alpine; then
+#         cron_service="$cron_service/dcron"
+#     elif fs_is_debian; then
+#         cron_service="$cron_service/cron"
+#     else
+#         error_msg "cron service not available for this FS"
+#     fi
 
-    openrc_might_trigger_errors
-    [ ! -x "$cron_service" ] && error_msg "Cron service not found: $cron_service"
-    if ! "$cron_service" status >/dev/null; then
-        msg_3 "Starting cron service"
-        "$cron_service" start
-    fi
-    # msg_3 "start_cron_if_active() - done"
-}
+#     openrc_might_trigger_errors
+#     [ ! -x "$cron_service" ] && error_msg "Cron service not found: $cron_service"
+#     if ! "$cron_service" status >/dev/null; then
+#         msg_3 "Starting cron service"
+#         "$cron_service" start
+#     fi
+#     # msg_3 "start_cron_if_active() - done"
+# }
 
 deploy_bat_monitord() {
     s_name="bat-monitord"
@@ -145,7 +145,7 @@ deploy_bat_monitord() {
 }
 
 run_additional_tasks_if_found() {
-    msg_2 "run_additional_tasks_if_found()"
+    # msg_2 "run_additional_tasks_if_found()"
 
     [ -n "$FIRST_BOOT_ADDITIONAL_TASKS" ] && {
         msg_1 "Running additional final setup tasks"
@@ -162,14 +162,14 @@ run_additional_tasks_if_found() {
 
 clean_up_dest_env() {
     msg_2 "clear deploy state"
-    rm "$f_dest_fs_deploy_state"
+    rm -f "$f_dest_fs_deploy_state"
 
     rm -f "$f_home_user_replaced"
     rm -f "$f_home_root_replaced"
     rm -f "$f_hostname_initial"
 
     # dont remove if final dest is chrooted!
-    if this_fs_is_chrooted; then
+    if is_fs_chrooted; then
         msg_3 "dest is chrooted - Leaving: $f_chroot_hostname"
     else
         rm -f "$f_chroot_hostname"
@@ -194,8 +194,8 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 # shellcheck source=/opt/AOK/tools/utils.sh
 [ -z "$d_aok_etc" ] && . /opt/AOK/tools/utils.sh
-. /opt/AOK/tools/ios_version.sh
-. /opt/AOK/tools/user_interactions.sh
+. "$scr_ios_version"
+. "$src_user_interactions"
 
 this_is_aok_kernel && fs_is_alpine && min_release "3.20" && {
     echo
@@ -207,7 +207,7 @@ deploy_state_set "$deploy_state_finalizing"
 msg_script_title "$prog_name_sft - Final part of setup"
 
 msg_2 "Dest platform aok tweaks"
-if this_fs_is_chrooted; then
+if is_fs_chrooted; then
     aok -s off # should happen before set_hostname
 else
     this_is_aok_kernel || {
@@ -220,6 +220,8 @@ fi
 user_interactions # mount iCloud & set TZ
 ensure_path_items_are_available
 set_hostname # it might have changed since pre-build...
+
+msg_1 "><> ###########  deploy state: $(cat /etc/opt/AOK/deploy_state)  ###########"
 
 hostfs_name="$(detect_fs)"
 f_fs_final_tasks=/opt/AOK/"$hostfs_name"/setup_final_tasks.sh
@@ -235,7 +237,7 @@ this_is_ish && wait_for_bootup
 #
 #  Setting up chroot env to use aok_launcher
 #
-if this_fs_is_chrooted; then
+if is_fs_chrooted; then
     _f="/usr/local/sbin/aok_launcher"
     msg_2 "Preparing chroot environment"
     msg_3 "Setting default chroot app: $_f"
@@ -281,13 +283,11 @@ set_new_etc_profile "$next_etc_profile"
 
 replace_home_dirs
 run_additional_tasks_if_found
+clean_up_dest_env
+/usr/local/bin/check-env-compatible
 
 duration="$(($(date +%s) - tsaft_start))"
 display_time_elapsed "$duration" "Setup Final tasks"
-
-clean_up_dest_env
-
-/usr/local/bin/check-env-compatible
 
 msg_1 "File system deploy completed"
 
@@ -297,3 +297,7 @@ echo
 echo "Setup has completed the last deploy steps and is ready!
 You are recomended to reboot in order to ensure that all services are started,
 and your environment is used."
+msg_1 "><> f_dest_fs_deploy_state[$f_dest_fs_deploy_state]"
+msg_1 "><>f_host_deploy_state [$f_host_deploy_state]"
+
+exit 0

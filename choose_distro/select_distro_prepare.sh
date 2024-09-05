@@ -32,13 +32,13 @@ apk upgrade
 msg_3 "Installing wget (needed for Debian download) & pigz (multicore untar)"
 apk add wget pigz
 
-set_new_etc_profile "$setup_select_distro"
+set_new_etc_profile "$scr_select_distro"
 
-if this_fs_is_chrooted; then
+if is_fs_chrooted; then
     msg_2 "This is chrooted"
     msg_3 "It doesn't make sense to select Distro at this time"
     exit 123
 else
     msg_2 "System is prepared, now run distro selection"
-    "$setup_select_distro"
+    "$scr_select_distro"
 fi

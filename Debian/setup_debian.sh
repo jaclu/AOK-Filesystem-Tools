@@ -58,7 +58,7 @@ ensure_ish_or_chrooted ""
 msg_script_title "setup_debian.sh  Debian specific AOK env"
 initiate_deploy Debian "$(cat /etc/debian_version)"
 
-$setup_famdeb_scr || error_msg "in $setup_famdeb_scr"
+$scr_setup_famdeb || error_msg "in $scr_setup_famdeb"
 
 rsync_chown /opt/AOK/Debian/etc/update-motd.d /etc
 
