@@ -18,10 +18,6 @@ mkdir -p "$d_aok_completed" || {
     error_msg "Failed to create: $d_aok_completed"
 }
 
-[ ! -d "$d_aok_fs" ] && {
-    error_msg "d_aok_fs is not a dir: $d_aok_fs"
-}
-
 [ ! -d "$d_aok_completed" ] && {
     error_msg "d_aok_completed is not a dir: $d_aok_completed"
 }

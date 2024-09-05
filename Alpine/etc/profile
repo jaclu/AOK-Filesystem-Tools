@@ -14,31 +14,6 @@
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-#
-#  Only do the rest on fresh login, not for subshells
-#
-
-#  shellcheck disable=SC2039
-if [ -n "$SHLVL" ]; then
-    #  shellcheck disable=SC2039
-    [ "$SHLVL" -gt 1 ] && return
-else
-    #
-    # SHLVL is not defined POSIX, but often present.
-    # In this case do manual check
-    #
-
-    parent_pid=$(ps -o ppid= -p "$$")
-    _s=$(ps -o comm= -p "$parent_pid")
-    unset parent_pid
-    case "$_s" in
-    *sh)
-        return
-        ;;
-    *) ;; # This is not a subshell
-    esac
-fi
-
 # shellcheck source=/dev/null
 if [ -f "/etc/opt/AOK/show_profile_hints" ]; then
     . /etc/profile-hints
