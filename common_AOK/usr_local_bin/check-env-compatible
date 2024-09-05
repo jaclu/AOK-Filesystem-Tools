@@ -17,6 +17,10 @@ notification() {
     fi
 }
 
+this_is_ish() {
+    test -d /proc/ish
+}
+
 is_fs_chrooted() {
     # this quick and simple check doesnt work on ish
     # so lets pretend for now chroot does not happen on ish
