@@ -194,7 +194,9 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 # shellcheck source=/opt/AOK/tools/utils.sh
 [ -z "$d_aok_etc" ] && . /opt/AOK/tools/utils.sh
+# shellcheck source=/opt/AOK/tools/ios_version.sh
 . "$scr_ios_version"
+# shellcheck source=/opt/AOK/tools/user_interactions.sh
 . "$src_user_interactions"
 
 this_is_aok_kernel && fs_is_alpine && min_release "3.20" && {
