@@ -4,6 +4,8 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in devel branch
 
+- v0.19.18
+- code cleanup
 - destfs_is_... -> fs_is_... for tasks always running on dest
 - only list compression as successfull if it actually was
 - renamed network-check.sh -> network-check to allign with iSH-IP-stats repo
