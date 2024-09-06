@@ -4,6 +4,8 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in devel branch
 
+- v0.19.20
+- ensures that build env is unmounted before erasing
 - v0.19.19
 - moved notification of additional deploy scripts
 - v0.19.18
