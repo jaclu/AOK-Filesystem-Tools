@@ -442,6 +442,32 @@ display_build_time() {
     # msg_3 "display_build_time() done"
 }
 
+folder_is_empty() {
+    # Accepts non existent folder
+    # triggers error if it was a file
+    [ "$(find "$1" 2>/dev/null | wc -l)" -gt 1 ] && {
+	error_msg "folder_is_empty($1) - Was not empty!"
+    }
+    [ -f "$1" ] && error_msg "folder_is_empty($1) - This is a file!"
+    [ "$2" = "verbose" ] && msg_4 "folder is empty: $1"
+}
+
+prepare_build_env() {
+    msg_2 "Preparing build environment"
+
+    [ -z "$d_build_root" ] && error_msg "d_build_root not assigned"
+
+    msg_3 "Ensuring $d_build_root is not mounted"
+    folder_is_empty "$d_build_root"/dev verbose
+    folder_is_empty "$d_build_root"/proc verbose
+    folder_is_empty "$d_build_root"/sys verbose
+
+    msg_3 "Clearing build root $d_build_root"
+    rm -rf "$d_build_root" || error_msg "Failed to clear out: $d_build_root"
+    mkdir -p "$d_build_root" || error_msg "Failed to mkdir $d_build_root"
+    deploy_state_set "$deploy_state_na" # Dest FS not yet created
+}
+
 #===============================================================
 #
 #   Main
@@ -477,13 +503,7 @@ is_fs_chrooted && error_msg "You can't build an FS when already chrooted!"
 
 display_build_target
 
-msg_2 "Preparing build environment"
-
-msg_3 "Clearing build root $d_build_root"
-[ -z "$d_build_root" ] && error_msg "d_build_root not assigned"
-rm -rf "$d_build_root" || error_msg "Failed to clear out: $d_build_root"
-mkdir -p "$d_build_root" || error_msg "Failed to mkdir $d_build_root"
-deploy_state_set "$deploy_state_na" # Dest FS not yet created
+prepare_build_env
 
 if [ "$build_target" = "$distro_debian" ]; then
     src_image="$DEBIAN_SRC_IMAGE"
