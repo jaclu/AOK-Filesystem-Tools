@@ -39,10 +39,13 @@ mapt_time_start="$(date +%s)"
 
 echo "===  Mapt - apt maintenance  ==="
 
-if [ "$(whoami)" != "root" ]; then
-    echo "***  This must be run using sudo!  ***"
-    exit 1
-fi
+[ "$(uname -o)" != "Android" ] && {
+    # but ofcourse you do sysadmin as a regular user in Termux
+    if [ "$(whoami)" != "root" ]; then
+	echo "***  This must be run using sudo!  ***"
+	exit 1
+    fi
+}
 
 apt update && apt  autoremove -y && apt autoclean && apt -y upgrade
 
