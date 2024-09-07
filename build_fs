@@ -259,6 +259,7 @@ display_build_target() { # Multi OK 1
     [ -n "$FIRST_BOOT_ADDITIONAL_TASKS" ] && {
 	echo
         msg_3 "At the end of the first boot on dest platform, additioal tasks will be run:"
+	echo
         msg_4 "FIRST_BOOT_ADDITIONAL_TASKS: $FIRST_BOOT_ADDITIONAL_TASKS"
     }
     if ! $aok_FS_do_compress; then
