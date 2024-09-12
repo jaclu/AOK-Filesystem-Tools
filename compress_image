@@ -35,6 +35,17 @@ clear_build_triggered_logfiles() {
     fi
 }
 
+clear_fake_iCloud() {
+    if [ -n "$d_build_root" ] && ls -A "$d_build_root"/iCloud/* >/dev/null 2>&1; then
+	#
+	#  iCloud might have been used whilst chrooted, this ensures
+	#  that it is empty when FS is compressed
+	#
+	msg_3 "Clearing /iCloud before generating image"
+	rm "$d_build_root"/iCloud/* -rf
+    fi
+}
+
 #===============================================================
 #
 #   Main
@@ -142,6 +153,7 @@ if $verbose; then
 fi
 
 clear_build_triggered_logfiles
+clear_fake_iCloud
 
 msg_2 "Writing image file"
 msg_3 "$tarball"
@@ -158,7 +170,7 @@ ex_code="$?"
 
 if [ "$ex_code" = 0 ]; then
     #
-    # copy it to /iCloud if this runs on iSH
+    # copy it to $d_icloud_archive if this runs on iSH
     #
     if this_is_ish && [ "$(find /iCloud/ -maxdepth 1 | wc -l)" -gt 1 ]; then
         msg_2 "Creating additional copy: $d_icloud_archive/$tarball_fn"

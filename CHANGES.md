@@ -4,6 +4,9 @@ I will try to keep track of changes between releases here
 
 ## Upcomming release, available in devel branch
 
+- v0.19.21
+- uses latest Alpine versions
+- Clear fake /iCloud during compress
 - v0.19.20
 - ensures that build env is unmounted before erasing
 - v0.19.19
