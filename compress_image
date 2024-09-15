@@ -38,8 +38,8 @@ clear_build_triggered_logfiles() {
 clear_fake_iCloud() {
     if [ -n "$d_build_root" ] && ls -A "$d_build_root"/iCloud/* >/dev/null 2>&1; then
 	#
-	#  iCloud might have been used whilst chrooted, this ensures
-	#  that it is empty when FS is compressed
+	#  a fake iCloud content might have been used whilst during prebuild,
+	#  this ensures that it is empty when FS is compressed
 	#
 	msg_3 "Clearing /iCloud before generating image"
 	rm "$d_build_root"/iCloud/* -rf
