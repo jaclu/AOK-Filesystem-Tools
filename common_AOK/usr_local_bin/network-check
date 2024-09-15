@@ -60,7 +60,8 @@ else
 fi
 
 # When chrooted ping must be run with sudo ...
-if [ "$(uname -s)" = "Linux" ] && ! grep -q " / / " /proc/self/mountinfo; then
+_f=/proc/self/mountinfo
+if [ "$(uname -s)" = "Linux" ] && [ -f "$_f" ] && ! grep -q " / / " "$_f"; then
     ping_cmd="sudo $ping_cmd"
 fi
 
