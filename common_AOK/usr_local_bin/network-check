@@ -60,6 +60,7 @@ else
 fi
 
 # When chrooted ping must be run with sudo ...
+# iSH lacks mountinfo, so if it is missing this check is skipped
 _f=/proc/self/mountinfo
 if [ "$(uname -s)" = "Linux" ] && [ -f "$_f" ] && ! grep -q " / / " "$_f"; then
     ping_cmd="sudo $ping_cmd"
