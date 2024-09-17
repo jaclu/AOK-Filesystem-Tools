@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (c) 2021-2023: Jacob.Lundqvist@gmail.com
+# Copyright (c) 2021-2024: Jacob.Lundqvist@gmail.com
 # License: MIT
 #
 # Part of https://github.com/jaclu/helpfull_scripts
@@ -45,7 +45,7 @@ if [ "$(whoami)" != "root" ]; then
     exit 1
 fi
 
-if ! apk fix || ! apk update || ! apk upgrade ;then
+if ! apk fix || ! apk upgrade ;then
     echo "ERROR detected by Mapk"
     exit 1
 fi
