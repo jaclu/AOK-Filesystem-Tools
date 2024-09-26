@@ -126,10 +126,10 @@ prepare_env_etc() {
         #  Starting with this release, an empty Last Password Change
         #  for root in /etc/shadow will trigger the harmless warning
         #    Warning: your password will expire in 0 days.
-        #  to be displayed when doing: sudo su
+        #  to be displayed when doing: 'sudo ls' etc
         # Setting it to anything but the default 0 will solve this.
         #
-        msg_2 "Fixing warning about password expire when doing sudo su"
+        msg_2 "Fixing warning about password expire when doing sudo"
         sed -i '/^root/c\root:*:1:0:::::' /etc/shadow
     }
 }
