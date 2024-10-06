@@ -110,3 +110,5 @@ if true; then
 else
     RPROMPT="$_user_host_name %F{$PCOL_GREY}%*%f"
 fi
+
+return 0
