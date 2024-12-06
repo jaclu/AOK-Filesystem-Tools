@@ -12,10 +12,11 @@
 hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
 [ -z "$d_aok_etc" ] && . /opt/AOK/tools/utils.sh
 
-
 . /opt/AOK/tools/aok_fs-common || {
-    error_msg "Failed to source aok_fs-common"
+    error_msg "Failed to source common-aok-fs-tar"
 }
+
+ensure_not_chrooted "$d_build_root"
 
 if [ "$(basename "$1")" = "$1" ]; then
     replacement_fs="$d_aok_completed/$1"
@@ -28,21 +29,32 @@ fi
 }
 
 msg_1 "Will use: $(basename "$replacement_fs")"
-msg_2 "Clearing current FS: $d_aok_fs"
-rm -rf "$d_aok_fs" || {
-    error_msg "Failed to clear $d_aok_fs"
+
+[ -d "$d_aok_fs_tmp" ] && {
+    msg_2 "Removing existing directory and its contents: $d_aok_fs_tmp"
+    ensure_not_chrooted "$d_aok_fs_tmp"
+    rm -rf "$d_aok_fs_tmp" || error_msg "Failed to clear: $d_aok_fs_tmp"
 }
-
-mkdir "$d_aok_fs"
-
-cd "$d_aok_fs" || {
-    error_msg "Failed to cd into $d_aok_fs"
+mkdir "$d_aok_fs_tmp" || error_msg "Failed to create: $d_aok_fs_tmp"
+cd "$d_aok_fs_tmp" || {
+    error_msg "Failed to cd into $d_aok_fs_tmp"
 }
-
-[ "$(pwd)" != "$d_aok_fs" ] && {
-    error_msg "pwd is not $d_aok_fs"
+# Extra check to ensure the location is correct
+[ "$(pwd)" != "$d_aok_fs_tmp" ] && {
+    error_msg "pwd is not $d_aok_fs_tmp"
 }
 
 untar_file "$replacement_fs"
 
+ensure_not_chrooted "$d_build_root"
+[ -d "$d_build_root" ] && {
+    msg_3 "Removing existing directory and its contents: $d_build_root"
+    rm -rf "$d_build_root" || {
+        error_msg "Failed to clear $d_build_root"
+    }
+}
+msg_2 "Moving restored FS into place: $d_build_root"
+mv "$d_aok_fs_tmp" "$d_build_root" || {
+    error_msg "Failed to move $d_aok_fs_tmp -> $d_build_root"
+}
 msg_3 "Done!"

@@ -14,11 +14,36 @@
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-# shellcheck source=/dev/null
+if false; then
+    #
+    #  Set initial prompt
+    #
+    if [ -n "$ZSH_VERSION" ]; then
+	# use nicer PS1 for zsh
+	PS1='%m:%~%# '
+    else
+ 	PS1='\h:\w\$ '
+    fi
+fi
+
 if [ -f "/etc/opt/AOK/show_profile_hints" ]; then
+    # shellcheck source=/dev/null
     . /etc/profile-hints
 fi
 
 /usr/local/bin/check-env-compatible
+
+for script in /etc/profile.d/*.sh ; do
+    if [ -r "$script" ] ; then
+	# shellcheck source=/dev/null
+        . "$script"
+    fi
+done
+unset script
+
+_user_profile="$HOME"/.profile
+# shellcheck source=/dev/null
+[ -f "$_user_profile" ] && . "$_user_profile"
+unset _user_profile
 
 echo

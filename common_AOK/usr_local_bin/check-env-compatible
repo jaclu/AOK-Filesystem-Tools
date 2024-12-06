@@ -29,40 +29,6 @@ is_fs_chrooted() {
     ! grep -q " / / " /proc/self/mountinfo
 }
 
-coreutils_check() {
-    #
-    #  On Alpine >= 3.20  iSH fails to handle /dev if coreutils is installed
-    #  This gives a warning
-    #
-
-    # Only relevant for Alpine
-    [ -f /etc/alpine-release ] || return
-
-    # if version check is not available, no check can be done
-    [ -f /opt/AOK/tools/vers_check.sh ] || {
-        echo "Unable to check Alpine release."
-        echo "If coreutils is installed on Alpine >= 3.20"
-        echo "/dev resources will not be POSIX compatible."
-        return
-    }
-
-    . /opt/AOK/tools/vers_check.sh
-
-    # if older Alpine - all is good
-    ! min_version 3.20 && return
-
-    # If coreutils is not installed - all is good
-    [ -f /usr/bin/coreutils ] || return
-
-    #region coreutils warning
-    notification "
-
-WARNING: iSH will fail to hanlde /dev resources if coreutils is installed
-
-"
-    #endregion
-}
-
 uptime_check() {
     #
     #  On Alpine >= 3.19  /usr/bin/uptime segfaults if procps is installed
@@ -126,5 +92,4 @@ fi
     exit 0
 }
 
-coreutils_check
 uptime_check

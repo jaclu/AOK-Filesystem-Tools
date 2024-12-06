@@ -64,17 +64,13 @@ handle_apks() {
             removing_unwanted_package coreutils
         fi
 
-        # 3.19 and higher will insta-die if the default sudo is used....
-        msg_2 "Alpine >= 3.19 - sudo from 3.18 must be used"
-        apk add sudo=1.9.13_p3-r2 \
-            --repository=https://dl-cdn.alpinelinux.org/alpine/v3.18/community
-        removing_unwanted_package sudo
-
-        # 3.19 and higher has stability issues with modern sqlite
-        msg_2 "Alpine >= 3.19 - sqlite from 3.18 is recomended"
-        apk add sqlite=3.41.2-r3 sqlite-libs=3.41.2-r3 \
-            --repository=https://dl-cdn.alpinelinux.org/alpine/v3.18/main
-        removing_unwanted_package sqlite sqlite-libs
+	if false; then
+            # 3.19 and higher has stability issues with modern sqlite
+            msg_2 "Alpine >= 3.19 - sqlite from 3.18 is recomended"
+            apk add sqlite=3.41.2-r3 sqlite-libs=3.41.2-r3 \
+		--repository=https://dl-cdn.alpinelinux.org/alpine/v3.18/main
+            removing_unwanted_package sqlite sqlite-libs
+	fi
     }
 
     if [ -n "$CORE_APKS" ]; then

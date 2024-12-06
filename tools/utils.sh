@@ -289,7 +289,6 @@ complete_initial_setup() {
     if deploy_state_is_it "$deploy_state_pre_build"; then
         set_new_etc_profile "$scr_setup_final_tasks"
         msg_1 "Prebuild completed, exiting"
-        msg_1 "><> #######  $(date)  #######"
         exit 123
     else
         $scr_setup_final_tasks
@@ -311,7 +310,9 @@ add_alpine_testing_repo() {
     f_repositories=/etc/apk/repositories
     testing_repo="https://dl-cdn.alpinelinux.org/alpine/edge/testing"
 
-    ! min_release 3.20 && return 1 # skip this for older releases
+    # update seems in progress as of 24-10-25 only riscv64 in testing...
+    # mark this as unavailable for now
+    ! min_release 3.21 && return 1 # skip this for older releases
 
     msg_2 "Installing edge testing repo"
 
@@ -384,12 +385,16 @@ set_new_etc_profile() {
             echo "#"
             echo "export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
             echo "cd"
+            #  shellcheck disable=SC2086 # not quoting is intentional here
+	    echo 'echo "---  /etc/profile will run: '$sp_new_profile'"'
             echo "$sp_new_profile"
             echo 'ex_code="$?"'
             #  shellcheck disable=SC2016 # single quotes are intentional here
-            echo '[ "$ex_code" = "123" ] && exit  # 123=prebuild done, exit without error'
+	    echo 'echo "---  /etc/profile completed prebuild with: $ex_code"'
             #  shellcheck disable=SC2016 # single quotes are intentional here
-            echo 'if [ "$ex_code" -ne 0 ]; then'
+            echo '[ "$ex_code" = "123" ] && exit'
+            #  shellcheck disable=SC2016 # single quotes are intentional here
+            echo '[ "$ex_code" -ne 0 ] && {'
 
             #
             #  Use printf without linebreak to use continuation to
@@ -399,7 +404,7 @@ set_new_etc_profile() {
             printf "    echo \"ERROR: %s exited with code: " "$sp_new_profile"
             #  shellcheck disable=SC2016 # single quotes are intentional here
             echo '$ex_code"'
-            echo "fi"
+            echo "}"
         ) >"$d_build_root"/etc/profile
     fi
 
@@ -929,7 +934,7 @@ deploy_state_dest_build="dest build"     # building FS on dest, dest details can
 deploy_state_finalizing="finalizing"     # main deploy has happened, now certain to
 
 deploy_state_set() {
-    msg_1 "===============   deploy_state_set($1) [$f_dest_fs_deploy_state]  ============="
+    msg_1 "=====   deploy_state_set($1) [$f_dest_fs_deploy_state]  ====="
     _state="$1"
     [ -z "$_state" ] && error_msg "buildstate_set() - no param!"
 
@@ -1061,7 +1066,7 @@ check_if_host_or_dest_fs() {
     d_aok_etc=/etc/opt/AOK
     f_host_deploy_state="$d_aok_etc"/deploy_state
 
-    if is_fs_chrooted || [ -f "$f_host_deploy_state" ]; then
+    if is_fs_chrooted || [ -f "$f_host_deploy_state" ] || this_is_ish; then
         msg_1 "><> This is run on dest FS"
         d_build_root=""
     else

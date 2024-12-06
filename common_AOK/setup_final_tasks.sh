@@ -300,6 +300,6 @@ echo "Setup has completed the last deploy steps and is ready!
 You are recomended to reboot in order to ensure that all services are started,
 and your environment is used."
 msg_1 "><> f_dest_fs_deploy_state[$f_dest_fs_deploy_state]"
-msg_1 "><>f_host_deploy_state [$f_host_deploy_state]"
+msg_1 "><> f_host_deploy_state [$f_host_deploy_state]"
 
 exit 0

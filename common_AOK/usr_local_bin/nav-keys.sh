@@ -148,17 +148,39 @@ in the first place inside tmux.
 }
 
 select_nav_key_type() {
-    text="
-With the iSH-AOK kernel, you can use modifiers for the arrow keys.
+    if this_is_aok_kernel; then
+        text="
+With the iSH-AOK kernel, you can use modifiers for using the arrow keys as
+Nav-Keys (PageUp/PageDown & Home/End)
 
 Select modifier:
 0 - Do not use a nav-key work-arround
-1 - Shift arrows
-2 - Ctrl  arrows
-3 - Alt arrows - comes with iSH-AOK versions after:  1.3 (485)
-4 - Escape prefix, then arrows, actual Escape requires Escape double tap
+1 - Escape prefix, then arrows, actual Escape requires Escape double tap
+2 - <prefix> arrows - pane navigation is done vim-style: <prefix> hjkl
+3 - Shift arrows
+4 - Ctrl  arrows
+5 - Alt arrows - comes with iSH-AOK versions after:  1.3 (485)
 
 "
+    else
+        text="
+Chose how Nav-Keys (PageUp/PageDown & Home/End) are handled
+
+Select modifier:
+0 - Do not use a nav-key work-arround
+1 - Escape prefix, then arrows, actual Escape requires Escape double tap
+2 - <prefix> arrows - pane navigation is done vim-style: <prefix> hjkl
+
+Esc as prefix then an arrow key, freeing up <prefix> arrow for pane navigation
+    tradeoff: to trigger an Esc you need to double tap the Esc key.
+
+<prefix> then arrow key, freeing up Esc to be a direct key.
+    tradeoff: pane navigation is done vim-style: <prefix> hjkl
+
+Not handled by this - in that case this is left to be configured manually.
+
+"
+    fi
     if [[ -n "$1" ]]; then
         selection="$1"
     else
@@ -173,20 +195,24 @@ Select modifier:
         ;;
 
     1)
+        echo "Use Escape as arrow prefix for nav-keys"
+        select_esc_key
+        ;;
+    2)
+        echo "Use <prefix> arrow for nav-keys"
+        select_esc_key
+        ;;
+    3)
         echo "Use Shift-Arrows for nav-keys"
         tmux_mod_arrow "shift"
         ;;
-    2)
+    4)
         echo "Use Ctrl-Arrows for nav-keys"
         tmux_mod_arrow "ctrl"
         ;;
-    3)
+    5)
         echo "Use Alt-Arrows for nav-keys"
         tmux_mod_arrow "alt"
-        ;;
-    4)
-        echo "Use Escape as prefix"
-        select_esc_key
         ;;
     *)
         echo "*****   Invalid selection   *****"
@@ -233,13 +259,11 @@ And will take effect next time you start tmux.
 #
 [[ -z "$1" ]] && echo "$text"
 
-if this_is_aok_kernel; then
-    select_nav_key_type "$1"
-else
-    select_esc_key "$1"
-fi
+select_esc_key "$1"
 
-if [[ -z "$1" ]]; then
+select_nav_key_type "$1"
+
+if [[ -z "$1" ]] && pgrep tmux >/dev/null ; then
     echo
     echo "You need to restart tmux in order for this to take effect."
 fi

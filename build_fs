@@ -364,7 +364,6 @@ select_distro_on_1st_boot() {
 
 prebuild_fs() {
     msg_1 "prebuild_fs()"
-    msg_1 "><> #######  $(date)  #######"
 
     if [ "$build_env" = "$be_other" ]; then
         error_msg "Not possible to pre-build on this environment!"
@@ -380,7 +379,6 @@ prebuild_fs() {
     }
 
     msg_1 "Returned from prebuild chroot"
-    msg_1 "><> #######  $(date)  #######"
 
     #
     #  This ensures openrc doesnt detect previous runstates during
@@ -574,7 +572,6 @@ else
 fi
 
 msg_2 "The filesystem is ready!"
-msg_1 "><> #######  $(date)  #######"
 
 consider_generating_tarball
 

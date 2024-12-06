@@ -90,6 +90,10 @@ current_settings() {
         console_mode_display
         boot_cmd_display
         launch_cmd_display
+	this_is_aok_kernel && {
+	    extralocking_display
+	    multicore_display
+	}
     }
 }
 
@@ -642,6 +646,18 @@ while [ -n "$1" ]; do
         ;;
 
     "-d" | "--defaults") set_defaults ;;
+
+    "-e" | "--extra_locking")
+        if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
+            if this_is_aok_kernel; then
+                extralocking_change "$2"
+            else
+                msg_4 "Can only set extra_locking on iSH-AOK systems"
+            fi
+            shift # get rid of extra option
+        fi
+        this_is_aok_kernel && extralocking_display
+        ;;
 
     "-l" | "--launch-cmd")
         if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then

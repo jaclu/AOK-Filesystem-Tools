@@ -28,24 +28,29 @@ display_time_elapsed() {
     unset _dte_seconds
 }
 
-
 #===============================================================
 #
 #   Main
 #
 #===============================================================
 
+prog_name=$(basename "$0")
+if [ "$(whoami)" != "root" ]; then
+    echo "Executing $prog_name as root"
+
+    #  Providing some env variables that are needed to be kept in the sudo
+    sudo "$0" "$@"
+    exit_code="$?"
+
+    #  terminate the user initiated instance of the script
+    exit "$exit_code"
+fi
 
 t_start="$(date +%s)"
 
 echo "===  Mapk - apk maintenance  ==="
 
-if [ "$(whoami)" != "root" ]; then
-    echo "***  This must be run using sudo!  ***"
-    exit 1
-fi
-
-if ! apk fix || ! apk upgrade ;then
+if ! apk fix || ! apk upgrade; then
     echo "ERROR detected by Mapk"
     exit 1
 fi

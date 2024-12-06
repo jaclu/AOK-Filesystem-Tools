@@ -33,21 +33,25 @@ display_time_elapsed() {
 #   Main
 #
 #===============================================================
+
 prog_name=$(basename "$0")
+
+# but ofcourse you do sysadmin as a regular user in Termux
+if [ "$(uname -o)" != "Android" ] && [ "$(whoami)" != "root" ]; then
+    echo "Executing $prog_name as root"
+
+    sudo "$0" "$@"
+    #  terminate the user initiated instance of the script
+    exit "$?"
+fi
+
 mapt_time_start="$(date +%s)"
 [ "$1" = "no_timing" ] && mapt_no_timing=1
 
 echo "===  Mapt - apt maintenance  ==="
 
-[ "$(uname -o)" != "Android" ] && {
-    # but ofcourse you do sysadmin as a regular user in Termux
-    if [ "$(whoami)" != "root" ]; then
-	echo "***  This must be run using sudo!  ***"
-	exit 1
-    fi
-}
-
-apt update && apt  autoremove -y && apt autoclean && apt -y upgrade
+apt --fix-broken install && apt update && apt autoremove -y && \
+    apt autoclean && apt -y upgrade
 
 #
 #  Check if reboot is required

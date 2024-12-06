@@ -58,12 +58,11 @@ set_ch_procs() {
     [ "$_fnc_calls" -gt 0 ] && msg_2 "set_ch_procs()"
 
     # Create a list of all processes asociated with the chroot folder
-
     if fs_is_alpine; then
-        ch_procs="$(lsof 2>/dev/null | grep "$CHROOT_TO" |
+        ch_procs="$(lsof -l +d "$CHROOT_TO" |
             awk '{print $1 }' | sort | uniq | tr '\n' ' ')"
     else
-        ch_procs="$(lsof 2>/dev/null | grep "$CHROOT_TO" |
+        ch_procs="$(lsof -l +d "$CHROOT_TO" |
             awk '{print $2 }' | sort | uniq | tr '\n' ' ')"
     fi
 }
@@ -336,8 +335,8 @@ is_chroot_being_used() {
     _d="${CHROOT_TO}"/proc
     [ ! -d "$_d" ] && error_msg "Folder: $_d does not exist!"
 
-    [ "$(find "$_d" | wc -l)" -gt 1 ] && {
-        error_msg "$CHROOT_TO is already chrooted into by something!"
+    [ "$(find "$_d" 2>/dev/null | wc -l)" -gt 1 ] && {
+        error_msg "it seems a chroot is active at: $CHROOT_TO"
     }
 }
 
