@@ -40,8 +40,8 @@ d_here="$(dirname "$0")"
 msg_1 "Install AOK-FS packages"
 
 #
-#  man is not installed by deafult, since anytime an apt with a man page
-#  is installed and man is pressent, a trigger to rebuld the man pages
+#  man is not installed by default, since anytime an apt with a man page
+#  is installed and man is present, a trigger to rebuild the man pages
 #  are run, and on iSH it takes a loong time...
 #  if man is indeed wanted, do: apt install man-db
 #

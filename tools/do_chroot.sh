@@ -57,7 +57,7 @@ folder_exits() {
 set_ch_procs() {
     [ "$_fnc_calls" -gt 0 ] && msg_2 "set_ch_procs()"
 
-    # Create a list of all processes asociated with the chroot folder
+    # Create a list of all processes associated with the chroot folder
     if fs_is_alpine; then
         ch_procs="$(lsof -l +d "$CHROOT_TO" |
             awk '{print $1 }' | sort | uniq | tr '\n' ' ')"
@@ -79,7 +79,7 @@ kill_remaining_procs() {
     echo "$ch_procs" | tr ' ' '\n' | xargs kill -9
 
     #
-    #  Ensure thee are no leftovers that kill didnt get rid off
+    #  Ensure thee are no leftovers that kill didn't get rid off
     #
     msg_3 "Making sure no processes remains"
     set_ch_procs
@@ -235,7 +235,7 @@ find_default_cmd() {
     #  chroot has a defined default command in /.chroot_default_cmd
     #  If this is not found, try to login as root with root's shell.
     #  This to ensue we dont try to use a shell that is either not
-    #  available, or not found in the expeted location
+    #  available, or not found in the expected location
     #
     [ "$_fnc_calls" -gt 0 ] && msg_2 "find_default_cmd()"
     _f="${CHROOT_TO}/.chroot_default_cmd"
@@ -353,7 +353,7 @@ env_prepare() {
 
     if [ "$build_env" = "$be_ish" ]; then
         #
-        #  I havent figured out how to mount /dev on iSH for the
+        #  I haven't figured out how to mount /dev on iSH for the
         #  chrooted env, so for now, I simply copy the host /dev files
         #  into the chroot env. And remove them when exiting
         #
@@ -480,7 +480,7 @@ while [ -n "$1" ]; do
     "-c" | "--cleanup")
         show_unmounts=true
         cleanup_sleep=2
-        #region cleanup explaination
+        #region cleanup explanation
         echo "
 
 Will cleanup the mount point: $CHROOT_TO
@@ -555,7 +555,7 @@ else
     _cmd="$1"
     if [ "${_cmd%"${_cmd#?}"}" = "/" ]; then
         #
-        #  State of requested command cant really be examined without
+        #  State of requested command can't really be examined without
         #  a full path
         #
         if ! [ -f "${d_build_root}${_cmd}" ]; then

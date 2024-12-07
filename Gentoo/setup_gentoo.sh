@@ -33,7 +33,7 @@ not_setup_cron_env() {
 
 not_debian_services() {
     #
-    #  Setting up suitable services, and removing those not meaningfull
+    #  Setting up suitable services, and removing those not meaningful
     #  on iSH
     #
     msg_2 "debian_services()"

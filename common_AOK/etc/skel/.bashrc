@@ -11,7 +11,7 @@
 #
 
 #
-#  Non-interactive shells wont read this by themselves. This ensures
+#  Non-interactive shells won't read this by themselves. This ensures
 #  that if they get here via idirect sourcing, they abort.
 #
 echo "$-" | grep -qv 'i' && return # non-interactive
@@ -60,7 +60,7 @@ if ! shopt -oq posix; then
 fi
 
 if [[ -f $HOME/.no-sysload-available ]]; then
-    # Debian 10 cant display sysload on iSH...
+    # Debian 10 can't display sysload on iSH...
     use_static_bash_prompt
 else
     #

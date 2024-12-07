@@ -38,7 +38,7 @@ set_current_shell_name() {
     #
     #  The SHELL variable only displays initial login shell
     #  if you change shell, even using ` -l` to indicate
-    #  doing a login shell, it doesnt change.
+    #  doing a login shell, it doesn't change.
     #  Instead I add CURRENT_SHELL to indicate what this shell is.
     #  On Alpine ash is usually softlinked to busybox
     #
@@ -169,7 +169,7 @@ get_battery_info() {
 }
 
 get_sysload_lvl() {
-    # Debian 10 cant display sysload on iSH...
+    # Debian 10 can't display sysload on iSH...
     sysload_not_available="$HOME/.no-sysload-available"
     [ -f "$sysload_not_available" ] && {
         echo
@@ -232,7 +232,7 @@ update_dynamic_aok_bash_prompt() {
 }
 
 update_dynamic_bash_prompt() {
-    # non ish-aok kernels doesnt support battery info, so no need to fail the check on every prompt
+    # non ish-aok kernels doesn't support battery info, so no need to fail the check on every prompt
     PS1="${PCOL_USERNAME}\u${PCOL_GREY}@${PCOL_HOSTNAME}${_hn} ${PCOL_GREY}$(get_sysload_lvl)${PCOL_GREY}:${PCOL_CWD}\w${PCOL_CLR}\$ "
 }
 
@@ -264,7 +264,7 @@ unset -f basic_aliases
 
 #
 #  This is a helper for setting hostname in prompts, since the typical \h
-#  Doesnt work on iOS >= 17
+#  doesn't work on iOS >= 17
 #  use ${_hn} in your prompt!
 #
 if test -x /usr/local/bin/hostname; then

@@ -55,7 +55,7 @@ if [[ -f "/proc/ish/ips" ]]; then
             continue
         fi
         ip="$(echo "$line" | awk '{ print $2 }')"
-        #  this is alligned with Unknown warning
+        #  this is aligned with Unknown warning
         new_item="$(printf '%-11s %s' "$dev_type" "$ip")"
 
         if [[ $line =~ ^en.*INET6 ]]; then
@@ -82,7 +82,7 @@ if [[ ${#ipv4s[@]} -gt 0 ]]; then
         printf '  %s\n' "$ipv4"
     done
 elif [[ ${#ipv6s[@]} -gt 0 ]]; then
-    #  If the other type is defined, this is probably a positive absense
+    #  If the other type is defined, this is probably a positive absence
     printf ' None defined\n'
 else
     printf ' Unknown\n'
@@ -95,7 +95,7 @@ if [[ ${#ipv6s[@]} -gt 0 ]]; then
         printf '  %s\n' "$ipv6"
     done
 elif [[ ${#ipv4s[@]} -gt 0 ]]; then
-    #  If the other type is defined, this is probably a positive absense
+    #  If the other type is defined, this is probably a positive absence
     printf ' None defined\n'
 else
     #  Neither found, hard to tell if this is no network or error

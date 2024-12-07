@@ -20,7 +20,7 @@ Available options:
 -a --autologin     Auto-login as user [disable|username]
                    disable  - Will give login prompt
                    username - Will auto-login as username
--c --continous     New login prompt after vterm logout [on|off]
+-c --continuous     New login prompt after vterm logout [on|off]
 -H --profile-hints Show env hints in /etc/profile [on|off]
 -s --aoksuffix     Ensure -aok is added as suffix to hostname
                    on iSH-AOK kernels [on|off]
@@ -37,7 +37,7 @@ Available options:
 Boot Cmd & Launch Cmd have very strict syntax requirements for custom_cmd.
   1. wrap it in '[ ]'
   2. Each statement/param must be wrapped in \"\"
-  3. If more than one statement, separate with commma space
+  3. If more than one statement, separate with comma space
 
 -b --boot-cmd      Choose Init cmd: $boot_cmd_options
                    default: '$boot_cmd_default'
@@ -83,17 +83,17 @@ show_on_off_by_file() {
 current_settings() {
     echo "---  Current settings  ---"
     autologin_display
-    continous_sessions_display
+    continuous_sessions_display
     profile_hints_display
     aok_suffix_display
     this_is_ish && {
         console_mode_display
         boot_cmd_display
         launch_cmd_display
-	this_is_aok_kernel && {
-	    extralocking_display
-	    multicore_display
-	}
+        this_is_aok_kernel && {
+            extralocking_display
+            multicore_display
+        }
     }
 }
 
@@ -128,13 +128,13 @@ autologin_change() {
             error_msg "$uname_autologin does not seem to be a valid user on this system"
         }
         echo "$uname_autologin" >"$f_login_default_user"
-        # if [ -f "$f_logins_continous" ]; then
-        #     continous_setting="continous "
+        # if [ -f "$f_logins_continuous" ]; then
+        #     continuous_setting="continuous "
         # else
-        #     continous_setting=""
+        #     continuous_setting=""
         # fi
-        # echo "Enabled ${continous_setting}auto-login for user: $uname_autologin"
-        # unset continous_setting
+        # echo "Enabled ${continuous_setting}auto-login for user: $uname_autologin"
+        # unset continuous_setting
     fi
     autologin_display syslog
 
@@ -163,39 +163,39 @@ autologin_disabled="disabled"
 
 #---------------------------------------------------------------
 #
-#       Continous login sessions
+#       continuous login sessions
 #
 #---------------------------------------------------------------
 
-continous_sessions_change() {
-    continous_mode="$1"
-    [ -z "$continous_mode" ] && {
-        error_msg "continous_sessions_change() - no param given, options are on/off"
+continuous_sessions_change() {
+    continuous_mode="$1"
+    [ -z "$continuous_mode" ] && {
+        error_msg "continuous_sessions_change() - no param given, options are on/off"
     }
-    [ -z "$f_logins_continous" ] && {
-        error_msg "continous_sessions_change() - f_logins_continous undefined"
+    [ -z "$f_logins_continuous" ] && {
+        error_msg "continuous_sessions_change() - f_logins_continuous undefined"
     }
-    case "$continous_mode" in
+    case "$continuous_mode" in
     "on")
         if this_is_ish; then
-            continous_sessions_change "off"
+            continuous_sessions_change "off"
         fi
-        touch "$f_logins_continous"
+        touch "$f_logins_continuous"
         ;;
 
-    "off") rm -f "$f_logins_continous" ;;
+    "off") rm -f "$f_logins_continuous" ;;
 
     *)
-        error_msg "continous_sessions_change() - options are on/off"
+        error_msg "continuous_sessions_change() - options are on/off"
         ;;
     esac
-    continous_sessions_display syslog
+    continuous_sessions_display syslog
 
-    unset continous_mode
+    unset continuous_mode
 }
 
-continous_sessions_setting() {
-    cont_ses_setting="$(show_on_off_by_file "$f_logins_continous")"
+continuous_sessions_setting() {
+    cont_ses_setting="$(show_on_off_by_file "$f_logins_continuous")"
     if [ "$cont_ses_setting" = "off" ]; then
         echo "vterm will terminate after logout"
     else
@@ -209,8 +209,8 @@ continous_sessions_setting() {
     unset cont_ses_setting
 }
 
-continous_sessions_display() {
-    _m="continnous:    $(continous_sessions_setting)"
+continuous_sessions_display() {
+    _m="continnous:    $(continuous_sessions_setting)"
     if [ "$1" = "syslog" ]; then
         syslog "$_m"
     else
@@ -408,7 +408,7 @@ console_mode_change() {
                         error_msg "Failed to enable rc_logger in $f_rc_conf"
                     }
                 else
-                    # If it wasnt pressent, add it
+                    # If it wasn't present, add it
                     echo 'rc_logger="YES"' >>"$f_rc_conf"
                 fi
                 if grep -q "rc_log_path=" "$f_rc_conf"; then
@@ -418,7 +418,7 @@ console_mode_change() {
                         error_msg "Failed to enable rc_log_path in $f_rc_conf"
                     }
                 else
-                    # If it wasnt pressent, add it
+                    # If it wasn't present, add it
                     echo 'rc_log_path="/var/log/rc.log"' >>"$f_rc_conf"
                 fi
             }
@@ -625,12 +625,12 @@ while [ -n "$1" ]; do
         this_is_ish && boot_cmd_display
         ;;
 
-    "-c" | "--continous")
+    "-c" | "--continuous")
         if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
-            continous_sessions_change "$2"
+            continuous_sessions_change "$2"
             shift # get rid of extra option
         fi
-        continous_sessions_display
+        continuous_sessions_display
         ;;
 
     "-C" | "--console")

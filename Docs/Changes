@@ -29,7 +29,7 @@ Alpha Series
 	o Moved project to github
 	o Fixed issue with executable bit not being set on stuff in /usr/local/bin
 	  after pull from github
-        o Wrote script to build image in chroot enviornment.  It's fairly lame
+        o Wrote script to build image in chroot environment.  It's fairly lame
 	  but works.
 	  'chroot_build_image'
 	o Added fake /etc/network/interfaces file to hopefully make
@@ -77,7 +77,7 @@ Alpha Series
 	   /usr/local/bin/vi and /usr/bin/vi is still busybox vi.  Since
 	   /usr/local/bin appears first in the default path I get what I
 	   want and don't screw up the /usr/bin/vi link
-         o Addeed the tar, ncurses, ncurses-doc APK to core list
+         o Added the tar, ncurses, ncurses-doc APK to core list
 	 o Fixed issue with wrapping in bash with default .bash_profile
          o Alpine up to date as of 27 November 2020
 .66   o Another brick in the wall
@@ -154,7 +154,7 @@ Alpha Series
 .85.4	Tweaks
 	o For iSH-AOK I added procps and htop to the root fs.  This "fixes" and issue
           in the busybox uptime command that causes bogus uptime to be reported.  To
-          be clear, it dosn't fix busybox itself but rather replaces the uptime command
+          be clear, it doesn't fix busybox itself but rather replaces the uptime command
           from busybox with the one from procps.  Adding htop because it is nice and I
           wanted to.  Note that neither works on mainline iSH as of the time this note
           was written

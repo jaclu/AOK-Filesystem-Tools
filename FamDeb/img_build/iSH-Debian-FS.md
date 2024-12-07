@@ -15,7 +15,7 @@ present, and doing an apt upgrade
 
 Populates a Debian10-minim-x image into an Debian10-x-aok-y ready to
 be used to build an AOK-Filesystems-Tools Debian10 image
-It is recomended to cancel all "Configuring tzdata" menus, and let
+It is recommended to cancel all "Configuring tzdata" menus, and let
 the installing user choose the right TZ
 
 ## aok_image_cleanup.sh
@@ -51,4 +51,4 @@ Generates a db over installed packages allowing hierarchial display
 ### bin/populate-deb-aok-img.sh
 
 Installs all the default AOK FS software, and cleans out some
-stuff not meaningfull on iSH-AOK
+stuff not meaningful on iSH-AOK

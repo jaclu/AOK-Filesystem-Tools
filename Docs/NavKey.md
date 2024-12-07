@@ -36,7 +36,7 @@ Then restart sshd on that node, so that the change takes effect.
 
 ## Remote nodes
 
-### Simple aproach
+### Simple approach
 
 In order for the remote node to use your iPad nav key
 setting, copy the file /etc/opt/tmux_nav_key_handling from your iPad

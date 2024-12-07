@@ -30,7 +30,7 @@ Not sure what happens, seems to create at least 3
  /bin/sh /usr/local/bin/aok -e off
 processes, ending up non responsive
 in most cases new ssh sessions can be created. existing sessions
-tends to survive as long as they didnt generate any output whilst
+tends to survive as long as they didn't generate any output whilst
 the -e off took place
 
 ## Alpine app versions
@@ -61,7 +61,7 @@ Alpine/usr_local_bin/apk-find-pkg.sh it is now apk-find-pkg
 ## Start working on using a working /run
 
 Investigate if anything can be simplified / needs to be changed given
-that /run is now clean at boot time for iSH-AOK, and asuming
+that /run is now clean at boot time for iSH-AOK, and assuming
 dynamic_login is the Launch cmd, this is also the case for regular iSH
 hm perhaps this cleanup of /run should be the first inittab task instead?
 
@@ -83,7 +83,7 @@ This actually works much better in Debian than in Alpine, since in Alpine
 as of now only auto-login as root works. agetty fails to change ownership
 of /dev/pts/0 on Alpine
 
-1 Add this as Launch cmd to avoid harmless but annoying error msg everytime
+1 Add this as Launch cmd to avoid harmless but annoying error msg every time
 ish is started and offensive login BEFORE init is run, but still ensure
 /dev/pts/0 is bound
 `/bin/sleep infinity`
@@ -92,7 +92,7 @@ ish is started and offensive login BEFORE init is run, but still ensure
 if you use it via inittab, otherwise  run it in a shell as root, in order
 to ensure anything can print to
 /dev/console, without being restricted when agetty locks down /dev/pts/0
-With this normal bootup console output can be seen!
+With this normal boot up console output can be seen!
 
 ```sh
 #rm -f /dev/console && mknod -m 666 /dev/console c 5 1
@@ -113,13 +113,13 @@ shutdown to terminate the iSH app
 
 pts0::respawn:/sbin/agetty -a root pts/0 linux
 
-IMPORTANT UPDATE: Please be aware that in Alpine you cant use pts0 as an
+IMPORTANT UPDATE: Please be aware that in Alpine you can't use pts0 as an
 inittab identifier for whatever reason, despite it being no longer than
 4 chars, in such cases labeling it as tty1 works and will give you a prompt.
 On Debian pts0 works, and makes more sense since it hints what device this
 is using
 
-## Wait for bootup to complete
+## Wait for boot up to complete
 
 runlevel default should, do, can something else be done if openrc is not used?
 
@@ -140,7 +140,7 @@ Check if /run/openrc/options/runbg/pidfile exists and is newer than
 rest of this code block
 
 ```sh
-    echo "waiting for bootup to complete"
+    echo "waiting for boot up to complete"
     sleep 2
 done
 ```
@@ -148,8 +148,8 @@ done
 ## Make it more clear how to refer to self during deploy
 
 When the deploy starts its pretty clear what `fs_is_alpine` and
-`destfs_is_alpine` is refering to. However when the destfs boots up and
-does a large part of the deploy itself, shouldnt it be the host?
+`destfs_is_alpine` is referring to. However when the destfs boots up and
+does a large part of the deploy itself, shouldn't it be the host?
 
 Perhaps it should be seen as a chroot thing. If something is working
 chrooted on a buildhot it would make most sense to see that as a
@@ -171,6 +171,6 @@ the console session is logged out after a copple of minutes  - investigate
 
 ## update DEVUAN_SRC_IMAGE
 
-since it is about to become more usefull, i should update it to ensure it
+since it is about to become more useful, i should update it to ensure it
 is in line with the debian image when it comes to what is installed
 out of the door

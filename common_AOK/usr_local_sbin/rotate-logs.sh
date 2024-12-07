@@ -30,7 +30,7 @@ handle_text_file() {
 
 	#
 	# Truncate the original file, removing the copied lines
-	# this aproach allows for the logfile to grow during the rotation
+	# this approach allows for the logfile to grow during the rotation
 	#
 	sed -i "1,${exclude_lines}d" "$log_file"
 }

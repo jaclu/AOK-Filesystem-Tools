@@ -11,7 +11,7 @@
 #
 
 #
-#  Non-interactive shells wont read this by themselves. This ensures
+#  Non-interactive shells won't read this by themselves. This ensures
 #  that if they get here via idirect sourcing, they abort.
 #
 echo "$-" | grep -qv 'i' && return # non-interactive
@@ -92,13 +92,13 @@ if true; then
             unset _s
         else
             if [ -f /etc/alpine-release ]; then
-		RPROMPT="$_user_host_name $(get_sysload_lvl) %F{$PCOL_GREY}%*%f"
+                RPROMPT="$_user_host_name $(get_sysload_lvl) %F{$PCOL_GREY}%*%f"
             else
                 # iSH Debian doesn't provide sysload
-		RPROMPT="$_user_host_name %F{$PCOL_GREY}%*%f"
+                RPROMPT="$_user_host_name %F{$PCOL_GREY}%*%f"
             fi
         fi
-	return 0
+        return 0
     }
 
     precmd() {

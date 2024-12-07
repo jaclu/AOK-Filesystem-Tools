@@ -24,7 +24,7 @@
 #   . /opt/AOK/tools/run_as_root.sh
 #
 #  If you do not want to get the: Executing $app as root
-#  printout preceede your commant or the sourcing with: hide_run_as_root=1
+#  printout precede your command or the sourcing with: hide_run_as_root=1
 #
 
 AOK_DIR="${AOK_DIR:-/opt/AOK}"

@@ -18,9 +18,8 @@ hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
 
 d_base=$(cd -- "$(dirname -- "$0")" && pwd)
 
-
-this_is_aok_kernel  || {
-    msg_2 "$service_name is only meaningfull on iSH-AOK, skipping"
+this_is_aok_kernel || {
+    msg_2 "$service_name is only meaningful on iSH-AOK, skipping"
     exit 0
 }
 

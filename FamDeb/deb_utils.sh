@@ -7,7 +7,7 @@
 #
 #  Copyright (c) 2023: Jacob.Lundqvist@gmail.com
 #
-#  Varios things used at multiple places during Debian installs
+#  Various things used at multiple places during Debian installs
 #
 
 initial_fs_prep_fam_deb() {

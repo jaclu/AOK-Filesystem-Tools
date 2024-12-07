@@ -35,7 +35,7 @@ case $1 in
 0) # shutdown
 	display_msg "Will do: openrc shutdown"
 	/sbin/openrc shutdown
-	# I havent figured this out, some
+	# I haven't figured this out, some
 	display_msg "Will do: poweroff"
 	/sbin/poweroff
 	;;

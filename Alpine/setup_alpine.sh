@@ -45,7 +45,7 @@ handle_apks() {
 
     if ! min_release "3.16"; then
         if [ -z "${CORE_APKS##*shadow-login*}" ]; then
-            msg_2 "Excluding packages not yet availabe before 3.16"
+            msg_2 "Excluding packages not yet available before 3.16"
             removing_unwanted_package shadow-login
             removing_unwanted_package py3-pendulum
             removing_unwanted_package zsh-completions
@@ -60,17 +60,17 @@ handle_apks() {
         msg_1 "iSH has some limitations on the latest releases..."
 
         if min_release "3.20"; then
-            msg_2 "Alpine >= 3.20 - coreutils cant be used"
+            msg_2 "Alpine >= 3.20 - coreutils can't be used"
             removing_unwanted_package coreutils
         fi
 
-	if false; then
+        if false; then
             # 3.19 and higher has stability issues with modern sqlite
-            msg_2 "Alpine >= 3.19 - sqlite from 3.18 is recomended"
+            msg_2 "Alpine >= 3.19 - sqlite from 3.18 is recommended"
             apk add sqlite=3.41.2-r3 sqlite-libs=3.41.2-r3 \
-		--repository=https://dl-cdn.alpinelinux.org/alpine/v3.18/main
+                --repository=https://dl-cdn.alpinelinux.org/alpine/v3.18/main
             removing_unwanted_package sqlite sqlite-libs
-	fi
+        fi
     }
 
     if [ -n "$CORE_APKS" ]; then
@@ -173,7 +173,7 @@ initiate_deploy Alpine "$ALPINE_VERSION"
 this_is_aok_kernel && min_release "3.20" && {
     echo
     echo "On iSH-AOK rsync and other core bins will fail in Alpine 3.20"
-    error_msg "For now using Alpine 3.19 or older is recomended"
+    error_msg "For now using Alpine 3.19 or older is recommended"
 }
 
 prepare_env_etc

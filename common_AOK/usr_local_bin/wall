@@ -7,7 +7,7 @@
 #  Copyright (c) 2021-2024: Jacob.Lundqvist@gmail.com
 #
 #  Replaces the Alpine wall that doesn't work in iSH
-#  and the Debian wall, that only parially work in iSH-AOK
+#  and the Debian wall, that only partially work in iSH-AOK
 #
 #  Be aware that unless you sudo wall, messages will most likely
 #  not be displayed on the console, but inside tmux all panes
@@ -89,7 +89,7 @@ while [ -n "$1" ]; do
 
     "-u")
         if [ "$uid" -ne 0 ]; then
-            # regular users cant spoof sender
+            # regular users can't spoof sender
             echo "wall: -u is available only for root"
             exit 1
         fi

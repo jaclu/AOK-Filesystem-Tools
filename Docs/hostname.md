@@ -4,13 +4,13 @@ Starting with iOS 17 Apple no longer offers the iOS hostname to apps, instead ju
 
 Since it used to be provided via iOS, nobody has implemented any functinolly to change hostname within iSH. Hopefully that gets fixed at some point.
 
-Here are some workarrounds to handle this. It can't solve all instances of `localhost` showing up, but it can make it much better.
+Here are some workarounds to handle this. It can't solve all instances of `localhost` showing up, but it can make it much better.
 
 Before starting to take action I would suggest to first browse through this document so that you have realistic expectations about if this will be worthwhile.
 
 ## Set hostname
 
-Uppercase and dashes work, spaces cant be used. This has always worked, such as you can change this file. Up to this point iSH itself does not use it. So it has historically been a waste of time to bother to change this file.
+Uppercase and dashes work, spaces can't be used. This has always worked, such as you can change this file. Up to this point iSH itself does not use it. So it has historically been a waste of time to bother to change this file.
 
 ``` shell
 echo MyOwnIsh > /etc/hostname
@@ -47,7 +47,7 @@ zsh  | `%m`
 Method | Impacts
 -|-
 text | Simple solution, if you only have iSH installed on one device, this is sufficient. It will become an issue if you want to use your iSH env on multiple iSH devices, then you would have to remember to change the name again each time you sync your environment files to another system
-$(/bin/hostname) | This way you abstract setting the hostname to a separate tool, and nothing in your shell setup is hardcoded to a specific hostname. You can copy your shell env to all your iSH devices and they will display their own hostname when the env files are updated to other nodes.<br> This will also work in the future when the default /bin/hostname can report the intended name. So it is Future proof, and you wont have to change it later on.<br><br> The CPU over head by running /bin/hostname in a shell vs using the shortcut and getting it directly from the kernel would not have any impact - how many times per second do you normally press Enter?
+$(/bin/hostname) | This way you abstract setting the hostname to a separate tool, and nothing in your shell setup is hardcoded to a specific hostname. You can copy your shell env to all your iSH devices and they will display their own hostname when the env files are updated to other nodes.<br> This will also work in the future when the default /bin/hostname can report the intended name. So it is Future proof, and you won't have to change it later on.<br><br> The CPU over head by running /bin/hostname in a shell vs using the shortcut and getting it directly from the kernel would not have any impact - how many times per second do you normally press Enter?
 
 ## Other general tools
 

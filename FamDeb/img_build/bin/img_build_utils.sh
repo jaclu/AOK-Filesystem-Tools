@@ -101,7 +101,7 @@ clear_apt_cache() {
 }
 
 remove_aok() {
-    #  Since AOK should be gone, error_msg cant be used
+    #  Since AOK should be gone, error_msg can't be used
     msg_1 "Remove /opt/AOK"
     rm -rf /opt/AOK || {
         echo "ERROR: Failed to clear /opt/AOK"

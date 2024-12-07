@@ -9,7 +9,7 @@
 
 #
 #  Since this is a bash script and the sourced files are POSIX, shellcheck
-#  cant source theese files without displaying tons of warnings
+#  can't source these files without displaying tons of warnings
 #
 
 # shellcheck source=/dev/null

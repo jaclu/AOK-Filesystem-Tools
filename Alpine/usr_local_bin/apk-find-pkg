@@ -42,7 +42,7 @@ esac
 
 #  Some param checks
 [ -z "$prog" ] && error_msg "no param, try -h"
-echo "$prog" | grep -q '/' && error_msg "Cant contain / chars"
+echo "$prog" | grep -q '/' && error_msg "can't contain / chars"
 
 #
 #  Creating cmd step by step, so that each sub-task can be explained
@@ -55,7 +55,7 @@ cmd="ls /var/cache/apk/*.tar.gz"
 cmd="$cmd | xargs -I {} tar -zxf {} -O"
 
 #
-#  For each match show the preceeding lines in order to find package
+#  For each match show the preceding lines in order to find package
 #  name, records seems to normally be 14 lines, so grab a bit more to
 #  be somewhat future proof
 #

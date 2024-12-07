@@ -115,7 +115,7 @@ if [ "$(basename "$_scr_name")" = "$_this_script" ]; then
     echo
     echo "*****  USAGE ERROR  *****"
     echo
-    echo "$_this_script can't be run, it is a suport module"
+    echo "$_this_script can't be run, it is a support module"
     echo "expected to be sourced from other apps"
     echo
     exit 1

@@ -44,7 +44,7 @@ elif [ -n "$1" ]; then
         exit 1
     fi
 else
-    printf "Lattitude " >&2
+    printf "Latitude " >&2
     read -r lat
     printf "Longditude " >&2
     read -r lon

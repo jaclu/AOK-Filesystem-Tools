@@ -56,7 +56,7 @@ initial_log_entries() {
 
         #
         #  Intermittent tail to not miss entries added
-        #  during bootup before normal logging is enabled
+        #  during boot up before normal logging is enabled
         #
         # shellcheck disable=SC2086 # in this case variable should expand
         $cmd_tail$log_basename 2>/dev/null &
@@ -82,7 +82,7 @@ boot_time="$1"
     echo "ERROR: $0 - no boot-time param"
     #
     # This might reboot shortly after exit so hold a bit
-    # to display errror
+    # to display error
     #
     sleep 10
 }
@@ -98,7 +98,7 @@ cmd_tail="tail -n 0 -f /var/log/"
     _f=/usr/local/sbin/kill_tail_logging
     (
         echo "#!/bin/sh"
-        # using ' in order for *log not to expand at deinition
+        # using ' in order for *log not to expand at definition
         echo "pgrep -f \"$cmd_tail\" | xargs -r kill"
     ) >"$_f"
     chown root: "$_f"
@@ -123,7 +123,7 @@ while true; do
 
     if $first_run_logging; then
         #
-        #  Log entries since bootup
+        #  Log entries since boot up
         #
         first_run_logging=false
 

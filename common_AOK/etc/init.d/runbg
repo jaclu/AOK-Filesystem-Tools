@@ -29,7 +29,7 @@ pidfile="/run/runbg.pid"
 #  The below aborts with error if:  cat /dev/location
 #  is already running.
 #  And displays warning if other processes are detected
-#  after stoping.
+#  after stopping.
 #
 
 notification() {

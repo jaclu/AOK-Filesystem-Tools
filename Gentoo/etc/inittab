@@ -12,14 +12,14 @@
 # The default runlevel.
 id:2:initdefault:
 
-# Allow for console to be setup and ready to log bootup.
+# Allow for console to be setup and ready to log boot up.
 # Returns immeditally if console mode is not used
 fx1::sysinit:/usr/local/sbin/inittab_waiting_for_console
 
-# Indicate bootup time in syslog
+# Indicate boot up time in syslog
 fx2::sysinit:/usr/local/sbin/R-check /usr/local/bin/logger inittab "===  System startup  ==="
 
-# Clear /run/ since iSH doesnt mount it as tempfs
+# Clear /run/ since iSH doesn't mount it as tempfs
 fx3::sysinit:/usr/local/sbin/R-check /usr/local/sbin/reset-run-dir
 
 #  rotates logfiles > 20k
@@ -37,7 +37,7 @@ fx5::sysinit:/usr/local/sbin/R-check /usr/local/bin/hostname -U
 
 #
 # Initialization command
-# Normally this would be sysinit, but when this is choosen
+# Normally this would be sysinit, but when this is chosen
 # on Debian running on iSH-AOK, init & openrc fails
 # to transition over to the runlevel default.
 # This is solved by using boot as initial runlevel on iSH-AOK

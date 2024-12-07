@@ -17,7 +17,7 @@ file_list=(
 )
 
 #
-#  Modify depending on wich device this is deployed to
+#  Modify depending on which device this is deployed to
 #
 if [[ "$(hostname)" = "JacPad" ]]; then
     file_list+=(

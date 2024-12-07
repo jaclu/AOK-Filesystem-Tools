@@ -15,7 +15,7 @@
 
 #
 #  Variables used during build.
-#  Recomended is to copy this file to .AOK_VARS and make changes there.
+#  Recommended is to copy this file to .AOK_VARS and make changes there.
 #  This file will be ignored by git, and overrides this file. It also
 #  minimizes risk of temp changes to become unintentionally permanent.
 #  Only when you think a change should be saved into git, put it here!
@@ -52,7 +52,7 @@ USER_SHELL="/bin/bash"
 #  /etc/periodic placeholders will be created and a root crontab
 #  running the periodics will be put in place.
 #  The service will only be enabled if USE_CRON_SERVICE is set to "Y"
-#  Otherwise theese settings have no impact on performance.
+#  Otherwise these settings have no impact on performance.
 #  You can always decide later to activate the service.
 #
 # USE_CRON_SERVICE="Y"
@@ -105,7 +105,7 @@ USER_SHELL="/bin/bash"
 #  Since iOS 17.0 iSH is no longer able to provide hostname at startup.
 #  If this is set to /etc/hostname, its content will only be displayed,
 #  and that file needs to be manually changed.
-#  Any other path would be asumed to be a sync file, written to by an iOS
+#  Any other path would be assumed to be a sync file, written to by an iOS
 #  shortcut providing current hostname. The last line of this file will
 #  be copied to /etc/hostname when /usr/local/bin/hostname is run with -U
 #  If this is not defined, no hostname syncing will happen, and
@@ -243,7 +243,7 @@ DEBIAN_SRC_IMAGE="https://www.dropbox.com/scl/fi/ft3hcmxe3ly9gydkr03cf/Debian10-
 #  be excluded. This happens during the pre-build when it is used,
 #  it saves time compared to having to do it on the target device.
 #  DEB_PKGS_SKIP is processed before DEB_PKGS to ensure that
-#  this doesnt unintentionally deelete something for DEB_PKGS
+#  this doesn't unintentionally deelete something for DEB_PKGS
 #
 DEB_PKGS_SKIP=""
 
@@ -282,7 +282,7 @@ DEVUAN_SRC_IMAGE="https://www.dropbox.com/scl/fi/07wtt4x38lhg5kvnxw9qf/Devuan4-6
 #  be excluded. This happens during the pre-build when it isused,
 #  it saves time compared to having to do it on the target device.
 #  DVU_PKGS_SKIP is processed before DVU_PKGS to ensure that
-#  this doesnt unintentionally deelete something for DVU_PKGS
+#  this doesn't unintentionally deelete something for DVU_PKGS
 #
 DEVU_PKGS_SKIP=""
 

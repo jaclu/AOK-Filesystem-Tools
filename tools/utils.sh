@@ -258,7 +258,7 @@ set_hostname() {
     elif [ -n "$ALT_HOSTNAME_SOURCE_FILE" ]; then
         msg_3 "Sourcing hostname from: $ALT_HOSTNAME_SOURCE_FILE"
         hostname -S "$ALT_HOSTNAME_SOURCE_FILE" || {
-            error_msg "Failed to soure alt file"
+            error_msg "Failed to source alt file"
         }
     elif ! is_fs_chrooted && [ -f "$f_chroot_hostname" ]; then
         msg_3 "was pre-built chrooted, but now runs native"
@@ -303,7 +303,7 @@ add_alpine_testing_repo() {
     #
     #  Returns true if repo now contains testing
     #
-    #  If edge/testing isnt added to the repositoris, testing apks can
+    #  If edge/testing isn't added to the repositoris, testing apks can
     #  still be installed. Using mdcat as an example:
     #  apk add mdcat --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing/
     #
@@ -368,7 +368,7 @@ set_new_etc_profile() {
     fi
 
     #
-    #  Avoid file replacement whilst running doesnt overwrite the
+    #  Avoid file replacement whilst running doesn't overwrite the
     #  previous script without first removing it, leaving a garbled file
     #
     rm "$d_build_root"/etc/profile
@@ -386,11 +386,11 @@ set_new_etc_profile() {
             echo "export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
             echo "cd"
             #  shellcheck disable=SC2086 # not quoting is intentional here
-	    echo 'echo "---  /etc/profile will run: '$sp_new_profile'"'
+            echo 'echo "---  /etc/profile will run: '$sp_new_profile'"'
             echo "$sp_new_profile"
             echo 'ex_code="$?"'
             #  shellcheck disable=SC2016 # single quotes are intentional here
-	    echo 'echo "---  /etc/profile completed prebuild with: $ex_code"'
+            echo 'echo "---  /etc/profile completed prebuild with: $ex_code"'
             #  shellcheck disable=SC2016 # single quotes are intentional here
             echo '[ "$ex_code" = "123" ] && exit'
             #  shellcheck disable=SC2016 # single quotes are intentional here
@@ -409,7 +409,7 @@ set_new_etc_profile() {
     fi
 
     #
-    #  Normaly profile is sourced, but in order to be able to directly
+    #  Normally profile is sourced, but in order to be able to directly
     #  run it if manually triggering a deploy, make it executable
     #
     chmod 744 "$d_build_root"/etc/profile
@@ -672,7 +672,7 @@ copy_local_bins() {
 additional_prebuild_tasks() {
     #
     #  Additional tasks that could be run during pre-build, ie
-    #  doesnt have to happen on destination platform
+    #  doesn't have to happen on destination platform
     #
     [ -n "$PREBUILD_ADDITIONAL_TASKS" ] && {
         msg_1 "Running additional setup tasks"
@@ -713,7 +713,7 @@ is_fs_chrooted() {
     # cmdline check:
     # grep -qv " / / " /proc/self/mountinfo || echo "is chrooted"
 
-    # this quick and simple check doesnt work on ish
+    # this quick and simple check doesn't work on ish
     # so lets pretend for now chroot does not happen on ish
     this_is_ish && return 1                  # would never happen here :)
     [ "$(uname -s)" != "Linux" ] && return 1 # can only chroot this on Linux
@@ -921,9 +921,9 @@ get_lsb_release() {
 #
 #   Deployment state
 #
-#  Kepps track on in what stage the deployment is
+#  Keeps track on in what stage the deployment is
 #
-#   up to deploy_state_creating allways happens on build host
+#   up to deploy_state_creating always happens on build host
 #
 #---------------------------------------------------------------
 
@@ -956,7 +956,7 @@ deploy_state_is_it() {
     deploy_state_check_param deploy_state_is_it "$_state"
 
     [ "$_state" = "$(deploy_state_get)" ]
-    # _state is not unset, but shouldnt be an issue
+    # _state is not unset, but shouldn't be an issue
 }
 
 deploy_state_get() {
@@ -1038,7 +1038,7 @@ read_config() {
     . "$_f" || error_msg "Not found: $_f"
 
     #
-    #  Read .AOK_VARS if pressent, allowing it to overide AOK_VARS
+    #  Read .AOK_VARS if present, allowing it to override AOK_VARS
     #
     # if [ "$(echo "$0" | sed 's/\// /g' | awk '{print $NF}')" = "build_fs" ]; then
     _f=/opt/AOK/.AOK_VARS
@@ -1084,7 +1084,7 @@ check_if_host_or_dest_fs() {
 #
 #===============================================================
 
-# these must be done before local varables assignments,
+# these must be done before local variables assignments,
 # since some of them depend on variables defined by them
 read_config
 check_if_host_or_dest_fs
@@ -1126,7 +1126,7 @@ d_src_img_cache="$TMPDIR"/aok_cache
 #  Locations for various stuff
 #
 
-#  To avoid typos all scripts are refered to by variables
+#  To avoid typos all scripts are referred to by variables
 scr_ios_version=/opt/AOK/tools/ios_version.sh
 scr_setup_common_env=/opt/AOK/common_AOK/setup_common_env.sh
 scr_setup_alpine=/opt/AOK/Alpine/setup_alpine.sh
@@ -1169,7 +1169,7 @@ f_chroot_hostname=/.chroot_hostname
 #  For automated logins
 #
 f_login_default_user="$d_aok_etc"/login-default-username
-f_logins_continous="$d_aok_etc"/login-continous
+f_logins_continuous="$d_aok_etc"/login-continuous
 
 f_hostname_aok_suffix="$d_aok_etc"/hostname-aok-suffix
 f_pts_0_as_console="$d_aok_etc"/pts_0_as_console

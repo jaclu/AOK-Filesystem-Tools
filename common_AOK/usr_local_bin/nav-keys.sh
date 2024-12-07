@@ -53,7 +53,7 @@ tmux_esc_prefix() {
 
     #
     #  At least Esc must be converted from octal to special char
-    #  for older tmux versions. Doesnt hurt on newer
+    #  for older tmux versions. doesn't hurt on newer
     #
     # sequence="$(echo $1 | sed 's/\\033/\\e/g')"
     sequence="${1//\\033/\\e}"
@@ -130,10 +130,10 @@ only you can decide.
 If you want to enable this feature, hit the key you would use as Esc on your
 keyboard. If you do not want to use this feature, hit space
 
-In most cases, if you have selected 'External Keyboard - Backtic -> Escape'
+In most cases, if you have selected 'External Keyboard - Backtick -> Escape'
 This key would actually generate Esc, but this is not always the case.
 For example the keyboard identified in BT settings as 'Yoozon 3.0 Keyboard'
-generates (octal) \\302\\247 for the key, even with the backtick setting.
+generates (octal) \\302\\247 for the key, even with the Backtickk setting.
 
 For such keyboards, this will also enable the intended key to generate Escape
 in the first place inside tmux.
@@ -263,7 +263,7 @@ select_esc_key "$1"
 
 select_nav_key_type "$1"
 
-if [[ -z "$1" ]] && pgrep tmux >/dev/null ; then
+if [[ -z "$1" ]] && pgrep tmux >/dev/null; then
     echo
     echo "You need to restart tmux in order for this to take effect."
 fi

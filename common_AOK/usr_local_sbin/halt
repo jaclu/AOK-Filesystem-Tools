@@ -66,7 +66,7 @@ key_pids="$(pgrep -f aok_launcher)"
 if [ -f /etc/alpine-release ]; then
     #
     #  Alpine busybox pgrep does not have -t option
-    #  workarround is to scan for pts/0 procs via ps -o pid,tty
+    #  workaround is to scan for pts/0 procs via ps -o pid,tty
     #
     pts0_id="$(stat -c "%t %T\n" /dev/pts/0 |
         awk '{ printf("%d,%d\n", strtonum("0x"$1), strtonum("0x"$2)) }')"
@@ -81,7 +81,7 @@ fi
 key_pids="$(pgrep -f "login -f")"
 [ -n "$key_pids" ] && do_shutdown "'login -f'"
 
-# find init pid - usually but not absolutely allways 1...
+# find init pid - usually but not absolutely always 1...
 key_pids="$(pgrep -f "init ")"
 [ -n "$key_pids" ] && do_shutdown "init via pgrep"
 

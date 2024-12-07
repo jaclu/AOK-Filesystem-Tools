@@ -87,7 +87,7 @@ location="$2"
 t_real_fs_delay=5
 
 #
-#  For the rest of this to be simple, asume this is run from within
+#  For the rest of this to be simple, assume this is run from within
 #  this folder, even if run using full path from another location
 #
 cd "$d_init_order" || {

@@ -6,7 +6,7 @@
 #
 #  Copyright (c) 2024: Jacob.Lundqvist@gmail.com
 #
-#  To allow monitoring of logs etc during bootup inittab holds until
+#  To allow monitoring of logs etc during boot up inittab holds until
 #  given the go-ahead. If aok_launcher is not in console mode, or not
 #  used, this will return right away.
 #
@@ -66,5 +66,5 @@ while true; do
     sleep 0.5 # A short sleep to keep sysload down
 done
 
-# remove the hint right away, so it doesnt get left in place
+# remove the hint right away, so it doesn't get left in place
 rm -f "$f_inittab_can_start"

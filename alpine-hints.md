@@ -14,7 +14,7 @@ especially if the package needs to compile something, first try
 and if found do the matching  `apk add` for that package.
 If what you are looking for is available as an apk package it will work,
 and it will install all dependencies.
-So this is the prefered way to meet dependencies.
+So this is the preferred way to meet dependencies.
 
 If you are lucky `pip install xxx` will work, but dont have too high
 expectations...

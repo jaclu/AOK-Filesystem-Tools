@@ -2,7 +2,7 @@
 
 I will try to keep track of changes between releases here
 
-## Upcomming release, available in devel branch
+## Upcoming release, available in devel branch
 
 - v0.19.22
 - network-check only checks for chroot if available
@@ -16,8 +16,8 @@ I will try to keep track of changes between releases here
 - v0.19.18
 - code cleanup
 - destfs_is_... -> fs_is_... for tasks always running on dest
-- only list compression as successfull if it actually was
-- renamed network-check.sh -> network-check to allign with iSH-IP-stats repo
+- only list compression as successful if it actually was
+- renamed network-check.sh -> network-check to align with iSH-IP-stats repo
 - fixed network-check.sh when run chrooted
 - env aok_this_is_dest_fs="Y"
 - ensure_ish_or_chrooted prefix
@@ -126,7 +126,7 @@ task/do_chroot.sh mostly rewritten
 
 - Added feature PREBUILD_ADDITIONAL_TASKS to allow for custom tasks to be done during prebuild
 - aok-versions (run on login) displays iSH AOK-FS & Alpine/Debian release
-- Debian uptime doesnt work on iSH - fixed by a replacement uptime that always displays 0.00, 0.00, 0.00
+- Debian uptime doesn't work on iSH - fixed by a replacement uptime that always displays 0.00, 0.00, 0.00
 - Setup can run on chrooted iSH
 - Improved propagating errors to terminate the build
 - moved Debian/ish_replacement_bins -> FamDeb
@@ -137,7 +137,7 @@ task/do_chroot.sh mostly rewritten
 
 ## 0.14.1
 
-- tools/upgrade-aok-fs.sh - changeed param handling
+- tools/upgrade-aok-fs.sh - changed param handling
 
 ## 0.14
 
@@ -162,8 +162,8 @@ since /proc/sysload is not available, original uptime is kept as /usr/bin/org-up
 ### 0.11.3
 
 - New Launcher cmd 'aok_launcher'. This waits for runlevel default before \
-progressing Allowing for things like clearing /run and updating motd durin\
-g sysinit before initiating the first session. Will only wait for bootup\
+progressing Allowing for things like clearing /run and updating motd during\
+g sysinit before initiating the first session. Will only wait for boot up\
 on the 1st vterm. Before mounting a non AOK-FS, run `aok -l default` to\
 ensure that a normal FS will boot properly.
 - a tool to configure most aspects of the AOK FS '/usr/local/bin/aok'
@@ -204,13 +204,13 @@ Now has two modes:
 
 - Uses v3.18.4 for Alpine installs
 - if no sync file is given, defaults to use /etc/hostname
-- /etc/hostname is updated, on regular iSH just for information, since it cant be used to set hostname there
+- /etc/hostname is updated, on regular iSH just for information, since it can't be used to set hostname there
 - Better documentation of hostname_sync.sh and its inittab entries
 - typo fixed in copy "$hostname_cached" to /etc/hostname
 - updated skel files to handle the custom hostname, when needed
 - in setup_final_tasks.sh syncs potentially iCloud related PATH params to ensure content is up to date
 - bash prompt setting window title reverted back to ""
-- Reverted back to single quote for bash prompts otherwise \$ wont display # for root
+- Reverted back to single quote for bash prompts otherwise \$ won't display # for root
 - Additional checks for errors in sub-scripts
 - Check for error after all apt/apk actions
 - getty term linux -> xterm-256color to get default color prompt
@@ -238,7 +238,7 @@ Now has two modes:
 - Updated Alpine/usr_local_bin/aok_groups, to adjust package selection depending on release
 - Updated DOCS_APKS to better match what is installed
 - Changed Ash prompt somewhat to make it stand out from the Bash prompt. Also added a hint where to change if you do want them to look the same
-- ensure ~/.common_rc in sourced early, expanded explaination of purpose
+- ensure ~/.common_rc in sourced early, expanded explanation of purpose
 
 ## release 0.9.8
 
@@ -256,14 +256,14 @@ Now has two modes:
 - New Debian src-img: Debian10-5-aok-1.tgz
 - Added my package adm tools Mapt & Mapk
 - Improved detection if already chrooted
-- Removed DEBUG_BUILD havent used it in a while and that stuff was going obsolete
+- Removed DEBUG_BUILD haven't used it in a while and that stuff was going obsolete
 - Added check that sudo is installed
 - Reintroduced exit after pre-build
 - Improved check that chroot dest is not already being used in a chroot
 - Alpine & Debian if USE_CRON_SERVICE is not "Y", only actually disable service if it was active, to avoid pointless warning
 - do_chroot.sh uses /dev/pts again - some Debian packages gives a warning when not available
 - Processing DEB_PKGS_SKIP before DEB_PKGS
-- Added override option if do_chroot.sh recomends against running it
+- Added override option if do_chroot.sh recommends against running it
 - improved checks that chroot is not already active
 - improved cleanup of processes after chroot, also works when ps axe is not available
 
@@ -275,7 +275,7 @@ Now has two modes:
 
 - Added warning not to start openrc service on Debian chroot with a Linux host. It will force you to reboot in order to reclaim /dev
 - New Debian src-img: Debian10-4-aok-2.tar.gz
-- Since all services are disabled in the src_img no longer any need to manually diable them during deploy. Has been so for ages, had just forgotten about it
+- Since all services are disabled in the src_img no longer any need to manually disable them during deploy. Has been so for ages, had just forgotten about it
 - filtering more env variables before chroot
   I spent a ridicilos time trying to use env -i, but with no success
   so far, what ends up happening is that the HOME is undefined in the chrooted env. Pretty sure its a trivial fix if you have that know-how - I unfortunately dont.
@@ -283,7 +283,7 @@ Now has two modes:
 - cron (dcron for Alpine) will always be installed and configured
   The service will only be activated if USE_CRON_SERVICE is "Y"
 - common_AOK/etc/skel/.tmux.conf - Fixed typo
-- nav_keys.sh - Can now be used in scrips, give desired navkey as param
+- nav_keys.sh - Can now be used in scripts, give desired navkey as param
 - removed Debian/etc/init.d/runbg - I figured out that the generic openrc runbg works just as fine on Debian
 - removed some utils - fingers purpose illudes me on a one user system, and the option to automount /iCloud has made a sepate util redundant
   common_AOK/usr_local_bin/finger
@@ -292,7 +292,7 @@ Now has two modes:
 ## release 0.9.4
 
 - Adding repo [Edge testing](https://dl-cdn.alpinelinux.org/alpine/edge/testing) Both for edge and rescent Alpine releases. For non edge releases testing is hidden behind @testing
-- Alpine/usr_local_sbin/update_motd now can extract Alpine relese both from regular releases and edge ones.
+- Alpine/usr_local_sbin/update_motd now can extract Alpine release both from regular releases and edge ones.
 - Rewrote handling of edge releases, now integrated with rest of build.
 - For Alpine builds, check that ALPINE_VERSION is defined
 

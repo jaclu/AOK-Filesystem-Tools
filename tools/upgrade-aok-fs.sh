@@ -7,7 +7,7 @@
 #  Copyright (c) 2022-2024: Jacob.Lundqvist@gmail.com
 #
 #  Upgrades an already installed iSH to be current with /optAOK content
-#  This is not equivallent to a fresh install, since dynamically generated
+#  This is not equivalent to a fresh install, since dynamically generated
 #  suff is better suited for a re-install.
 #
 #  Some sanity checks are done in order to move config and status files
@@ -130,7 +130,7 @@ general_upgrade() {
 
     msg_1 "Upgrading /usr/local/bin & /usr/local/sbin"
 
-    # this name was used up to arround 11.0
+    # this name was used up to around 11.0
     mv_no_over_write /etc/aok-release /etc/aok-fs-release
 
     #
@@ -181,7 +181,7 @@ mv_no_over_write() {
     _f_src="$1"
     _f_dst="$2"
     [ -z "$_f_src" ] && error_msg "mv_no_over_write() - no first param"
-    [ -f "$_f_src" ] || return # if src isnt there, nothing to move
+    [ -f "$_f_src" ] || return # if src isn't there, nothing to move
     [ -z "$_f_dst" ] && error_msg "mv_no_over_write() - no destination"
     [ -f "$_f_dst" ] && error_msg "can't move $_f_src to $_f_dst - destination occupied: $_f_dst"
 
@@ -231,8 +231,8 @@ update_etc_opt_references() {
 
     move_file_to_right_location /etc/opt/AOK/default-login-username \
         "$d_new_etc_opt_prefix/login-default-username"
-    move_file_to_right_location /etc/opt/AOK/continous-logins \
-        "$d_new_etc_opt_prefix/login-continous"
+    move_file_to_right_location /etc/opt/AOK/continuous-logins \
+        "$d_new_etc_opt_prefix/login-continuous"
 }
 
 obsolete_files() {
@@ -387,8 +387,8 @@ verify_launch_cmd
 obsolete_files
 check_softlinks
 
-# Double check that no new incompatiblities have been listed
-msg_2 "Ensuring no incompatabilies are detected"
+# Double check that no new incompatibilities have been listed
+msg_2 "Ensuring no incompatibilities are detected"
 /usr/local/bin/check-env-compatible
 
 cmd_post_update=/etc/opt/AOK/post-update.sh

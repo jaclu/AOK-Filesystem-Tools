@@ -60,7 +60,7 @@ handle_hardcoded_tz() {
         #  this point if Debian is being installed, probably due to switching
         #  from Alpine to Debian without having rebooted yet.
         #
-        msg_2 "Setitng time zone"
+        msg_2 "Setting time zone"
         msg_3 "Using hardcoded TZ: $AOK_TIMEZONE"
         ln -sf "/usr/share/zoneinfo/$AOK_TIMEZONE" /etc/localtime
     fi
@@ -88,7 +88,7 @@ removing_original_hostname_service() {
         mv -f "$hostn_service" /etc/init.d/NOT-hostname
     fi
     if fs_is_debian || fs_is_devuan; then
-        msg_3 "Removing hostname service files not meaningfull on iSH"
+        msg_3 "Removing hostname service files not meaningful on iSH"
         rm -f /etc/init.d/hostname
         rm -f /etc/init.d/hostname.sh
         rm -f /etc/rcS.d/S01hostname.sh
@@ -123,13 +123,13 @@ setup_cron_env() {
 
 disabling_default_services() {
     #
-    #  openrc is extreamly forgiving when it comes to dependencies, any
-    #  dependency that is not pressent is simply ignored.
+    #  openrc is extremely forgiving when it comes to dependencies, any
+    #  dependency that is not present is simply ignored.
     #
     #  When doing start/stop no more weird openrc warnings from kernel
     #  related services that will always fail on iSH
     #
-    #  Bootup time is vastly reduced, since openrc doesn't have to plow
+    #  boot up time is vastly reduced, since openrc doesn't have to plow
     #  through essentially every init script due to complex and in our
     #  case pointless dependencies
     #
@@ -225,7 +225,7 @@ setup_root_env() {
     #  Extra sanity check, if this is undefined, the rest of this would
     #  ruin the build host root env...
     #
-    [ ! -f "$f_host_deploy_state" ] && error_msg "setup_root_env() - This doesnt look like a FS during deploy!"
+    [ ! -f "$f_host_deploy_state" ] && error_msg "setup_root_env() - This doesn't look like a FS during deploy!"
     [ -z "$d_build_root" ]
 
     #
@@ -302,8 +302,8 @@ msg_script_title "setup_common_env.sh  Common AOK setup steps"
 
 if ! command -v sudo >/dev/null; then
     #
-    #  If sudo is not installed passwordless sudoers file cant be copied
-    #  and sudo is a core part of AOK FS, so shuld always be pressent
+    #  If sudo is not installed passwordless sudoers file can't be copied
+    #  and sudo is a core part of AOK FS, so should always be present
     #
     error_msg "sudo not installed, common_AOK/setup_environment() can not complete"
 fi

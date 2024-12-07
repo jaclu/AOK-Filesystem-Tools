@@ -3,7 +3,7 @@
 `deploy_init_hints.sh`
 
 Will drop in replacement init scripts, helping you to see what init scripts are used during different conditions, and in what order
-It is not adviced to use on a "real" FS, since there will be a lot of cleanup to be done.
+It is not advised to use on a "real" FS, since there will be a lot of cleanup to be done.
 Better suited for a temp FS
 
 ## init order, Alpine
@@ -18,12 +18,12 @@ Better suited for a temp FS
 --- ~/.profile [42064] [/bin/ash] []
     setting ENV & SHINIT
 --- ~/.env_init [42064] [/bin/ash] []
-  probably trigered due to ENV [/root/.env_init]
+  probably triggered due to ENV [/root/.env_init]
 
 #### interactive shell
 
 --- ~/.env_init [43349] [/bin/ash] []
-  probably trigered due to ENV [/root/.env_init]
+  probably triggered due to ENV [/root/.env_init]
 
 ### Bash
 

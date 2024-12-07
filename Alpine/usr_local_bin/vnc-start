@@ -16,7 +16,7 @@ if [ ! -f /etc/X11/xorg.conf.d/10-headless.conf ]; then
 fi
 
 # Only run once.  The grep causes CHECK to equal 1
-# pgrep fails when running Debian on iSH-AOK, so usnig grep for now...
+# pgrep fails when running Debian on iSH-AOK, so using grep for now...
 # shellcheck disable=SC2009
 if ! ps ax | grep -v grep | grep -q startx; then # Nothing running, clear stale locks
     rm -rf "$TMPDIR/.X*"

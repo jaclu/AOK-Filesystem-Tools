@@ -8,7 +8,7 @@
 #
 #  this is called by 'shutdown' and does the actual shutdown procedure.
 #
-#  For normall shutdown, do: shutdown
+#  For normal shutdown, do: shutdown
 #
 #  This is the second stage, actual shutdown, it will be called with
 #  exec from shutdown, in order to make sure any services stopping

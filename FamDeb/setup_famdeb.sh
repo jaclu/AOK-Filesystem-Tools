@@ -17,7 +17,7 @@ prepare_env_etc() {
     #
     #  Most of the Debian services, mounting fs, setting up networking etc
     #  serve no purpose in iSH, since all this is either handled by iOS
-    #  or done by the app before bootup
+    #  or done by the app before boot up
     #
     msg_3 "Disabling previous openrc runlevel tasks"
     rm /etc/runlevels/*/* -f

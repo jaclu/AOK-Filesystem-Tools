@@ -7,7 +7,7 @@
 #  License: MIT
 #
 #  Purpose of this is to ensure TMPDIR is assigned.
-#  It defins where most actions on the host platform will be performed.
+#  It defines where most actions on the host platform will be performed.
 #
 #  It will be assigned as follows:
 #

@@ -130,7 +130,7 @@ ios_matching() {
     #    "Unknown" - os_version not available
     #
     #  If a second param is given, it is used as the default if platform
-    #  doesnt provide os_version
+    #  doesn't provide os_version
     #
     #  Suggested usage:
     # case "$(ios_matching $_dvc_vers Yes)" in
@@ -149,8 +149,8 @@ ios_matching() {
 
     # error_msg "os_version [$os_version] compare_vers [$compare_vers]"
     #
-    #  if os_version is not supported by the device this check will allways
-    #  fail, since we cant gurantee a min version
+    #  if os_version is not supported by the device this check will always
+    #  fail, since we can't guarantee a min version
     #  If you check for a min version, but the default is to do it if
     #  vers info is not available add an [ -n "$(host_ios_version)" ] condition
     #
@@ -172,7 +172,7 @@ ios_matching() {
 
 # f_host_os_info=/proc/ish/version
 # if [ -f "f_host_os_info" ]; then
-#     # bla bla is for code i didnt
+#     # bla bla is for code i didn't
 #     # have time to enter yet
 #     host_device="bla bla iPadOS"
 #     host_vers="bla bla 16.6"
@@ -196,16 +196,16 @@ ios_matching() {
 
 #
 #  For iSH-AOK release >= 500 this file contains the following two lines
-#  about tne device where iSH is running:
+#  about the device where iSH is running:
 #    Model: iPad
 #    OS Version: 0.0
-#  Regular iSH doesnt support iOS version yet
+#  Regular iSH doesn't support iOS version yet
 #
 f_UIDevice="$d_build_root"/proc/ish/UIDevice
 
 if [ ! -f "$f_UIDevice" ]; then
     #
-    #  Reglar iSH doesnt support this, so will have to guestemate
+    #  Reglar iSH doesn't support this, so will have to guestemate
     #
     f_UIDevice="$d_build_root"/etc/opt/AOK/fake_UIDevice
     [ ! -f "$f_UIDevice" ] && create_fake_dev_details

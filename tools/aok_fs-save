@@ -21,7 +21,7 @@ f_alpine_release="$d_build_root"/etc/alpine-release
 f_debian_version="$d_build_root"/etc/debian_version
 
 if [ -f "$f_alpine_release" ]; then
-    # seems to be Aline
+    # seems to be Alpine
     tar_name="Alpine-$(cat "$f_alpine_release")"
 elif [ -f "$f_debian_version" ]; then
     tar_name="Debian-$(cat "$f_debian_version")"
@@ -54,7 +54,7 @@ cd "$d_aok_fs_tmp" || {
     error_msg "pwd is not $d_aok_fs_tmp"
 }
 
-msg_1 "Will crate: $(basename "$tar_name")"
+msg_1 "Will create: $(basename "$tar_name")"
 
 f_tar_tmp="$d_aok_completed"/tmp.tgz
 msg_2 "Creating $f_tar_tmp"

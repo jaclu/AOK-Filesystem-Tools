@@ -10,5 +10,5 @@
 #
 
 ish_version="$(cat /proc/ish/version 2>/dev/null)"
-[ -z "$ish_version" ] && ish_version="Cant be detected whilst chrooted"
+[ -z "$ish_version" ] && ish_version="can't be detected whilst chrooted"
 echo "iSH release:     $ish_version"

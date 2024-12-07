@@ -15,7 +15,7 @@ t_choose_distro_debian_start="$(date +%s)"
 msg_script_title "install_debian.sh  Downloading & Installing Debian"
 
 #
-#  Step 1  Download and upack Debian
+#  Step 1  Download and unpack Debian
 #
 
 debian_download_location="$TMPDIR/debian_fs"
@@ -30,7 +30,7 @@ cd "$debian_download_location" || {
 
 #
 #  If install was aborted and re-attempted, ensure there is no
-#  half downloaded image pressent.
+#  half downloaded image present.
 #
 rm "$debian_download_location"/* -f
 

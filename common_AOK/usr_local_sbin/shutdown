@@ -43,19 +43,19 @@ show_help() {
 Shut down the system.
 
 Options:
-  int            Delays shutdown this ammount of seconds
+  int            Delays shutdown this amount of seconds
      --help      Show this help
-  -H --halt      Compatiblity - ignored
-  -P --poweroff  Compatiblity - ignored
-  -r --reboot    Compatiblity - ignored
-  -h             Compatiblity - ignored
+  -H --halt      Compatibility - ignored
+  -P --poweroff  Compatibility - ignored
+  -r --reboot    Compatibility - ignored
+  -h             Compatibility - ignored
   -k             Don't halt/power-off/reboot, just send warnings
      --no-wall   Don't send wall message before halt/power-off/reboot
   -c             Cancel a pending shutdown
-     --show      Compatiblity - ignored
+     --show      Compatibility - ignored
 
      *** SYSTEM SHUTDOWN NOTICE ***
-Will allways be displayed (unless --no-wall is given)
+Will always be displayed (unless --no-wall is given)
 If text is provided after the options this message will be displayed below
 the header.
 

@@ -6,7 +6,7 @@
 #
 #  License: MIT
 #
-#  Creates a DB on installed apts, and cathegorizes apts by sections
+#  Creates a DB on installed apts, and categorizes apts by sections
 #  I use this when creating a base image for AOK-Filesystems-Tools
 #  ensuring nothing un-needed is left in.
 #

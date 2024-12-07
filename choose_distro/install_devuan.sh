@@ -12,7 +12,7 @@ tid_start="$(date +%s)"
 msg_script_title "install_devuan.sh  Downloading & Installing Devuan"
 
 #
-#  Step 1  Download and upack Devuan
+#  Step 1  Download and unpack Devuan
 #
 
 devuan_download_location="$TMPDIR/devuan_fs"
@@ -26,7 +26,7 @@ cd "$devuan_download_location" || {
 
 #
 #  If install was aborted and re-attempted, ensure there is no
-#  half downloaded image pressent.
+#  half downloaded image present.
 #
 rm "$devuan_download_location"/* -f
 

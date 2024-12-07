@@ -9,11 +9,11 @@
 #  Ensures iSH /dev entries are good
 #
 #  Normally this will refuse to run if not started from init.
-#  During setup, when this isnt in inittab yet, this check can be
+#  During setup, when this isn't in inittab yet, this check can be
 #  ignored with the param: ignore_init_check
 #
 #  This allows a deploy script to run fix_dev in order to ensure no
-#  device weirdness is pressent
+#  device weirdness is present
 #
 
 log_it() {
@@ -76,7 +76,7 @@ LOGGER_FILE=/var/log/fix_dev.log
 # log_it "Skipping fix_dev for now" 0
 
 #
-#  When pressent fix_dev is running, so other processes during early
+#  When present fix_dev is running, so other processes during early
 #  startup should hold whilst this exists
 #
 pid_file="/tmp/fixdev.pid"
@@ -105,7 +105,7 @@ if [ "$1" != "$skip_init_check" ]; then
     if [ "$PPID" -gt 4 ]; then
         #
         #  If it was started from other source than inittab, but not
-        #  yet pressent in inittab, it is not considered an error
+        #  yet present in inittab, it is not considered an error
         #
         if grep -q sbin/fix_dev /etc/inittab; then
             log_it "ALERT: Not started from init, parent is ($PPID) - exiting" 0

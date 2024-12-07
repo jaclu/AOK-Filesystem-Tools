@@ -17,8 +17,8 @@
 #     for Debian and for Alpine, the regular uptime is run instead showing
 #     the same iOS boot time.
 #
-#  2> iSH doesnt currently provide /proc/loadavg
-#     Debians regular uptime fails badly - (because of no /proc/loadavg??)
+#  2> iSH doesn't currently provide /proc/loadavg
+#     Debian's regular uptime fails badly - (because of no /proc/loadavg??)
 #     therefore sysload is faked, always reporting 0.00, 0.00, 0.00
 #     On Alpine the BusyBox uptime can report sysload, so sysload is
 #     extracted via /usr/bin/uptime.
@@ -72,7 +72,7 @@ org_uptime() {
 
 calculate_ish_uptime() {
     $dbg && echo ">calculate_ish_uptime()" >/dev/stderr
-    boot_time_epoch=$(date -d "$time_stamp_bootup" +%s)
+    boot_time_epoch=$(date -d "$time_stamp_boot_up" +%s)
     current_time=$(date +%s)
     uptime_seconds=$((current_time - boot_time_epoch))
 }
@@ -93,10 +93,10 @@ calculate_ios_uptime() {
 calculate_uptime() {
     startup_notice="===  System startup  ==="
     $dbg && echo ">calculate_uptime()" >/dev/stderr
-    time_stamp_bootup="$(grep "$startup_notice" /var/log/syslog |
+    time_stamp_boot_up="$(grep "$startup_notice" /var/log/syslog |
         tail -n 1 |
         awk '{print $1" "$2}')"
-    if [ -n "$time_stamp_bootup" ] && ! $force_ios_uptime; then
+    if [ -n "$time_stamp_boot_up" ] && ! $force_ios_uptime; then
         calculate_ish_uptime
     else
         calculate_ios_uptime

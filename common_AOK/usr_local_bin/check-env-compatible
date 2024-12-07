@@ -22,7 +22,7 @@ this_is_ish() {
 }
 
 is_fs_chrooted() {
-    # this quick and simple check doesnt work on ish
+    # this quick and simple check doesn't work on ish
     # so lets pretend for now chroot does not happen on ish
     this_is_ish && return 1                  # would never happen here :)
     [ "$(uname -s)" != "Linux" ] && return 1 # can only chroot this on Linux
@@ -63,7 +63,7 @@ uptime_check() {
 WARNING: If procps is installed on Alpine /usr/bin/uptime will segfault.
 
 This has been solved by soft-linking /usr/bin/uptime to /bin/busybox
-So this warning is just informational, and wont be seen again until
+So this warning is just informational, and won't be seen again until
 procps is updated and potentially installs an incompatible uptime.
 At that point this issue will be self corrected again.
 "
@@ -77,7 +77,7 @@ At that point this issue will be self corrected again.
 #===============================================================
 
 #
-# If called from somewhere that isnt connected to stdio, make announcements
+# If called from somewhere that isn't connected to stdio, make announcements
 # using wall
 #
 if [ "$1" = "wall" ]; then

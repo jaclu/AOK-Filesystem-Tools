@@ -149,7 +149,7 @@ vers_check_check_test() {
     vers_check_verify 0 2.3 2.3
     vers_check_verify 0 2.3 2.3
 
-    # nmbers > 9
+    # numbers > 9
     vers_check_verify 1 11 10
     vers_check_verify 1 11 10.1
     vers_check_verify 0 11 11

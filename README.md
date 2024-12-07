@@ -19,7 +19,11 @@ universe, speed is a relative concept.
 
 ## What works?
 
-I havent fiddled with the Devuan build for almot two years, so is highly unlikely to do something meaningfull at this point in time. Same with `./build_fs -s` (select), also something I havent used for ages, so higly unlikely to be working. At some point I should do a cleanup and fix what doesnt work
+I haven't fiddled with the Devuan build for almot two years, so is highly
+unlikely to do something meaningful at this point in time.
+Same with `./build_fs -s` (select), also something I haven't used for ages,
+so highly unlikely to be working. At some point I should do a cleanup and
+fix what doesn't work
 
 ## Disclaimer
 
@@ -55,7 +59,7 @@ sudo mv AOK-Filesystem-Tools /opt/AOK
 Please ensure that this is located in /opt/AOK, as various parts of the tool
 rely on its known location.
 
-## Compatability
+## Compatibility
 
 You can build the file system on any platform, but for chrooting, so that you
 can pre-build, and/or run the dest env on the build platform, you need to
@@ -83,7 +87,7 @@ Debian on iSH this reindexing takes a long time...
 
 For this reason, by default the iSH-AOK Debian base images does not
 include the man tools.
-Since it is normally expected to be present on a Debian, if you wan't
+Since it is normally expected to be present on a Debian, if you want
 to enable man you can achieve this by adding the following to your config
 
 ```bash

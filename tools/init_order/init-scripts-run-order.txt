@@ -1,7 +1,7 @@
 #
 #  Read down the appropriate column. Executes A, then B, then C, etc.
 #  The B1, B2, B3 means it executes only the first of those files found.
-#  The table lists the locations accoring to official documentation.
+#  The table lists the locations according to official documentation.
 #  In some case the zsh /etc items are in /etc/zsh instead
 #  These alternate location inint scripts are also provided.
 #  They all report their file name, and when in a non-default

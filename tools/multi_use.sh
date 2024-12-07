@@ -45,7 +45,7 @@ replace_std_bin() {
 
     [ -f "$f_bin" ] && {
         [ "$upgrade" != "upgrade" ] && {
-            _s="$f_bin_replacement already pressent, removing $f_bin"
+            _s="$f_bin_replacement already present, removing $f_bin"
             error_msg "$_s" -1
         }
         rm -f "$f_bin"

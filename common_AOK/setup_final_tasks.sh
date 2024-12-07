@@ -19,14 +19,14 @@
 #  If aok_launcher is used as Launch Cmd, it has already waited for
 #  system to be ready, so can be skipped here
 #
-wait_for_bootup() {
-    # msg_2 "wait_for_bootup()"
+wait_for_boot_up() {
+    # msg_2 "wait_for_boot_up()"
     if [ "$(get_kernel_default launch_command)" != "$launch_cmd_AOK" ]; then
         if deploy_state_is_it "$deploy_state_pre_build" &&
             ! fs_is_devuan &&
             ! is_fs_chrooted; then
             msg_2 "Waiting for runlevel default to be ready, normally < 10s"
-            msg_3 "iSH sometimes fails this, so if this doesnt move on, try restarting iSH"
+            msg_3 "iSH sometimes fails this, so if this doesn't move on, try restarting iSH"
             while ! rc-status -r | grep -q default; do
                 msg_3 "not ready"
                 sleep 2
@@ -35,7 +35,7 @@ wait_for_bootup() {
     else
         msg_2 "Boot wait already handled by AOK Launch cmd"
     fi
-    # msg_3 "wait_for_bootup() - done"
+    # msg_3 "wait_for_boot_up() - done"
 }
 
 ensure_path_items_are_available() {
@@ -79,7 +79,7 @@ aok_kernel_consideration() {
     if ! this_is_aok_kernel || is_fs_chrooted; then
         msg_3 "Not direct aok kernel!"
         #min_release 3.18 || {
-        #    msg_3 "procps wont work on regular iSH for Alpine < 3.18"
+        #    msg_3 "procps won't work on regular iSH for Alpine < 3.18"
         #    apk del procps || {
         #        error_msg "apk del procps failed"
         #    }
@@ -104,7 +104,7 @@ aok_kernel_consideration() {
 #     #  shellcheck disable=SC2154
 #     [ "$USE_CRON_SERVICE" != "Y" ] && return
 
-#     ensure_ish_or_chrooted "Cant attempt to start cron on a chrooted/non-iSH device"
+#     ensure_ish_or_chrooted "can't attempt to start cron on a chrooted/non-iSH device"
 
 #     cron_service="/etc/init.d"
 #     if fs_is_alpine; then
@@ -130,7 +130,7 @@ deploy_bat_monitord() {
     msg_2 "Battery monitor service $s_name"
 
     this_is_aok_kernel || {
-        msg_3 "$s_name is only meaningfull on iSH-AOK, skipping"
+        msg_3 "$s_name is only meaningful on iSH-AOK, skipping"
         return
     }
 
@@ -202,7 +202,7 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 this_is_aok_kernel && fs_is_alpine && min_release "3.20" && {
     echo
     echo "On iSH-AOK rsync and other core bins will fail in Alpine 3.20"
-    error_msg "For now using Alpine 3.19 or older is recomended"
+    error_msg "For now using Alpine 3.19 or older is recommended"
 }
 
 deploy_state_set "$deploy_state_finalizing"
@@ -234,7 +234,7 @@ f_fs_final_tasks=/opt/AOK/"$hostfs_name"/setup_final_tasks.sh
     echo
 }
 
-this_is_ish && wait_for_bootup
+this_is_ish && wait_for_boot_up
 
 #
 #  Setting up chroot env to use aok_launcher
@@ -258,7 +258,7 @@ if test -f /AOK; then
 fi
 
 #
-#  Currently Debian doesnt seem to have to take the iSH app into
+#  Currently Debian doesn't seem to have to take the iSH app into
 #  consideration
 #
 fs_is_alpine && aok_kernel_consideration
@@ -268,7 +268,7 @@ if fs_is_alpine; then
 elif fs_is_debian || fs_is_devuan; then
     next_etc_profile="/opt/AOK/FamDeb/etc/profile"
 else
-    error_msg "Undefined Distro, cant set next_etc_profile"
+    error_msg "Undefined Distro, can't set next_etc_profile"
 fi
 
 set_new_etc_profile "$next_etc_profile"
@@ -297,7 +297,7 @@ msg_1 "File system deploy completed"
 
 echo
 echo "Setup has completed the last deploy steps and is ready!
-You are recomended to reboot in order to ensure that all services are started,
+You are recommended to reboot in order to ensure that all services are started,
 and your environment is used."
 msg_1 "><> f_dest_fs_deploy_state[$f_dest_fs_deploy_state]"
 msg_1 "><> f_host_deploy_state [$f_host_deploy_state]"

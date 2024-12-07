@@ -9,14 +9,14 @@
 #  Since iSH does not mount /run as a tmpfs it is not cleared when booting up.
 #
 #  This is assumed to be run via inittab, as one of the first tasks,
-#  before requesing openrc to do anything.
+#  before requesting openrc to do anything.
 #
 #  iSH-AOK already implements /run as a tmpfs of sorts, by erasing it
 #  before starting the Linux env, so in that case this is not needed,
 #  though it wouldn't do any damage.
 #
-#  Amonst other things, not clearing /run connfuses openrc into beliving
-#  that things might aleady be in a started state.
+#  Amongst other things, not clearing /run connfuses openrc into believing
+#  that things might already be in a started state.
 #
 
 #

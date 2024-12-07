@@ -27,7 +27,7 @@ if [ -f ~/.common_rc ]; then
 fi
 
 #
-#  Ash can use the bash prompt, but doesnt support dynamic propmpt
+#  Ash can use the bash prompt, but doesn't support dynamic propmpt
 #
 use_static_bash_prompt
 
