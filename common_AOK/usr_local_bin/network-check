@@ -8,7 +8,7 @@
 #
 #  This script checks network connectivity and DNS resolution.
 #
-#  To mak it platform neutral and avoid dependency on additional tools,
+#  To make it platform neutral and avoid dependency on additional tools,
 #  DNS is tested by pinging a host.
 #
 #  Exit codes:
