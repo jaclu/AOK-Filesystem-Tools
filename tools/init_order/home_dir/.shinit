@@ -7,5 +7,5 @@
 echo "--- ~/.shinit [$$] [$0] [$1]"
 
 if [ -n "$SHINIT" ]; then
-    echo "  probably trigered due to SHINIT [$SHINIT]"
+    echo "  probably triggered due to SHINIT [$SHINIT]"
 fi
