@@ -379,17 +379,7 @@ deploy_aok() {
     da_depl_step="$(cat "$f_deploy_state")"
     /usr/local/bin/logger aok_launcher Triggering deploy step: "$da_depl_step"
     #  AOK-FS uses /etc/profile as placeholder for deploy steps
-    if /etc/profile; then
-        /usr/local/bin/logger aok_launcher Deploy completed - "$da_depl_step"
-    else
-        error_msg "returned from the deploy procedure!"
-        echo "Since the File System probably is not fully deployed,"
-        echo "it is impposisble to say if it is meaningful to continue"
-        echo "You have been warned..."
-        echo
-        sleep 3
-        set_deploy_aok_abort
-    fi
+    /usr/local/bin/logger aok_launcher Deploy completed - "$da_depl_step"
     unset da_depl_step
     trap '' INT # abort capturing Ctrl-C
 
@@ -414,7 +404,6 @@ deploy_aok() {
     echo "******************************************************"
     echo
     #  Ensure nothing that shouldn't be there was installed
-    /usr/local/bin/check-env-compatible
     sleep 3
 }
 

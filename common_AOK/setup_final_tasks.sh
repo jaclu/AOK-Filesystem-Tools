@@ -78,12 +78,12 @@ aok_kernel_consideration() {
     msg_2 "aok_kernel_consideration()"
     if ! this_is_aok_kernel || is_fs_chrooted; then
         msg_3 "Not direct aok kernel!"
-        #min_release 3.18 || {
-        #    msg_3 "procps won't work on regular iSH for Alpine < 3.18"
-        #    apk del procps || {
-        #        error_msg "apk del procps failed"
-        #    }
-        #}
+        min_release_simple 3.18 || {
+            msg_3 "procps won't work on regular iSH for Alpine < 3.18"
+            apk del procps || {
+                error_msg "apk del procps failed"
+            }
+        }
         return
     fi
 
@@ -194,12 +194,11 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 # shellcheck source=/opt/AOK/tools/utils.sh
 [ -z "$d_aok_etc" ] && . /opt/AOK/tools/utils.sh
-# shellcheck source=/opt/AOK/tools/ios_version.sh
-. "$scr_ios_version"
+
 # shellcheck source=/opt/AOK/tools/user_interactions.sh
 . "$src_user_interactions"
 
-this_is_aok_kernel && fs_is_alpine && min_release "3.20" && {
+this_is_aok_kernel && fs_is_alpine && min_release_simple "3.20" && {
     echo
     echo "On iSH-AOK rsync and other core bins will fail in Alpine 3.20"
     error_msg "For now using Alpine 3.19 or older is recommended"

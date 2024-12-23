@@ -43,7 +43,7 @@ handle_apks() {
     }
     echo
 
-    if ! min_release "3.16"; then
+    if ! min_release_simple "3.16"; then
         if [ -z "${CORE_APKS##*shadow-login*}" ]; then
             msg_2 "Excluding packages not yet available before 3.16"
             removing_unwanted_package shadow-login
@@ -52,17 +52,12 @@ handle_apks() {
             removing_unwanted_package zsh-history-substring-search
         fi
     fi
-    #if ! min_release 3.15; then
-    #    msg_2 "Pre 3.15 procps was called procps-ng"
-    #    CORE_APKS="$(echo "$CORE_APKS" | sed 's/procps/procps-ng/')"
-    #fi
-    min_release "3.19" && {
+    if ! min_release_simple 3.15; then
+        msg_2 "Pre 3.15 procps was called procps-ng"
+        CORE_APKS="$(echo "$CORE_APKS" | sed 's/procps/procps-ng/')"
+    fi
+    min_release_simple "3.19" && {
         msg_1 "iSH has some limitations on the latest releases..."
-
-        if min_release "3.20"; then
-            msg_2 "Alpine >= 3.20 - coreutils can't be used"
-            removing_unwanted_package coreutils
-        fi
 
         if false; then
             # 3.19 and higher has stability issues with modern sqlite
@@ -117,7 +112,7 @@ prepare_env_etc() {
         ln /etc/init.d/devfs /etc/init.d/dev
     fi
 
-    min_release 3.20 && {
+    min_release_simple 3.20 && {
         #
         #  Starting with this release, an empty Last Password Change
         #  for root in /etc/shadow will trigger the harmless warning
@@ -170,7 +165,7 @@ fi
 msg_script_title "setup_alpine.sh - Setup Alpine"
 initiate_deploy Alpine "$ALPINE_VERSION"
 
-this_is_aok_kernel && min_release "3.20" && {
+this_is_aok_kernel && min_release_simple "3.20" && {
     echo
     echo "On iSH-AOK rsync and other core bins will fail in Alpine 3.20"
     error_msg "For now using Alpine 3.19 or older is recommended"

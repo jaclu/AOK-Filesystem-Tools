@@ -32,7 +32,7 @@ is_fs_chrooted() {
 uptime_check() {
     #
     #  On Alpine >= 3.19  /usr/bin/uptime segfaults if procps is installed
-    #  This gives a warning
+    #  Workarround is to link /usr/bin/uptime to busybox
     #
 
     # Only relevant for Alpine
@@ -49,7 +49,7 @@ uptime_check() {
     . /opt/AOK/tools/vers_check.sh
 
     # if older Alpine - all is good
-    ! min_version 3.19 && return
+    ! min_release 3.19 && return
 
     cmd_uptime=/usr/bin/uptime
     [ "$(realpath "$cmd_uptime")" = /bin/busybox ] && return

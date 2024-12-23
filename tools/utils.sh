@@ -312,7 +312,7 @@ add_alpine_testing_repo() {
 
     # update seems in progress as of 24-10-25 only riscv64 in testing...
     # mark this as unavailable for now
-    ! min_release 3.21 && return 1 # skip this for older releases
+    ! min_release_simple 3.21 && return 1 # skip this for older releases
 
     msg_2 "Installing edge testing repo"
 
@@ -990,17 +990,19 @@ deploy_state_check_param() {
 #
 #---------------------------------------------------------------
 
-min_release() {
+min_release_simple() {
     #
+    #  Simplified release check during FS build, for a standalone version
+    #  also usable post-install check min_release() in tools/vers_check.sh
     #  Param is major release, like 3.16 or 3.17
     #  returns true if the current release matches or is higher
     #  Also returns true if release is edge!
     #
     rel_min="$1"
-    [ -z "$rel_min" ] && error_msg "min_release() no param given!"
+    [ -z "$rel_min" ] && error_msg "min_release_simple() no param given!"
 
     ! destfs_is_alpine && {
-        error_msg "min_release() can only be called for Alpine FS"
+        error_msg "min_release_simple() can only be called for Alpine FS"
     }
 
     # For edge always return true
@@ -1014,7 +1016,7 @@ min_release() {
     elif [ "$_result" -eq 0 ]; then
         return 0 # true
     else
-        error_msg "min_release() Failed to compare releases"
+        error_msg "min_release_simple() Failed to compare releases"
     fi
 }
 
@@ -1127,7 +1129,7 @@ d_src_img_cache="$TMPDIR"/aok_cache
 #
 
 #  To avoid typos all scripts are referred to by variables
-scr_ios_version=/opt/AOK/tools/ios_version.sh
+# scr_ios_version=/opt/AOK/tools/ios_version.sh
 scr_setup_common_env=/opt/AOK/common_AOK/setup_common_env.sh
 scr_setup_alpine=/opt/AOK/Alpine/setup_alpine.sh
 scr_setup_famdeb=/opt/AOK/FamDeb/setup_famdeb.sh
