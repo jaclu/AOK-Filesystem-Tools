@@ -32,7 +32,7 @@ is_fs_chrooted() {
 uptime_check() {
     #
     #  On Alpine >= 3.19  /usr/bin/uptime segfaults if procps is installed
-    #  Workarround is to link /usr/bin/uptime to busybox
+    #  Workaround is to link /usr/bin/uptime to busybox
     #
 
     # Only relevant for Alpine

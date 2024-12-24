@@ -18,8 +18,8 @@ if [ -f /etc/os-release ]; then
 elif [ -f /usr/lib/os-release ]; then
     os_release=/usr/lib/os-release
 fi
-if [ -m "$os_release" ]; then
-    current_alpine_release="$(cat "$os_release" | grep VERSION_ID | cut -d= -f2)"
+if [ -n "$os_release" ]; then
+    current_alpine_release="$(grep VERSION_ID "$os_release" | cut -d= -f2)"
 else
     # not changed by Alpine release upgrades, so least reliable
     current_alpine_release="$(cat /etc/alpine-release)"
@@ -141,7 +141,7 @@ _vers_check_test() {
     _vers_check_verify 0 3
     _vers_check_verify 0 3.13
 
-    echo "All tests successfull!"
+    echo "All tests successful!"
 }
 
 #===============================================================

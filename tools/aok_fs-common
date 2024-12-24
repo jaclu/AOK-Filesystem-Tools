@@ -1,4 +1,5 @@
 #!/bin/sh
+# shellcheck disable=SC2034 # dont warn about unused variables
 # This is sourced. Fake bang-path to help editors and linters
 #
 #  Part of https://github.com/jaclu/AOK-Filesystem-Tools
@@ -11,8 +12,9 @@
 #
 
 d_aok_completed="$TMPDIR"/aok_completed
-# shellcheck disable=SC2034
-d_aok_fs_tmp="$d_aok_completed"/tmp_fs
+f_tar_tmp_save="$d_aok_completed"/saved.tgz
+d_aok_fs_save="$d_aok_completed"/tmp_save
+d_aok_fs_replace="$d_aok_completed"/tmp_replace
 
 #
 #  Ensure env exists
