@@ -25,7 +25,7 @@
 #  Label for AOK builds, is also displayed by motd to indicate what
 #  AOK FS release is being used
 #
-AOK_VERSION=0.21.0
+AOK_VERSION=0.21.1
 
 #
 #  If defined this will be created as a no-password sudo capable user
@@ -164,16 +164,19 @@ ALPINE_VERSION=3.21.0 # End of Alpine support 2026-11-01
 #
 #  Always installed packages
 #
+pkgs_shells="bash zsh bash-completion zsh-completions"
 pkgs_tools="busybox-extras coreutils util-linux musl-locales
     sudo shadow shadow-login tzdata findutils sed tar pigz file gawk
     grep htop less sqlite py3-pip ncdu"
-pkgs_shells="bash zsh"
 pkgs_services="openrc dcron"
 pkgs_net_tools="ssl_client openssh git rsync curl wget elinks mosh mtr"
 pkgs_editing="vim nano mg"
 pkgs_text_ui="ncurses newt tmux bat"
 pkgs_other="fortune"
-CORE_APKS="$pkgs_tools $pkgs_shells $pkgs_services $pkgs_net_tools \
+
+# by adding shells and their completions first, as any other package is
+# added, its corresponding completion package will also be added
+CORE_APKS="$pkgs_shells $pkgs_tools $pkgs_services $pkgs_net_tools
     $pkgs_editing $pkgs_text_ui $pkgs_other"
 
 #
