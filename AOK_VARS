@@ -25,7 +25,7 @@
 #  Label for AOK builds, is also displayed by motd to indicate what
 #  AOK FS release is being used
 #
-AOK_VERSION=0.21.1
+AOK_VERSION=0.21.2
 
 #
 #  If defined this will be created as a no-password sudo capable user
@@ -46,6 +46,11 @@ USER_SHELL="/bin/bash"
 #  a TZ for every install.
 #
 # AOK_TIMEZONE="Europe/Berlin"
+
+#
+#  Space separated List of all iOS mounts that should be done during 1st boot
+#
+IOS_MOUNTS="/iCloud"
 
 #
 #  cron (dcron for Alpine), will allaways be installed
