@@ -146,10 +146,10 @@ AOK_HOSTNAME_SUFFIX="Y"
 #
 # ALPINE_VERSION=3.14.10 # End of Alpine support 2023-05-01 # AppStore iSH
 # ALPINE_VERSION=3.17.10  # End of Alpine support 2024-11-22
-# ALPINE_VERSION=3.18.9  # End of Alpine support 2025-05-09
-# ALPINE_VERSION=3.19.4  # End of Alpine support 2025-11-01 # TestFlight iSH
-# ALPINE_VERSION=3.20.3 # End of Alpine support 2026-04-01
-ALPINE_VERSION=3.21.0 # End of Alpine support 2026-11-01
+# ALPINE_VERSION=3.18.11  # End of Alpine support 2025-05-09
+# ALPINE_VERSION=3.19.6  # End of Alpine support 2025-11-01 # TestFlight iSH
+# ALPINE_VERSION=3.20.5 # End of Alpine support 2026-04-01
+ALPINE_VERSION=3.21.2 # End of Alpine support 2026-11-01
 
 #
 #  For edge releases - Current development tree
