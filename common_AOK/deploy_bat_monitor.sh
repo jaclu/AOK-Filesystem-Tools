@@ -8,7 +8,7 @@
 #
 #  Deploys bat-monitord, and its service script
 #
-#  This logs changes in battery charge, and exessive uptimes
+#  This logs changes in battery charge, and excessive uptimes
 #
 
 service_name="bat-monitord"
