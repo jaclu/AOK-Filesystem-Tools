@@ -46,7 +46,7 @@ ipv6 dns on Debian
 - v0.19.12
 - tweaked get_lsb_release() & untar_file()
 - v0.19.11
-- Disabled build options for select and Devuan, since they dont
+- Disabled build options for select and Devuan, since they don't
 work ATM
 - v0.19.10
 - mount /iCloud before set hostname
@@ -278,7 +278,7 @@ Now has two modes:
 - Since all services are disabled in the src_img no longer any need to manually disable them during deploy. Has been so for ages, had just forgotten about it
 - filtering more env variables before chroot
   I spent a ridicilos time trying to use env -i, but with no success
-  so far, what ends up happening is that the HOME is undefined in the chrooted env. Pretty sure its a trivial fix if you have that know-how - I unfortunately dont.
+  so far, what ends up happening is that the HOME is undefined in the chrooted env. Pretty sure its a trivial fix if you have that know-how - I unfortunately don't.
   common_AOK/cron/periodic
 - cron (dcron for Alpine) will always be installed and configured
   The service will only be activated if USE_CRON_SERVICE is "Y"

@@ -18,10 +18,10 @@
 # Ignore all local history of files
 **/.history
 
-# local overrides, dont put in git
+# local overrides, don't put in git
 .AOK_VARS
 
-# I use it as a reminder so I dont override anything locally
+# I use it as a reminder so I don't override anything locally
 globals.txt
 
 # src makefile output

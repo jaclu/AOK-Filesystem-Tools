@@ -379,7 +379,7 @@ set_new_etc_profile() {
         (
             echo "#"
             echo "#  Script that is part of deploy,  wrap it inside other script"
-            echo "#  so that any error exits dont exit ish, just aborts deploy"
+            echo "#  so that any error exits don't exit ish, just aborts deploy"
             echo "#  special case exit 123 exits the profile, useful for prebuild"
             echo "#  to exit out of the chroot"
             echo "#"
@@ -516,7 +516,7 @@ manual_runbg() {
 initiate_deploy() {
     # echo "=V= initiate_deploy($1, $2)"
     #
-    #  If either is not found, we dont know what to install and how
+    #  If either is not found, we don't know what to install and how
     #
     # [ ! -f "$f_build_type" ] && error_msg "$f_build_type missing, unable to deploy"
 

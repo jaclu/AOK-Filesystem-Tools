@@ -108,7 +108,7 @@ verify_devs() {
     check_for_bad_null /dev/nulll
 
     #
-    #  These seem to be recreated by iSH if missing, but they dont
+    #  These seem to be recreated by iSH if missing, but they don't
     #  fix them if broken as in wrongly configured
     #
     verify_device /dev/clipboard 240 0

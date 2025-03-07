@@ -168,7 +168,7 @@ clean_up_dest_env() {
     rm -f "$f_home_root_replaced"
     rm -f "$f_hostname_initial"
 
-    # dont remove if final dest is chrooted!
+    # don't remove if final dest is chrooted!
     if is_fs_chrooted; then
         msg_3 "dest is chrooted - Leaving: $f_chroot_hostname"
     else

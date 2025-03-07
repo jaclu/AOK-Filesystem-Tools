@@ -16,5 +16,5 @@ If what you are looking for is available as an apk package it will work,
 and it will install all dependencies.
 So this is the preferred way to meet dependencies.
 
-If you are lucky `pip install xxx` will work, but dont have too high
+If you are lucky `pip install xxx` will work, but don't have too high
 expectations...

@@ -234,7 +234,7 @@ find_default_cmd() {
     #  Since no command was specified, first check if this
     #  chroot has a defined default command in /.chroot_default_cmd
     #  If this is not found, try to login as root with root's shell.
-    #  This to ensue we dont try to use a shell that is either not
+    #  This to ensue we don't try to use a shell that is either not
     #  available, or not found in the expected location
     #
     [ "$_fnc_calls" -gt 0 ] && msg_2 "find_default_cmd()"

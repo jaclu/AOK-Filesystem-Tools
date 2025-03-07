@@ -1,5 +1,5 @@
 #!/bin/sh
-# shellcheck disable=SC2034 # dont warn about unused variables
+# shellcheck disable=SC2034 # don't warn about unused variables
 # This is sourced. Fake bang-path to help editors and linters
 #
 #  Part of https://github.com/jaclu/AOK-Filesystem-Tools
