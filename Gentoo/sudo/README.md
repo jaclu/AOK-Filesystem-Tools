@@ -1,24 +1,24 @@
 # sudo
 
 ## Source Install/uninstall
-- Source install of sudo
-    - emerge --sync
-- install
-    - emerge app-admin/sudo
-- uninstall
-    - emerge --unmerge app-admin/sudo
-- Clean Up Dependencies (Optional)
-    - emerge --depclean
-- Update Configuration Files (Optional) pick one:
-    - etc-update
-    - dispatch-conf
 
+- Source install of sudo
+  - emerge --sync
+- install
+  - emerge app-admin/sudo
+- uninstall
+  - emerge --unmerge app-admin/sudo
+- Clean Up Dependencies (Optional)
+  - emerge --depclean
+- Update Configuration Files (Optional) pick one:
+  - etc-update
+  - dispatch-conf
 
 ## Installs to
 
 - /usr/sbin/sudo
 
-```
+```shell
 -rwsr-xr-x 1 root root 272K Apr  8 16:50 /usr/bin/sudo
 ```
 

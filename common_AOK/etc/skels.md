@@ -36,10 +36,10 @@ number and colored to indicate health status of the charge.
 
 level | color | description
 -|-|-
-<10 | bright red | critically low
-11-19 | red | very low
-20-29 | yellow | low
+<10   | bright red   | critically low
+11-19 | red          | very low
+20-29 | yellow       | low
 30-39 | bright green | lowish
-40-80 | green | normal
-81-89 | dark green | highish
->90 | dark blue | very high
+40-80 | green        | normal
+81-89 | dark green   | highish
+`>90`  | dark blue    | very high
