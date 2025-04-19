@@ -1,0 +1,12 @@
+---
+
+MD013:
+  line_length: 92
+  tables: true
+
+MD024:
+  siblings_only: true
+
+MD033:
+  # Allowed elements
+  allowed_elements: [img, details, summary, br]
