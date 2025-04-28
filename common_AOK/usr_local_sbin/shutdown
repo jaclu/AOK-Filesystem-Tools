@@ -172,4 +172,8 @@ fi
 #}
 
 # exec disconnects from the tty so should be safe if run via ssh
-$do_shutdown && exec /usr/local/sbin/do-shutdown
+$do_shutdown && exec /usr/local/sbin/do-shutdown &
+
+sleep 30
+/usr/local/bin/logger shutdown "Still running after 30s - should not happen..."
+exit 1

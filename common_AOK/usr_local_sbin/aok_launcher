@@ -379,6 +379,13 @@ deploy_aok() {
     da_depl_step="$(cat "$f_deploy_state")"
     /usr/local/bin/logger aok_launcher Triggering deploy step: "$da_depl_step"
     #  AOK-FS uses /etc/profile as placeholder for deploy steps
+    echo
+    echo "aok_launcher will run /etc/profile...."
+    echo
+    /bin/sh /etc/profile
+    echo
+    echo "aok_launcher /etc/profile completed..."
+    echo
     /usr/local/bin/logger aok_launcher Deploy completed - "$da_depl_step"
     unset da_depl_step
     trap '' INT # abort capturing Ctrl-C
