@@ -9,23 +9,19 @@
 #
 
 display_time_elapsed() {
-    # echo "=V= Mapt display_time_elapsed($1)"
-    duration="$(($(date +%s) - mapt_time_start))"
-    mins="$((duration / 60))"
-    seconds="$((duration - mins * 60))"
+    dte_duration=$(($(date +%s) - mapt_time_start))
 
-    #  Add zero prefix when < 10
-    [ "$mins" -gt 0 ] && [ "$mins" -lt 10 ] && mins="0$mins"
-    [ "$seconds" -lt 10 ] && seconds="0$seconds"
-
+    if [ "$dte_duration" -gt 30 ]; then
+        dte_hours=$((dte_duration / 3600))
+        dte_minutes=$(((dte_duration % 3600) / 60))
+        dte_seconds=$((dte_duration - dte_hours * 3600 - dte_minutes * 60))
+        dte_elapsed=$(printf '%02d:%02d:%02d' "$dte_hours" "$dte_minutes" "$dte_seconds")
+    else
+        dte_elapsed=$(printf '%ss' "$dte_duration")
+    fi
     echo
-    echo "display_time_elapsed - Time elapsed: $mins:$seconds - $prog_name"
+    printf 'Time elapsed: %s - %s\n' "$dte_elapsed" "$prog_name"
     echo
-
-    unset duration
-    unset mins
-    unset seconds
-    # echo "^^^ Mapt display_time_elapsed() - done"
 }
 
 #===============================================================

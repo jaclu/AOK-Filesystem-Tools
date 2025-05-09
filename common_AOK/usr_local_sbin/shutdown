@@ -26,6 +26,7 @@ is_int() {
 }
 
 # Define a function to handle Ctrl+C
+# shellcheck disable=SC2317
 interrupt_handler() {
     echo "Ctrl+C (SIGINT) received. Cancelling shutdown..."
     shutdown_cancelled
@@ -64,24 +65,11 @@ the header.
     exit 0
 }
 
-display_msg() {
-    dm_msg="$1"
-
-    echo "$dm_msg"
-    echo "$dm_msg" >/dev/console
-    /usr/local/bin/logger shutdown "$dm_msg"
-    unset dm_msg
-}
-
 #===============================================================
 #
 #   Main
 #
 #===============================================================
-
-f_abort_shutdown=/tmp/abort_shutdown
-
-rm -f "$f_abort_shutdown" # remove leftover if any
 
 # execute again as root
 if [ "$(whoami)" != "root" ]; then
@@ -163,13 +151,7 @@ if [ "$hold_time" != "0" ]; then
     echo
     sleep "$hold_time"
 fi
-
-#[ -f "$f_abort_shutdown" ] && {
-#    echo
-#    display_msg "Aborting shutdown"
-#    rm -f "$f_abort_shutdown"
-#    exit 1
-#}
+trap '' INT # abort capturing Ctrl-C
 
 # exec disconnects from the tty so should be safe if run via ssh
 $do_shutdown && exec /usr/local/sbin/do-shutdown &

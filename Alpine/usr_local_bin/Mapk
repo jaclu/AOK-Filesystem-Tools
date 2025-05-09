@@ -9,24 +9,22 @@
 #
 
 display_time_elapsed() {
-    _dte_label="$1"
+    dte_label="$1"
+    dte_duration=$(($(date +%s) - t_start))
 
-    _dte_t_in="$(($(date +%s) - t_start))"
-    _dte_mins="$((_dte_t_in / 60))"
-    _dte_seconds="$((_dte_t_in - _dte_mins * 60))"
-
-    #  Add zero prefix when < 10
-    [ "$_dte_mins" -gt 0 ] && [ "$_dte_mins" -lt 10 ] && _dte_mins="0$_dte_mins"
-    [ "$_dte_seconds" -lt 10 ] && _dte_seconds="0$_dte_seconds"
-
+    if [ "$dte_duration" -gt 30 ]; then
+        dte_hours=$((dte_duration / 3600))
+        dte_minutes=$(((dte_duration % 3600) / 60))
+        dte_seconds=$((dte_duration - dte_hours * 3600 - dte_minutes * 60))
+        dte_elapsed=$(printf '%02d:%02d:%02d' "$dte_hours" "$dte_minutes" "$dte_seconds")
+    else
+        dte_elapsed=$(printf '%ss' "$dte_duration")
+    fi
     echo
-    echo "Time elapsed: $_dte_mins:$_dte_seconds - $_dte_label"
+    printf 'Time elapsed: %s - %s\n' "$dte_elapsed" "$dte_label"
     echo
-    unset _dte_t_in
-    unset _dte_label
-    unset _dte_mins
-    unset _dte_seconds
 }
+
 
 #===============================================================
 #
