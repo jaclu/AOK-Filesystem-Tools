@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+#  Part of https://github.com/emkey1/AOK-Filesystem-Tools
+#
+#  License: MIT
+#
+# To minimize risk of running shutdown on a "real" Linux-node this is
+# somewhat of a safety alias
+
+# /usr/local/sbin/
+shutdown
