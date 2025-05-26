@@ -12,7 +12,7 @@ display_time_elapsed() {
     dte_label="$1"
     dte_duration=$(($(date +%s) - t_start))
 
-    if [ "$dte_duration" -gt 30 ]; then
+    if [ "$dte_duration" -gt 59 ]; then
         dte_hours=$((dte_duration / 3600))
         dte_minutes=$(((dte_duration % 3600) / 60))
         dte_seconds=$((dte_duration - dte_hours * 3600 - dte_minutes * 60))
