@@ -325,6 +325,23 @@ update_aok_release() {
     }
 }
 
+display_time_elapsed() {
+    dte_label="$1"
+    dte_duration=$(($(date +%s) - t_start))
+
+    if [ "$dte_duration" -gt 59 ]; then
+        dte_hours=$((dte_duration / 3600))
+        dte_minutes=$(((dte_duration % 3600) / 60))
+        dte_seconds=$((dte_duration - dte_hours * 3600 - dte_minutes * 60))
+        dte_elapsed=$(printf '%02d:%02d:%02d' "$dte_hours" "$dte_minutes" "$dte_seconds")
+    else
+        dte_elapsed=$(printf '%ss' "$dte_duration")
+    fi
+    echo
+    printf 'Time elapsed: %s - %s\n' "$dte_elapsed" "$dte_label"
+    echo
+}
+
 #===============================================================
 #
 #   Main
@@ -356,6 +373,8 @@ while [ -n "$1" ]; do
 done
 
 ensure_ish_or_chrooted ""
+
+t_start="$(date +%s)"
 
 if fs_is_alpine; then
     distro_prefix="/opt/AOK/Alpine"
@@ -400,3 +419,5 @@ cmd_post_update=/etc/opt/AOK/post-update.sh
 
 echo
 aok-versions
+
+display_time_elapsed "Mapk"
