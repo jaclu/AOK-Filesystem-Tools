@@ -372,7 +372,7 @@ while [ -n "$1" ]; do
     shift
 done
 
-ensure_ish_or_chrooted ""
+ensure_ish_or_chrooted
 
 t_start="$(date +%s)"
 

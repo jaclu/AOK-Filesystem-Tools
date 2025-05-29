@@ -566,11 +566,12 @@ debian_apt_update() {
 ensure_ish_or_chrooted() {
     #
     #  Simple test to make sure this is not run on a non iSH host
-    #
-    _s="${1:-"Can only run on iSH or when chrooted"}"
     this_is_ish && return
     is_fs_chrooted && return
-    error_msg "$s"
+
+    def_msg="Can only run on iSH or when chrooted"
+    msg="${1:-$def_msg}"
+    error_msg "$msg"
 }
 
 rsync_chown() {
