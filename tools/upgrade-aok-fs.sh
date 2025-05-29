@@ -420,4 +420,4 @@ cmd_post_update=/etc/opt/AOK/post-update.sh
 echo
 aok-versions
 
-display_time_elapsed "Mapk"
+display_time_elapsed "AOK"
