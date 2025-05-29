@@ -104,7 +104,7 @@ aok_kernel_consideration() {
 #     #  shellcheck disable=SC2154
 #     [ "$USE_CRON_SERVICE" != "Y" ] && return
 
-#     ensure_ish_or_chrooted "can't attempt to start cron on a chrooted/non-iSH device"
+#     ensure_ish_or_chrooted
 
 #     cron_service="/etc/init.d"
 #     if fs_is_alpine; then

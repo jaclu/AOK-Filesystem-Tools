@@ -568,10 +568,7 @@ ensure_ish_or_chrooted() {
     #  Simple test to make sure this is not run on a non iSH host
     this_is_ish && return
     is_fs_chrooted && return
-
-    def_msg="Can only run on iSH or when chrooted"
-    msg="${1:-$def_msg}"
-    error_msg "$msg"
+    error_msg "Can only run on iSH or when chrooted"
 }
 
 rsync_chown() {

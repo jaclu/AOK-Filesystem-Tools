@@ -4,7 +4,7 @@
 #
 #  License: MIT
 #
-#  Copyright (c) 2022-2024: Jacob.Lundqvist@gmail.com
+#  Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
 #
 #  Upgrades an already installed iSH to be current with /optAOK content
 #  This is not equivalent to a fresh install, since dynamically generated
