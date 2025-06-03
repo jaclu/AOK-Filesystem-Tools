@@ -1,0 +1,45 @@
+#!/bin/sh
+# shellcheck disable=SC2034 # don't warn about unused variables
+# This is sourced. Fake bang-path to help editors and linters
+#
+#  Part of https://github.com/jaclu/AOK-Filesystem-Tools
+#
+#  License: MIT
+#
+#  Copyright (c) 2023-2024: Jacob.Lundqvist@gmail.com
+#
+#  Common environment for aok_fs-save & aok_fs-replace
+#
+
+d_aok_completed="$TMPDIR"/aok_completed
+f_tar_tmp_save="$TMPDIR"/saving.tgz
+d_aok_fs_save="$TMPDIR"/tmp_save
+d_aok_fs_replace="$TMPDIR"/tmp_replace
+
+#
+#  Ensure env exists
+#
+mkdir -p "$d_aok_completed" || {
+    error_msg "Failed to create: $d_aok_completed"
+}
+[ ! -d "$d_aok_completed" ] && {
+    error_msg "d_aok_completed is not a folder: $d_aok_completed"
+}
+
+ensure_not_chrooted() {
+    d_fs="$1"
+    [ -z "$d_fs" ] && error_msg "ensure_not_chrooted() - no param"
+    [ -f "$d_fs" ] && error_msg "Not a folder: $d_fs"
+    [ ! -d "$d_fs" ] && return # nothing to check
+
+    if fs_is_alpine; then
+        chs_procs="$(lsof -l +d "$d_fs" |
+            awk '{print $1 }' | sort | uniq | tr '\n' ' ')"
+    else
+        chs_procs="$(lsof -l +d "$d_fs" |
+            awk '{print $2 }' | sort | uniq | tr '\n' ' ')"
+    fi
+    [ -n "$chs_procs" ] && {
+        error_msg "it seems a chroot is active at: $d_fs"
+    }
+}
