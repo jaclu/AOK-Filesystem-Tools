@@ -14,14 +14,14 @@ f_recovery_mode=/etc/opt/AOK/recovery-mode
 f_recovery_log_file=/var/log/recovery-mode.log
 [ -f "$f_recovery_mode" ] && {
     msg="$(date +"%Y-%m-%d %H:%M:%S") in recovery mode - skipped ${*}"
-    echo "$msg" >/dev/stderr
+    echo "$msg" >/dev/pts/0
     echo "$msg" >>"$f_recovery_log_file"
     exit 0
 }
 
 msg="$(date +"%Y-%m-%d %H:%M:%S") R-check will run: ${*}"
 echo "$msg" >>"$f_recovery_log_file"
-echo "$msg" >/dev/stderr
+echo "$msg" >/dev/pts/0
 
 # run the intended task
 "${@}"
