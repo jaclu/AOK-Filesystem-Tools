@@ -29,6 +29,7 @@ pgrep -f aok_launcher >/dev/null || return
     #  since if not console mode, inittab would start right away.
     #
     sleep 0.5
+    echo "><> inittab_waiting_for_consile:pts_0 is not console, continuing"
     return
 }
 

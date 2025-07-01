@@ -298,6 +298,7 @@ boot_up() {
             monitor_log_files
         fi
     else
+        print_log "pts0 wasn't console, setting it up to be"
         [ "$(stat -c "%t %T" /dev/console)" != "5 1" ] && {
             echo "Reverting console to normal mode"
             rm -f /dev/console && mknod -m 666 /dev/console c 5 1
