@@ -321,11 +321,8 @@ runlevel_wait() {
         recovery_mode_probe runlevel-wait
         _current_runlevel="$(rc-status -r)"
         if [ "$_current_runlevel" = "$expected_runlevel" ]; then
-            print_log "runlevel is now: '$expected_runlevel'"
-
             # clear before exiting loop
             unset _current_runlevel
-
             break
         fi
 
