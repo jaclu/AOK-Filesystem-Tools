@@ -138,6 +138,7 @@ verify_devs() {
 #---------------------------------------------------------------
 
 recovery_mode_enable() {
+    print_log "recovery_mode_enable()"
     # Save current stty settings
     org_stty=$(stty -g)
 
@@ -151,6 +152,7 @@ recovery_mode_enable() {
 }
 
 recovery_mode_disable() {
+    print_log "recovery_mode_disable()"
     $recovery_mode_active || return
     recovery_mode_probe final # one last check
     recovery_mode_active=false
@@ -167,6 +169,7 @@ recovery_mode_disable() {
 }
 
 recovery_mode_probe() {
+    print_log "recovery_mode_probe()"
     $recovery_mode_active || return
     key=$(dd bs=1 count=1 2>/dev/null)
     case "$key" in
@@ -180,7 +183,7 @@ recovery_mode_probe() {
 recovery_mode_trigger() {
     # First do urgent tasks that are somewhat time sensitive
     touch "$f_recovery_mode"
-
+    print_log "recovery_mode_trigger()"
     $recovery_mode_active || {
         error_msg "recovery_mode_trigger($1) - called when recovery is not active"
         return
@@ -823,6 +826,7 @@ f_login_prog="/bin/login"
 # f_status_log="/var/log/aok_launcher.log"
 
 expected_runlevel="default"
+print_log "recovery mode set to false"
 recovery_mode_active=false
 
 cmd_custom_console_monitor=/usr/local/sbin/custom_console_monitor
