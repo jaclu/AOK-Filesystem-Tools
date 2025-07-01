@@ -326,7 +326,7 @@ runlevel_wait() {
         fi
         _s="current runlevel is $current_runlevel - waiting for"
         _s="$_s $expected_runlevel - press Ctrl-C to abort wait"
-        ptrint_log "$_s"
+        print_log "$_s"
         # clear before potential exit
         unset current_runlevel _s
 
