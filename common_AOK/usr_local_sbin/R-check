@@ -20,9 +20,12 @@ s_prefix="$(date +"%Y-%m-%d %H:%M:%S") [$$]"
 }
 
 msg="$s_prefix R-check will run: ${*}"
-echo "--- pre ---"
-echo "$msg" >>"$f_recovery_log_file"
-echo "=== post ==="
+
+{
+    echo "--- pre ---"
+    echo "$msg"
+    echo "=== post ==="
+} >>"$f_recovery_log_file"
 
 # run the intended task
 "$@"
