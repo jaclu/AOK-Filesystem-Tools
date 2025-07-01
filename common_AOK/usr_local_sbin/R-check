@@ -25,7 +25,8 @@ echo "$msg" >>"$f_recovery_log_file"
 echo "$msg" >/dev/pts/0
 
 # run the intended task
-"${@}"
+eval "$*"
+
 ex_code="$?"
 # calculate new time stamp, since process might have taken some time
 s_prefix="$(date +"%Y-%m-%d %H:%M:%S")"
