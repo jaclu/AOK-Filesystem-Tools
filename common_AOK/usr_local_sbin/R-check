@@ -18,7 +18,7 @@ f_recovery_mode=/etc/opt/AOK/recovery-mode
 f_recovery_log_file=/var/log/recovery-mode.log
 
 [ -f "$f_recovery_mode" ] && {
-    log_it "R-check in recovery mode - skipped: ${*}"
+    log_it "R-check detected recovery mode - skipped: ${*}"
     exit 0
 }
 log_it "R-check will run: ${*}"
@@ -29,7 +29,5 @@ log_it "R-check will run: ${*}"
 ex_code="$?"
 
 if [ "$ex_code" -ne 0 ]; then
-    log_it "inittab failed - exit code: $ex_code"
-else
-    log_it "inittab task succeeded"
+    log_it "R-check cmd failed - exit code: $ex_code"
 fi
