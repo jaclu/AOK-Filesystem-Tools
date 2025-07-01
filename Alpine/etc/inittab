@@ -57,7 +57,7 @@
 #  This leads to services first being stopped and then started, ensuring
 #  they start up regardless of logged runstate at startup.
 #
-# ::sysinit:/sbin/openrc sysinit
+::sysinit:/usr/local/sbin/R-check /sbin/openrc sysinit
 # ::sysinit:/sbin/openrc boot
 ::sysinit:/usr/local/sbin/R-check /usr/local/bin/logger inittab doing openrc default
 ::wait:/usr/local/sbin/R-check /sbin/openrc default
