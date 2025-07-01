@@ -110,5 +110,5 @@ while [ -n "$1" ]; do
 done
 
 for pts in /dev/pts/*; do
-    display_msg >"$pts" 2>/dev/null
+    display_msg 2>/dev/null >"$pts"
 done
