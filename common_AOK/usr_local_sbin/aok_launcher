@@ -274,6 +274,7 @@ display_header() {
 
 boot_up() {
     # at boot up also log it
+    print_log "boot_up()"
 
     if [ -f "$f_pts_0_as_console" ]; then
         # also done in profile for interactive vterms
@@ -311,7 +312,7 @@ boot_up() {
 
 runlevel_wait() {
     trap 'set_abort_runlevel_wait' INT
-
+    print_log "runlevel_wait()"
     while true; do
         recovery_mode_probe runlevel-wait
         current_runlevel="$(rc-status -r)"
@@ -325,7 +326,7 @@ runlevel_wait() {
         fi
         _s="current runlevel is $current_runlevel - waiting for"
         _s="$_s $expected_runlevel - press Ctrl-C to abort wait"
-
+        ptrint_log "$_s"
         # clear before potential exit
         unset current_runlevel _s
 
@@ -561,6 +562,7 @@ monitor_log_files() {
 #---------------------------------------------------------------
 
 handle_logins() {
+    print_log "handle_logins()"
     while true; do
         #
         #  Ensure params are tried for each login attempt, in case they
@@ -622,7 +624,7 @@ login_with_param_check() {
     #
     #  Do this for each login, in case changes have been made
     #
-    # echo "><> login_with_param_check()"
+    echo "><> login_with_param_check()"
     login_ex_code=0
     if [ "$ignore_login_params" != "1" ] &&
         [ -f "$f_login_default_user" ]; then
@@ -797,7 +799,7 @@ is_alpine_3_20() {
 # cmd_logger=/usr/local/bin/logger
 # rm -f "$f_recovery_mode"
 # recovery_mode_enable
-
+        ptrint_log "$_s"
 #  Continue with variable definitions
 state_prefix=/etc/opt/AOK
 f_inittab_can_start="$state_prefix"/inittab_can_start
@@ -807,7 +809,6 @@ f_login_default_user="$state_prefix"/login-default-username
 f_profile_hints="$state_prefix"/show_profile_hints
 f_pts_0_as_console="$state_prefix"/pts_0_as_console
 f_recovery_mode="$state_prefix"/recovery-mode
-
 f_aok_release=/etc/aok-fs-release
 f_rel_alpine=/etc/alpine-release
 f_rel_devuan=/etc/devuan_version
@@ -858,6 +859,7 @@ this_is_aok_kernel && fs_is_alpine && grep -q 3.20 "$f_rel_alpine" && {
     error_msg "For now using Alpine 3.19 or older is recommended" -1
 }
 
+print_log "will run verify devs"
 verify_devs
 recovery_mode_probe main2
 
