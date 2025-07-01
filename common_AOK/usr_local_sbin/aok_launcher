@@ -506,7 +506,7 @@ handle_custom_console_monitor() {
     #  $f_inittab_can_start once it is setup, so that inittab
     #  can commence its run
     #
-    echo "><> running $cmd_custom_console_monitor"
+    # print_log "><> running $cmd_custom_console_monitor"
     $cmd_custom_console_monitor
     #
     #  Should not get here...
@@ -518,7 +518,7 @@ handle_custom_console_monitor() {
 }
 
 monitor_log_files() {
-    print_log "monitor_log_files()"
+    # print_log "monitor_log_files()"
     initial_console_run=true
 
     echo "Console tailing of /var/log/* - non text-files will be ignored"

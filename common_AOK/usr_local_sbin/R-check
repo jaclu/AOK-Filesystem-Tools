@@ -29,7 +29,7 @@ log_it "R-check will run: ${*}"
 ex_code="$?"
 
 if [ "$ex_code" -ne 0 ]; then
-    echo "inittab failed - exit code: $ex_code"
+    log_it "inittab failed - exit code: $ex_code"
 else
-    echo "inittab task succeeded"
+    log_it "inittab task succeeded"
 fi
