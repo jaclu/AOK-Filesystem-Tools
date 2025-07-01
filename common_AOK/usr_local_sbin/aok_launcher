@@ -849,6 +849,8 @@ rm -f "$f_recovery_mode_log"
 
 prog_name=$(basename "$0")
 
+recovery_mode_enable
+
 is_fs_chrooted && {
     # When chrooted, initttab won't execute so do such tasks here
     /usr/local/bin/logger "$prog_name" "===  System startup  ==="
