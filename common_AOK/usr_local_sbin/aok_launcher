@@ -317,22 +317,23 @@ runlevel_wait() {
     trap 'set_abort_runlevel_wait' INT
     # print_log "runlevel_wait()"
     while true; do
+        sleep 2
         recovery_mode_probe runlevel-wait
-        current_runlevel="$(rc-status -r)"
-        if [ "$current_runlevel" = "$expected_runlevel" ]; then
-            #echo "runlevel is now: '$expected_runlevel'"
+        _current_runlevel="$(rc-status -r)"
+        if [ "$_current_runlevel" = "$expected_runlevel" ]; then
+            print_log "runlevel is now: '$expected_runlevel'"
 
             # clear before exiting loop
-            unset current_runlevel
+            unset _current_runlevel
 
             break
         fi
 
-        _s="current runlevel is $current_runlevel - waiting for"
+        _s="current runlevel is $_current_runlevel - waiting for"
         _s="$_s $expected_runlevel - press Ctrl-C to abort wait"
         print_log "$_s"
         # clear before potential exit
-        unset current_runlevel _s
+        unset _current_runlevel _s
 
         sleep 2
         [ -f "$f_recovery_mode" ] && return
@@ -567,7 +568,7 @@ monitor_log_files() {
 #---------------------------------------------------------------
 
 handle_logins() {
-    print_log "handle_logins()"
+    # print_log "handle_logins()"
     while true; do
         #
         #  Ensure params are tried for each login attempt, in case they
@@ -629,7 +630,7 @@ login_with_param_check() {
     #
     #  Do this for each login, in case changes have been made
     #
-    echo "><> login_with_param_check()"
+    # echo "><> login_with_param_check()"
     login_ex_code=0
     if [ "$ignore_login_params" != "1" ] &&
         [ -f "$f_login_default_user" ]; then
