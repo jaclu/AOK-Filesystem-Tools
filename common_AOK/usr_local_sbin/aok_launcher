@@ -324,6 +324,9 @@ runlevel_wait() {
 
             break
         fi
+        print_log "recovery_mode:$recovery_mode_active"
+        [ -f "$f_recovery_mode" ] && print_log "Found: $f_recovery_mode"
+
         _s="current runlevel is $current_runlevel - waiting for"
         _s="$_s $expected_runlevel - press Ctrl-C to abort wait"
         print_log "$_s"
