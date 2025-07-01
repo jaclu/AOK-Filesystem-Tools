@@ -280,6 +280,7 @@ boot_up() {
     print_log "boot_up()"
 
     if [ -f "$f_pts_0_as_console" ]; then
+        print_log " pts0 is console"
         # also done in profile for interactive vterms
         /usr/local/bin/check-env-compatible
 
@@ -522,6 +523,7 @@ handle_custom_console_monitor() {
 }
 
 monitor_log_files() {
+    print_lot "monitor_log_files()"
     initial_console_run=true
 
     echo "Console tailing of /var/log/* - non text-files will be ignored"
