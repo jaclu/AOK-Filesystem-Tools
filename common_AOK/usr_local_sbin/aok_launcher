@@ -799,7 +799,7 @@ is_alpine_3_20() {
 # cmd_logger=/usr/local/bin/logger
 # rm -f "$f_recovery_mode"
 # recovery_mode_enable
-        ptrint_log "$_s"
+
 #  Continue with variable definitions
 state_prefix=/etc/opt/AOK
 f_inittab_can_start="$state_prefix"/inittab_can_start
