@@ -12,16 +12,24 @@
 
 f_recovery_mode=/etc/opt/AOK/recovery-mode
 f_recovery_log_file=/var/log/recovery-mode.log
+s_prefix="$(date +"%Y-%m-%d %H:%M:%S")" 
 [ -f "$f_recovery_mode" ] && {
-    msg="$(date +"%Y-%m-%d %H:%M:%S") in recovery mode - skipped ${*}"
+    msg="$s_prefix in recovery mode - skipped ${*}"
     echo "$msg" >/dev/pts/0
     echo "$msg" >>"$f_recovery_log_file"
     exit 0
 }
 
-msg="$(date +"%Y-%m-%d %H:%M:%S") R-check will run: ${*}"
+msg="$s_prefix R-check will run: ${*}"
 echo "$msg" >>"$f_recovery_log_file"
 echo "$msg" >/dev/pts/0
 
 # run the intended task
 "${@}"
+ex_code="$?"
+[ "$ex_code" -ne 0 ] && {
+    # calculate new time stamp, since process might have taken some time
+    msg "$(date +"%Y-%m-%d %H:%M:%S") - inittab failed - exit code: $ex_code"
+    echo "$msg" >>"$f_recovery_log_file"
+    echo "$msg" >/dev/pts/0
+}
