@@ -138,7 +138,7 @@ verify_devs() {
 #---------------------------------------------------------------
 
 recovery_mode_enable() {
-    print_log "recovery_mode_enable()"
+    # print_log "recovery_mode_enable()"
     # Save current stty settings
     org_stty=$(stty -g)
 
@@ -152,7 +152,7 @@ recovery_mode_enable() {
 }
 
 recovery_mode_disable() {
-    print_log "recovery_mode_disable()"
+    # print_log "recovery_mode_disable()"
     $recovery_mode_active || return
     recovery_mode_probe final # one last check
     recovery_mode_active=false
@@ -169,7 +169,7 @@ recovery_mode_disable() {
 }
 
 recovery_mode_probe() {
-    print_log "recovery_mode_probe()"
+    # print_log "recovery_mode_probe()"
     $recovery_mode_active || return
     key=$(dd bs=1 count=1 2>/dev/null)
     case "$key" in
@@ -277,10 +277,9 @@ display_header() {
 
 boot_up() {
     # at boot up also log it
-    print_log "boot_up()"
+    # print_log "boot_up()"
 
     if [ -f "$f_pts_0_as_console" ]; then
-        print_log " pts0 is console"
         # also done in profile for interactive vterms
         /usr/local/bin/check-env-compatible
 
@@ -298,7 +297,6 @@ boot_up() {
             monitor_log_files
         fi
     else
-        print_log "pts0 wasn't console, setting it up to be"
         [ "$(stat -c "%t %T" /dev/console)" != "5 1" ] && {
             echo "Reverting console to normal mode"
             rm -f /dev/console && mknod -m 666 /dev/console c 5 1
@@ -317,7 +315,7 @@ boot_up() {
 
 runlevel_wait() {
     trap 'set_abort_runlevel_wait' INT
-    print_log "runlevel_wait()"
+    # print_log "runlevel_wait()"
     while true; do
         recovery_mode_probe runlevel-wait
         current_runlevel="$(rc-status -r)"
@@ -329,8 +327,6 @@ runlevel_wait() {
 
             break
         fi
-        print_log "recovery_mode:$recovery_mode_active"
-        [ -f "$f_recovery_mode" ] && print_log "Found: $f_recovery_mode"
 
         _s="current runlevel is $current_runlevel - waiting for"
         _s="$_s $expected_runlevel - press Ctrl-C to abort wait"
@@ -829,7 +825,6 @@ f_login_prog="/bin/login"
 # f_status_log="/var/log/aok_launcher.log"
 
 expected_runlevel="default"
-print_log "recovery mode set to false"
 recovery_mode_active=false
 
 cmd_custom_console_monitor=/usr/local/sbin/custom_console_monitor
@@ -869,7 +864,6 @@ this_is_aok_kernel && fs_is_alpine && grep -q 3.20 "$f_rel_alpine" && {
     error_msg "For now using Alpine 3.19 or older is recommended" -1
 }
 
-print_log "will run verify devs"
 verify_devs
 recovery_mode_probe main2
 
