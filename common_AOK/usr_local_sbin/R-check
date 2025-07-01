@@ -25,9 +25,3 @@ log_it "R-check will run: ${*}"
 
 # run the intended task
 "$@"
-
-ex_code="$?"
-
-if [ "$ex_code" -ne 0 ]; then
-    log_it "R-check cmd failed - exit code: $ex_code"
-fi
