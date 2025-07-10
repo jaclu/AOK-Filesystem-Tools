@@ -142,11 +142,11 @@ general_upgrade() {
     msg_3 "/usr/local/sbin"
     rsync_chown /opt/AOK/common_AOK/usr_local_sbin/ /usr/local/sbin
     echo
-    msg_3 "alternate hostname related"
-    [ -f /etc/init.d/hostname ] && rsync_chown /opt/AOK/common_AOK/hostname_handling/aok-hostname-service /etc/init.d/hostname
+    # msg_3 "alternate hostname related"
+    # [ -f /etc/init.d/hostname ] && rsync_chown /opt/AOK/common_AOK/hostname_handling/aok-hostname-service /etc/init.d/hostname
     # [ -f /usr/local/bin/hostname ] && rsync_chown /opt/AOK/common_AOK/hostname_handling/hostname_alt /usr/local/bin/hostname
     # [ -f /usr/local/sbin/hostname_sync.sh ] && rsync_chown /opt/AOK/common_AOK/hostname_handling/hostname_sync.sh /usr/local/sbin
-    echo
+    # echo
 
     #
     #  Copy distro specific stuff
