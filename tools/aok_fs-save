@@ -20,23 +20,27 @@ hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
 #
 #  Select name for tarfile
 #
-f_alpine_release="$d_build_root"/etc/alpine-release
-f_debian_version="$d_build_root"/etc/debian_version
-if [ -f "$f_alpine_release" ]; then
-    # seems to be Alpine
-    tar_name="Alpine-$(cat "$f_alpine_release")"
-elif [ -f "$f_debian_version" ]; then
-    tar_name="Debian-$(cat "$f_debian_version")"
-elif [ -f "$f_gentoo_version" ]; then
-    tar_name="Gentoo-$(cut -d' ' -f 5 <"$f_gentoo_version")"
+if [ -n "$1" ]; then
+    tar_name="$d_aok_completed/$1.tgz"
 else
-    error_msg "failed to detect Alpine/Debian"
+    # Auto-generate name for tarfile
+    f_alpine_release="$d_build_root"/etc/alpine-release
+    f_debian_version="$d_build_root"/etc/debian_version
+    if [ -f "$f_alpine_release" ]; then
+        # seems to be Alpine
+        tar_name="Alpine-$(cat "$f_alpine_release")"
+    elif [ -f "$f_debian_version" ]; then
+        tar_name="Debian-$(cat "$f_debian_version")"
+    elif [ -f "$f_gentoo_version" ]; then
+        tar_name="Gentoo-$(cut -d' ' -f 5 <"$f_gentoo_version")"
+    else
+        error_msg "failed to detect Alpine/Debian"
+    fi
+    aok_vers="$(cat "$d_build_root"/etc/aok-fs-release)" || {
+        error_msg "failed to detect aok-fs release"
+    }
+    tar_name="$d_aok_completed/$tar_name-AOK-$aok_vers-done.tgz"
 fi
-aok_vers="$(cat "$d_build_root"/etc/aok-fs-release)" || {
-    error_msg "failed to detect aok-fs release"
-}
-tar_name="$d_aok_completed/$tar_name-AOK-$aok_vers-done.tgz"
-
 #
 #  Move aok fs to tmp save location
 #
