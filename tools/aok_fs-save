@@ -64,6 +64,7 @@ cd "$d_aok_fs_save" || {
 #  Creating saved tgz
 #
 msg_1 "Will create: $(basename "$tar_name")"
+msg_3 "as: $tar_name"
 msg_2 "Creating $f_tar_tmp_save"
 cmd_pigz="$(command -v pigz)"
 if [ -n "$cmd_pigz" ]; then
