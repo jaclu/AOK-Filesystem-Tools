@@ -26,7 +26,7 @@ is_int() {
 }
 
 # Define a function to handle Ctrl+C
-# shellcheck disable=SC2317
+#  shellcheck disable=SC2329
 interrupt_handler() {
     echo "Ctrl+C (SIGINT) received. Cancelling shutdown..."
     shutdown_cancelled

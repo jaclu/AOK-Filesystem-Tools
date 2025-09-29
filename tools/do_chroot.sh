@@ -259,6 +259,7 @@ find_default_cmd() {
 #
 #---------------------------------------------------------------
 
+#  shellcheck disable=SC2329
 exists_and_empty() {
     [ "$_fnc_calls" -gt 0 ] && msg_2 "exists_and_empty($1)"
 
@@ -399,6 +400,7 @@ env_restore() {
     [ "$_fnc_calls" = 2 ] && msg_3 "env_restore() - done"
 }
 
+#  shellcheck disable=SC2329
 sig_handler() {
     [ "$_fnc_calls" -gt 0 ] && msg_2 "cleanup($1)"
 
