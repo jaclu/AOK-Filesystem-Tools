@@ -123,9 +123,11 @@ task/do_chroot.sh mostly rewritten
 
 ## 0.15
 
-- Added feature PREBUILD_ADDITIONAL_TASKS to allow for custom tasks to be done during prebuild
+- Added feature PREBUILD_ADDITIONAL_TASKS to allow for custom tasks to be done
+during prebuild
 - aok-versions (run on login) displays iSH AOK-FS & Alpine/Debian release
-- Debian uptime doesn't work on iSH - fixed by a replacement uptime that always displays
+- Debian uptime doesn't work on iSH - fixed by a replacement uptime that
+always displays
 0.00, 0.00, 0.00
 - Setup can run on chrooted iSH
 - Improved propagating errors to terminate the build
@@ -141,17 +143,20 @@ task/do_chroot.sh mostly rewritten
 
 ## 0.14
 
-- When Debian is installed on regular iSH, uptime needs to be replaced, \
-since /proc/sysload is not available, original uptime is kept as /usr/bin/org-uptime
-- Added untar_file() to make sure pigz is always used for untaring (if available)
+- When Debian is installed on regular iSH, uptime needs to be replaced,
+since /proc/sysload is not available, original uptime is kept as
+/usr/bin/org-uptime
+- Added untar_file() to make sure pigz is always used for untaring
+(if available)
 - Ensures aok_imgs folder is created before generating compressed FS image
-- Added /usr/local/bin/aok-version - displaying AOK-FS, FS and iSH kernel releases
+- Added /usr/local/bin/aok-version - displaying AOK-FS, FS and iSH kernel
+releases
 - Expanded post deploy message in aok_launcher
 
 ### 0.11.5
 
-- Added pigz to Debian src image and Alpine packages (multithread tar/untar used
-when building images)
+- Added pigz to Debian src image and Alpine packages (multithread tar/untar
+used when building images)
 - Debian src img with pigz
 
 ### 0.11.4
@@ -168,7 +173,8 @@ g sysinit before initiating the first session. Will only wait for boot up\
 on the 1st vterm. Before mounting a non AOK-FS, run `aok -l default` to\
 ensure that a normal FS will boot properly.
 - a tool to configure most aspects of the AOK FS '/usr/local/bin/aok'
-- Removed custom logins, since all are now handled by aok_launcher, and configured via '/usr/local/bin/aok'
+- Removed custom logins, since all are now handled by aok_launcher,
+and configured via '/usr/local/bin/aok'
 - Updated skels (shell init files), added sys load and batt_lvl to bash & zsh
 - Deploy has been rewritten
 - Added usage of pigz for multithreaded tar/untar - greatly reducing deploy times!
