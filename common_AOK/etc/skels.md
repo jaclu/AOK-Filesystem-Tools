@@ -24,7 +24,7 @@ The sepparator between hostname and cwd, differs depending on shell, to
 make it easier to see what is used.
 
 shell | separator
--|-
+----- | ---------
 bash | :
 ash | \|
 zsh | space
@@ -34,12 +34,12 @@ zsh | space
 If running on iSH-AOK the prompt will also show battery charge, both by
 number and colored to indicate health status of the charge.
 
-level | color | description
--|-|-
-<10   | bright red   | critically low
-11-19 | red          | very low
-20-29 | yellow       | low
-30-39 | bright green | lowish
-40-80 | green        | normal
-81-89 | dark green   | highish
-`>90`  | dark blue    | very high
+level |    color      | description
+----- | ------------- | -----------
+`<10` | bright red    | critically low
+11-19 | red           | very low
+20-29 | yellow        | low
+30-39 | bright green  | lowish
+40-80 | green         | normal
+81-89 | dark green    | highish
+`>90` | dark blue     | very high
