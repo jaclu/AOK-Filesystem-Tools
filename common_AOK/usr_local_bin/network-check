@@ -40,7 +40,7 @@ ping_check() {
     # Using trap prevents the shell from displaying an alarm if dns
     # fails on MacOS. According to GPT harmles on other platforms
     #
-    trap '' ALRM 
+    trap '' ALRM
     $ping_cmd -c 2 "$1" >/dev/null 2>&1
     ex_code="$?" # need to save to keep it past the trap
     trap - ALRM
