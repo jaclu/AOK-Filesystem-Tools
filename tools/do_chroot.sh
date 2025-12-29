@@ -59,11 +59,11 @@ set_ch_procs() {
 
     # Create a list of all processes associated with the chroot folder
     if fs_is_alpine; then
-        ch_procs="$(lsof -l +d "$CHROOT_TO" |
-            awk '{print $1 }' | sort | uniq | tr '\n' ' ')"
+        ch_procs="$(lsof -l +d "$CHROOT_TO" \
+            | awk '{print $1 }' | sort | uniq | tr '\n' ' ')"
     else
-        ch_procs="$(lsof -l +d "$CHROOT_TO" |
-            awk '{print $2 }' | sort | uniq | tr '\n' ' ')"
+        ch_procs="$(lsof -l +d "$CHROOT_TO" \
+            | awk '{print $2 }' | sort | uniq | tr '\n' ' ')"
     fi
 }
 
@@ -407,21 +407,21 @@ sig_handler() {
     _signal="$1" # this was triggered by trap
     case "$_signal" in
 
-    INT)
-        msg_1 "Ctrl+C (SIGINT) was caught."
-        ;;
+        INT)
+            msg_1 "Ctrl+C (SIGINT) was caught."
+            ;;
 
-    TERM)
-        msg_1 "Termination (SIGTERM) was caught."
-        ;;
+        TERM)
+            msg_1 "Termination (SIGTERM) was caught."
+            ;;
 
-    HUP)
-        msg_1 "Hangup (SIGHUP) was caught."
-        ;;
+        HUP)
+            msg_1 "Hangup (SIGHUP) was caught."
+            ;;
 
-    *)
-        msg_1 "Unknown signal ($_signal) was caught."
-        ;;
+        *)
+            msg_1 "Unknown signal ($_signal) was caught."
+            ;;
 
     esac
     unset _signal
@@ -474,16 +474,16 @@ while [ -n "$1" ]; do
 
     case "$1" in
 
-    "-h" | "--help")
-        show_help
-        exit 0
-        ;;
+        "-h" | "--help")
+            show_help
+            exit 0
+            ;;
 
-    "-c" | "--cleanup")
-        show_unmounts=true
-        cleanup_sleep=2
-        #region cleanup explanation
-        echo "
+        "-c" | "--cleanup")
+            show_unmounts=true
+            cleanup_sleep=2
+            #region cleanup explanation
+            echo "
 
 Will cleanup the mount point: $CHROOT_TO
 
@@ -495,31 +495,31 @@ $cmd_line -p /custom/path -c
 
 This will continue in $cleanup_sleep secnods,hit Ctrl-C if you want to abort
 "
-        #endregion
-        sleep "$cleanup_sleep"
+            #endregion
+            sleep "$cleanup_sleep"
 
-        define_chroot_env
-        env_restore
-        exit 0
-        ;;
+            define_chroot_env
+            env_restore
+            exit 0
+            ;;
 
-    "-f" | "--force")
-        msg_1 "Using force!"
-        force_this=1
-        ;;
+        "-f" | "--force")
+            msg_1 "Using force!"
+            force_this=1
+            ;;
 
-    "-p" | "--path")
-        if [ -d "$2" ]; then
-            CHROOT_TO="$2"
-            shift # get rid of the dir
-        else
-            error_msg "-p assumes a param pointing to where to chroot!"
-        fi
-        ;;
+        "-p" | "--path")
+            if [ -d "$2" ]; then
+                CHROOT_TO="$2"
+                shift # get rid of the dir
+            else
+                error_msg "-p assumes a param pointing to where to chroot!"
+            fi
+            ;;
 
-    *)
-        error_msg "invalid option! Try using: -h"
-        ;;
+        *)
+            error_msg "invalid option! Try using: -h"
+            ;;
 
     esac
     shift

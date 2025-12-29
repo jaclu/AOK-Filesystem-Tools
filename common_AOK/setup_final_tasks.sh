@@ -22,9 +22,9 @@
 wait_for_boot_up() {
     # msg_2 "wait_for_boot_up()"
     if [ "$(get_kernel_default launch_command)" != "$launch_cmd_AOK" ]; then
-        if deploy_state_is_it "$deploy_state_pre_build" &&
-            ! fs_is_devuan &&
-            ! is_fs_chrooted; then
+        if deploy_state_is_it "$deploy_state_pre_build" \
+            && ! fs_is_devuan \
+            && ! is_fs_chrooted; then
             msg_2 "Waiting for runlevel default to be ready, normally < 10s"
             msg_3 "iSH sometimes fails this, so if this doesn't move on, try restarting iSH"
             while ! rc-status -r | grep -q default; do

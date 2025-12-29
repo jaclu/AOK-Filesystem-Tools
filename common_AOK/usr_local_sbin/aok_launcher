@@ -173,10 +173,10 @@ recovery_mode_probe() {
     $recovery_mode_active || return
     key=$(dd bs=1 count=1 2>/dev/null)
     case "$key" in
-    r | R)
-        recovery_mode_trigger "$1"
-        ;;
-    *) ;;
+        r | R)
+            recovery_mode_trigger "$1"
+            ;;
+        *) ;;
     esac
 }
 
@@ -232,25 +232,25 @@ EOF
 
 display_header() {
     if [ -f "$f_aok_release" ]; then
-        aok_vers="$(cat "$f_aok_release" 2>/dev/null)" ||
-            aok_vers="*** Failed to read $f_aok_release ***"
+        aok_vers="$(cat "$f_aok_release" 2>/dev/null)" \
+            || aok_vers="*** Failed to read $f_aok_release ***"
     else
         aok_vers=Unknown
     fi
 
     if fs_is_alpine; then
-        fs_name="Alpine $(cat "$f_rel_alpine" 2>/dev/null)" ||
-            fs_name="Alpine Unknown"
+        fs_name="Alpine $(cat "$f_rel_alpine" 2>/dev/null)" \
+            || fs_name="Alpine Unknown"
     elif fs_is_debian; then
-        fs_name="Debian $(cat "$f_rel_debian" 2>/dev/null)" ||
-            fs_name="Debian Unknown"
+        fs_name="Debian $(cat "$f_rel_debian" 2>/dev/null)" \
+            || fs_name="Debian Unknown"
     elif fs_is_devuan; then
         #
         #  Devuan must come before Debian, since it also has the
         #  f_rel_debian file
         #
-        fs_name="Devuan $(cat "$f_rel_devuan" 2>/dev/null)" ||
-            fs_name="Devuan Unknown"
+        fs_name="Devuan $(cat "$f_rel_devuan" 2>/dev/null)" \
+            || fs_name="Devuan Unknown"
     else
         fs_name=Unknown
     fi
@@ -629,8 +629,8 @@ login_with_param_check() {
     #
     # echo "><> login_with_param_check()"
     login_ex_code=0
-    if [ "$ignore_login_params" != "1" ] &&
-        [ -f "$f_login_default_user" ]; then
+    if [ "$ignore_login_params" != "1" ] \
+        && [ -f "$f_login_default_user" ]; then
 
         def_user="$(cat "$f_login_default_user")"
         [ -n "$def_user" ] && {

@@ -176,18 +176,18 @@ continuous_sessions_change() {
         error_msg "continuous_sessions_change() - f_logins_continuous undefined"
     }
     case "$continuous_mode" in
-    "on")
-        if this_is_ish; then
-            continuous_sessions_change "off"
-        fi
-        touch "$f_logins_continuous"
-        ;;
+        "on")
+            if this_is_ish; then
+                continuous_sessions_change "off"
+            fi
+            touch "$f_logins_continuous"
+            ;;
 
-    "off") rm -f "$f_logins_continuous" ;;
+        "off") rm -f "$f_logins_continuous" ;;
 
-    *)
-        error_msg "continuous_sessions_change() - options are on/off"
-        ;;
+        *)
+            error_msg "continuous_sessions_change() - options are on/off"
+            ;;
     esac
     continuous_sessions_display syslog
 
@@ -234,8 +234,8 @@ boot_cmd_change() {
     this_is_ish || error_msg "Can't change boot_command on chrooted system"
 
     case "$boot_cmd" in
-    "default") set_kernel_default boot_command "$boot_cmd_default" "" silent ;;
-    *) set_kernel_default boot_command "$boot_cmd" ;;
+        "default") set_kernel_default boot_command "$boot_cmd_default" "" silent ;;
+        *) set_kernel_default boot_command "$boot_cmd" ;;
     esac
     boot_cmd_display syslog
 }
@@ -268,18 +268,18 @@ launch_cmd_change() {
     this_is_ish || error_msg "Can't change launch_command on chrooted system"
 
     case "$lnch_cmd" in
-    "default")
-        set_kernel_default launch_command "$launch_cmd_default" "" silent
-        [ -f "$f_pts_0_as_console" ] && {
-            echo
-            echo "WARNING: With the default launcher, using console"
-            echo "         will not work great!"
-            echo
-        }
-        ;;
-    "aok") set_kernel_default launch_command "$launch_cmd_AOK" ;;
+        "default")
+            set_kernel_default launch_command "$launch_cmd_default" "" silent
+            [ -f "$f_pts_0_as_console" ] && {
+                echo
+                echo "WARNING: With the default launcher, using console"
+                echo "         will not work great!"
+                echo
+            }
+            ;;
+        "aok") set_kernel_default launch_command "$launch_cmd_AOK" ;;
 
-    *) set_kernel_default launch_command "$lnch_cmd" ;;
+        *) set_kernel_default launch_command "$lnch_cmd" ;;
     esac
     launch_cmd_display syslog
 }
@@ -311,11 +311,11 @@ profile_hints_change() {
         error_msg "profile_hints_change() - no param given, options are on/off"
     }
     case "$hints_mode" in
-    "on") touch "$f_profile_hints" ;;
-    "off") rm -f "$f_profile_hints" ;;
-    *)
-        error_msg "profile_hints_change() - options are on/off"
-        ;;
+        "on") touch "$f_profile_hints" ;;
+        "off") rm -f "$f_profile_hints" ;;
+        *)
+            error_msg "profile_hints_change() - options are on/off"
+            ;;
     esac
     profile_hints_display syslog
 }
@@ -346,11 +346,11 @@ aok_suffix_change() {
         error_msg "aok_suffix_change() - no param given, options are on/off"
     }
     case "$use_suffix" in
-    "on") touch "$f_hostname_aok_suffix" ;;
-    "off") rm -f "$f_hostname_aok_suffix" ;;
-    *)
-        error_msg "aok_suffix_change() - options are on/off"
-        ;;
+        "on") touch "$f_hostname_aok_suffix" ;;
+        "off") rm -f "$f_hostname_aok_suffix" ;;
+        *)
+            error_msg "aok_suffix_change() - options are on/off"
+            ;;
     esac
     aok_suffix_display syslog
 }
@@ -385,78 +385,78 @@ console_mode_change() {
     this_is_ish || error_msg "Can't change console on chrooted system"
 
     case "$use_console" in
-    "on")
-        touch "$f_pts_0_as_console"
-        [ "$(stat -c "%t %T" /dev/console)" != "88 0" ] && {
-            echo "Setting up /dev/pts/0 as console"
-            rm -f /dev/console
-            mknod -m 666 /dev/console c 136 0
-        }
+        "on")
+            touch "$f_pts_0_as_console"
+            [ "$(stat -c "%t %T" /dev/console)" != "88 0" ] && {
+                echo "Setting up /dev/pts/0 as console"
+                rm -f /dev/console
+                mknod -m 666 /dev/console c 136 0
+            }
 
-        if [ -f /etc/alpine-release ]; then
-            #
-            #  Activating logging in /etc/rc.conf leads to openrc getting
-            #  stuck on debian
-            #  Disabled for now
-            #  TODO: Investigate
-            #
+            if [ -f /etc/alpine-release ]; then
+                #
+                #  Activating logging in /etc/rc.conf leads to openrc getting
+                #  stuck on debian
+                #  Disabled for now
+                #  TODO: Investigate
+                #
+                [ -f "$f_rc_conf" ] && {
+                    if grep -q "rc_logger=" "$f_rc_conf"; then
+                        sed -i '/^[[:space:]]*#*[[:space:]]*rc_logger=/c\rc_logger="YES"' \
+                            "$f_rc_conf" || {
+
+                            error_msg "Failed to enable rc_logger in $f_rc_conf"
+                        }
+                    else
+                        # If it wasn't present, add it
+                        echo 'rc_logger="YES"' >>"$f_rc_conf"
+                    fi
+                    if grep -q "rc_log_path=" "$f_rc_conf"; then
+                        sed -i '/^[[:space:]]*#*[[:space:]]*rc_log_path=/c\rc_log_path="/var/log/rc.log"' \
+                            "$f_rc_conf" || {
+
+                            error_msg "Failed to enable rc_log_path in $f_rc_conf"
+                        }
+                    else
+                        # If it wasn't present, add it
+                        echo 'rc_log_path="/var/log/rc.log"' >>"$f_rc_conf"
+                    fi
+                }
+            fi
+
+            [ "$(get_kernel_default launch_command)" = "$launch_cmd_default" ] && {
+                echo
+                echo "WARNING: With the default launcher, using console"
+                echo "         will not work great!"
+                echo
+            }
+
+            ;;
+        "off")
+            rm -f "$f_pts_0_as_console"
+            [ "$(stat -c "%t %T" /dev/console)" != "5 1" ] && {
+                echo "Reverting console to normal mode"
+                rm -f /dev/console
+                mknod -m 666 /dev/console c 5 1
+            }
+
+            # if /dev/console is not used and rc_logger=YES openrc gets stuck
             [ -f "$f_rc_conf" ] && {
-                if grep -q "rc_logger=" "$f_rc_conf"; then
-                    sed -i '/^[[:space:]]*#*[[:space:]]*rc_logger=/c\rc_logger="YES"' \
-                        "$f_rc_conf" || {
+                sed -i '/^[[:space:]]*#*[[:space:]]*rc_logger=/c\#rc_logger="NO"' \
+                    "$f_rc_conf" || {
 
-                        error_msg "Failed to enable rc_logger in $f_rc_conf"
-                    }
-                else
-                    # If it wasn't present, add it
-                    echo 'rc_logger="YES"' >>"$f_rc_conf"
-                fi
-                if grep -q "rc_log_path=" "$f_rc_conf"; then
-                    sed -i '/^[[:space:]]*#*[[:space:]]*rc_log_path=/c\rc_log_path="/var/log/rc.log"' \
-                        "$f_rc_conf" || {
+                    error_msg "Failed to disable rc_logger in $f_rc_conf"
+                }
+                sed -i '/^[[:space:]]*#*[[:space:]]*rc_log_path=/c\#rc_log_path="/var/log/rc.log"' \
+                    "$f_rc_conf" || {
 
-                        error_msg "Failed to enable rc_log_path in $f_rc_conf"
-                    }
-                else
-                    # If it wasn't present, add it
-                    echo 'rc_log_path="/var/log/rc.log"' >>"$f_rc_conf"
-                fi
+                    error_msg "Failed to disable rc_log_path in $f_rc_conf"
+                }
             }
-        fi
-
-        [ "$(get_kernel_default launch_command)" = "$launch_cmd_default" ] && {
-            echo
-            echo "WARNING: With the default launcher, using console"
-            echo "         will not work great!"
-            echo
-        }
-
-        ;;
-    "off")
-        rm -f "$f_pts_0_as_console"
-        [ "$(stat -c "%t %T" /dev/console)" != "5 1" ] && {
-            echo "Reverting console to normal mode"
-            rm -f /dev/console
-            mknod -m 666 /dev/console c 5 1
-        }
-
-        # if /dev/console is not used and rc_logger=YES openrc gets stuck
-        [ -f "$f_rc_conf" ] && {
-            sed -i '/^[[:space:]]*#*[[:space:]]*rc_logger=/c\#rc_logger="NO"' \
-                "$f_rc_conf" || {
-
-                error_msg "Failed to disable rc_logger in $f_rc_conf"
-            }
-            sed -i '/^[[:space:]]*#*[[:space:]]*rc_log_path=/c\#rc_log_path="/var/log/rc.log"' \
-                "$f_rc_conf" || {
-
-                error_msg "Failed to disable rc_log_path in $f_rc_conf"
-            }
-        }
-        ;;
-    *)
-        error_msg "console_mode_change() - options are on/off"
-        ;;
+            ;;
+        *)
+            error_msg "console_mode_change() - options are on/off"
+            ;;
     esac
     console_mode_display syslog
 }
@@ -493,11 +493,11 @@ extralocking_change() {
     }
 
     case "$do_elock" in
-    "on") echo "true" >"$f_elock" ;;
-    "off") echo "false" >"$f_elock" ;;
-    *)
-        error_msg "extralocking_change() - options are on/off"
-        ;;
+        "on") echo "true" >"$f_elock" ;;
+        "off") echo "false" >"$f_elock" ;;
+        *)
+            error_msg "extralocking_change() - options are on/off"
+            ;;
     esac
     extralocking_display syslog
 }
@@ -508,9 +508,9 @@ extralocking_setting() {
     }
     [ -f "$f_elock" ] || error_msg "Not found: $f_elock"
     case "$(cat "$f_elock")" in
-    "true") echo "on" ;;
-    "false") echo "off" ;;
-    *) error_msg "Unknown state in $f_elock" ;;
+        "true") echo "on" ;;
+        "false") echo "off" ;;
+        *) error_msg "Unknown state in $f_elock" ;;
     esac
 }
 
@@ -544,11 +544,11 @@ multicore_change() {
     }
 
     case "$do_multicore" in
-    "on") echo "true" >"$f_multicore" ;;
-    "off") echo "false" >"$f_multicore" ;;
-    *)
-        error_msg "multicore_change() - options are on/off"
-        ;;
+        "on") echo "true" >"$f_multicore" ;;
+        "off") echo "false" >"$f_multicore" ;;
+        *)
+            error_msg "multicore_change() - options are on/off"
+            ;;
     esac
     multicore_display syslog
 }
@@ -559,9 +559,9 @@ multicore_setting() {
     }
     [ -f "$f_multicore" ] || error_msg "Not found: $f_multicore"
     case "$(cat "$f_multicore")" in
-    "true") echo "on" ;;
-    "false") echo "off" ;;
-    *) error_msg "Unknown state in $f_multicore" ;;
+        "true") echo "on" ;;
+        "false") echo "off" ;;
+        *) error_msg "Unknown state in $f_multicore" ;;
     esac
 }
 
@@ -598,108 +598,108 @@ prog_name=$(basename "$0")
 while [ -n "$1" ]; do
     case "$1" in
 
-    "-h" | "--help")
-        show_help
-        exit 1
-        ;;
+        "-h" | "--help")
+            show_help
+            exit 1
+            ;;
 
-    "-a" | "--autologin")
-        #  skip if $2 starts with - another option
-        if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
-            autologin_change "$2"
-            shift # get rid of extra option
-        fi
-        autologin_display
-        ;;
-
-    "-b" | "--boot-cmd")
-        if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
-            if this_is_ish; then
-                boot_cmd_change "$2"
-
-            else
-                msg_4 "Can only set Launch Cmd on iSH systems"
+        "-a" | "--autologin")
+            #  skip if $2 starts with - another option
+            if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
+                autologin_change "$2"
+                shift # get rid of extra option
             fi
-            shift # get rid of extra option
-        fi
-        this_is_ish && boot_cmd_display
-        ;;
+            autologin_display
+            ;;
 
-    "-c" | "--continuous")
-        if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
-            continuous_sessions_change "$2"
-            shift # get rid of extra option
-        fi
-        continuous_sessions_display
-        ;;
+        "-b" | "--boot-cmd")
+            if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
+                if this_is_ish; then
+                    boot_cmd_change "$2"
 
-    "-C" | "--console")
-        if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
-            if ! this_is_ish; then
-                msg_4 "Can't set console mode on chrooted systems"
-            else
-                console_mode_change "$2"
+                else
+                    msg_4 "Can only set Launch Cmd on iSH systems"
+                fi
+                shift # get rid of extra option
             fi
-            shift # get rid of extra option
-        fi
-        this_is_ish && console_mode_display
-        ;;
+            this_is_ish && boot_cmd_display
+            ;;
 
-    "-d" | "--defaults") set_defaults ;;
-
-    "-e" | "--extra_locking")
-        if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
-            if this_is_aok_kernel; then
-                extralocking_change "$2"
-            else
-                msg_4 "Can only set extra_locking on iSH-AOK systems"
+        "-c" | "--continuous")
+            if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
+                continuous_sessions_change "$2"
+                shift # get rid of extra option
             fi
-            shift # get rid of extra option
-        fi
-        this_is_aok_kernel && extralocking_display
-        ;;
+            continuous_sessions_display
+            ;;
 
-    "-l" | "--launch-cmd")
-        if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
-            if this_is_ish; then
-                launch_cmd_change "$2"
-            else
-                msg_4 "Can only set Launch Cmd on iSH systems"
+        "-C" | "--console")
+            if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
+                if ! this_is_ish; then
+                    msg_4 "Can't set console mode on chrooted systems"
+                else
+                    console_mode_change "$2"
+                fi
+                shift # get rid of extra option
             fi
-            shift # get rid of extra option
-        fi
-        this_is_ish && launch_cmd_display
-        ;;
+            this_is_ish && console_mode_display
+            ;;
 
-    "-m" | "--multicore")
-        if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
-            if this_is_aok_kernel; then
-                multicore_change "$2"
-            else
-                msg_4 "Can only set multicore on iSH-AOK systems"
+        "-d" | "--defaults") set_defaults ;;
+
+        "-e" | "--extra_locking")
+            if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
+                if this_is_aok_kernel; then
+                    extralocking_change "$2"
+                else
+                    msg_4 "Can only set extra_locking on iSH-AOK systems"
+                fi
+                shift # get rid of extra option
             fi
-            shift # get rid of extra option
-        fi
-        this_is_aok_kernel && multicore_display
-        ;;
+            this_is_aok_kernel && extralocking_display
+            ;;
 
-    "-s" | "--aoksuffix")
-        if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
-            aok_suffix_change "$2"
-            shift # get rid of extra option
-        fi
-        aok_suffix_display
-        ;;
+        "-l" | "--launch-cmd")
+            if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
+                if this_is_ish; then
+                    launch_cmd_change "$2"
+                else
+                    msg_4 "Can only set Launch Cmd on iSH systems"
+                fi
+                shift # get rid of extra option
+            fi
+            this_is_ish && launch_cmd_display
+            ;;
 
-    "-H" | "--profile-hints")
-        if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
-            profile_hints_change "$2"
-            shift # get rid of extra option
-        fi
-        profile_hints_display
-        ;;
+        "-m" | "--multicore")
+            if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
+                if this_is_aok_kernel; then
+                    multicore_change "$2"
+                else
+                    msg_4 "Can only set multicore on iSH-AOK systems"
+                fi
+                shift # get rid of extra option
+            fi
+            this_is_aok_kernel && multicore_display
+            ;;
 
-    *) msg_2 "ERROR: Bad option: $1" ;;
+        "-s" | "--aoksuffix")
+            if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
+                aok_suffix_change "$2"
+                shift # get rid of extra option
+            fi
+            aok_suffix_display
+            ;;
+
+        "-H" | "--profile-hints")
+            if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
+                profile_hints_change "$2"
+                shift # get rid of extra option
+            fi
+            profile_hints_display
+            ;;
+
+        *) msg_2 "ERROR: Bad option: $1" ;;
 
     esac
     shift

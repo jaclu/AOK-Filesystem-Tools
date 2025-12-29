@@ -19,10 +19,10 @@ if false; then
     #  Set initial prompt
     #
     if [ -n "$ZSH_VERSION" ]; then
-	# use nicer PS1 for zsh
-	PS1='%m:%~%# '
+        # use nicer PS1 for zsh
+        PS1='%m:%~%# '
     else
- 	PS1='\h:\w\$ '
+        PS1='\h:\w\$ '
     fi
 fi
 
@@ -33,9 +33,9 @@ fi
 
 /usr/local/bin/check-env-compatible
 
-for script in /etc/profile.d/*.sh ; do
-    if [ -r "$script" ] ; then
-	# shellcheck source=/dev/null
+for script in /etc/profile.d/*.sh; do
+    if [ -r "$script" ]; then
+        # shellcheck source=/dev/null
         . "$script"
     fi
 done

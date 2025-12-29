@@ -171,28 +171,28 @@ while [ -n "$1" ]; do
 
     case "$1" in
 
-    "-h" | "--help") show_help ;;
+        "-h" | "--help") show_help ;;
 
-    "-S" | "--sourcefile")
-        sudo_check
-        sync_file="$2"
-        shift # This one uses two items, so do an extra shift
-        if [ -z "$sync_file" ]; then
-            error_msg "-S / --sourcefile needs a filename as additional param!"
-        elif [ ! -f "$sync_file" ]; then
-            error_msg "-S / --sourcefile file not found: $sync_file"
-        fi
+        "-S" | "--sourcefile")
+            sudo_check
+            sync_file="$2"
+            shift # This one uses two items, so do an extra shift
+            if [ -z "$sync_file" ]; then
+                error_msg "-S / --sourcefile needs a filename as additional param!"
+            elif [ ! -f "$sync_file" ]; then
+                error_msg "-S / --sourcefile file not found: $sync_file"
+            fi
 
-        mkdir -p "$(dirname "$f_hostname_source_fname")"
-        echo "$sync_file" | sudo tee "$f_hostname_source_fname" >/dev/null
-        read_syncfile
-        ;;
+            mkdir -p "$(dirname "$f_hostname_source_fname")"
+            echo "$sync_file" | sudo tee "$f_hostname_source_fname" >/dev/null
+            read_syncfile
+            ;;
 
-    "-U" | "--update")
-        read_syncfile
-        ;;
+        "-U" | "--update")
+            read_syncfile
+            ;;
 
-    *) ;;
+        *) ;;
 
     esac
     shift

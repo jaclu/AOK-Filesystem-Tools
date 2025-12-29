@@ -34,9 +34,9 @@ prog_name=$(basename "$0")
 
 case "$1" in
 
-"-h" | "--help") show_help ;;
+    "-h" | "--help") show_help ;;
 
-*) prog="$1" ;;
+    *) prog="$1" ;;
 
 esac
 

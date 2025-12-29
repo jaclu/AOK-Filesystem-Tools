@@ -30,29 +30,29 @@ Select distro:
     echo
     case "$selection" in
 
-    1)
-        echo "Alpine selected"
-        echo
-        msg_1 "running $scr_setup_alpine"
-        rm -f "$f_destfs_select_hint"
-        "$scr_setup_alpine"
-        ;;
+        1)
+            echo "Alpine selected"
+            echo
+            msg_1 "running $scr_setup_alpine"
+            rm -f "$f_destfs_select_hint"
+            "$scr_setup_alpine"
+            ;;
 
-    2)
-        echo "Debian selected"
-        /opt/AOK/choose_distro/install_debian.sh
-        ;;
+        2)
+            echo "Debian selected"
+            /opt/AOK/choose_distro/install_debian.sh
+            ;;
 
-    # 3)
-    #     echo "Devuan selected"
-    #     /opt/AOK/choose_distro/install_devuan.sh
-    #     ;;
+        # 3)
+        #     echo "Devuan selected"
+        #     /opt/AOK/choose_distro/install_devuan.sh
+        #     ;;
 
-    *)
-        echo "*****   Invalid selection   *****"
-        sleep 1
-        select_distro
-        ;;
+        *)
+            echo "*****   Invalid selection   *****"
+            sleep 1
+            select_distro
+            ;;
 
     esac
 }

@@ -74,37 +74,37 @@ fi
 
 while [ -n "$1" ]; do
     case "$1" in
-    "-n" | "--nobanner")
-        if [ "$uid" -ne 0 ]; then
-            echo "wall: --nobanner is available only for root"
-            exit 1
-        fi
-        use_banner=0
-        ;;
+        "-n" | "--nobanner")
+            if [ "$uid" -ne 0 ]; then
+                echo "wall: --nobanner is available only for root"
+                exit 1
+            fi
+            use_banner=0
+            ;;
 
-    "-h" | "--help")
-        show_help
-        exit 0
-        ;;
+        "-h" | "--help")
+            show_help
+            exit 0
+            ;;
 
-    "-u")
-        if [ "$uid" -ne 0 ]; then
-            # regular users can't spoof sender
-            echo "wall: -u is available only for root"
-            exit 1
-        fi
-        sender="$2"
-        shift
-        ;;
+        "-u")
+            if [ "$uid" -ne 0 ]; then
+                # regular users can't spoof sender
+                echo "wall: -u is available only for root"
+                exit 1
+            fi
+            sender="$2"
+            shift
+            ;;
 
-    "-V" | "--version")
-        show_version
-        exit 0
-        ;;
+        "-V" | "--version")
+            show_version
+            exit 0
+            ;;
 
-    *)
-        msg="$1"
-        ;;
+        *)
+            msg="$1"
+            ;;
     esac
     shift
 done

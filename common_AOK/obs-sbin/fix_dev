@@ -141,18 +141,18 @@ while true; do
 
     )
 
-    is_char_dev /dev/null &&
-        is_char_dev /dev/clipboard &&
-        is_char_dev /dev/console &&
-        is_char_dev /dev/full &&
-        is_char_dev /dev/location &&
-        is_char_dev /dev/ptmx &&
-        is_char_dev /dev/random &&
-        is_char_dev /dev/tty &&
-        is_char_dev /dev/tty1 &&
-        is_char_dev /dev/urandom &&
-        is_char_dev /dev/zero &&
-        break
+    is_char_dev /dev/null \
+        && is_char_dev /dev/clipboard \
+        && is_char_dev /dev/console \
+        && is_char_dev /dev/full \
+        && is_char_dev /dev/location \
+        && is_char_dev /dev/ptmx \
+        && is_char_dev /dev/random \
+        && is_char_dev /dev/tty \
+        && is_char_dev /dev/tty1 \
+        && is_char_dev /dev/urandom \
+        && is_char_dev /dev/zero \
+        && break
 
     log_it "Some check failed, will try to fix devices again" -1
     sleep 1

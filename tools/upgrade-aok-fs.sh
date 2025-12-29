@@ -360,14 +360,14 @@ prog_name=$(basename "$0")
 
 while [ -n "$1" ]; do
     case "$1" in
-    -h | --help) show_help ;;
-    -c | --configs) update_configs=1 ;;
-    *)
-        echo
-        echo "ERROR: Bad param '$1'"
-        echo
-        show_help
-        ;;
+        -h | --help) show_help ;;
+        -c | --configs) update_configs=1 ;;
+        *)
+            echo
+            echo "ERROR: Bad param '$1'"
+            echo
+            show_help
+            ;;
     esac
     shift
 done

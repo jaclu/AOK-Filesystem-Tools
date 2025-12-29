@@ -82,8 +82,8 @@ check_defined_mounts() {
     # shellcheck disable=SC2086 # this should be expanded
     set -- $IOS_MOUNTS
     for d_mount_path in "$@"; do
-	this_fs_is_mounted "$d_mount_path" && continue
-	should_it_be_mounted "$d_mount_path"
+        this_fs_is_mounted "$d_mount_path" && continue
+        should_it_be_mounted "$d_mount_path"
     done
 }
 

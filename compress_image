@@ -68,22 +68,22 @@ while [ -n "$1" ]; do
 
     case "$1" in
 
-    "-h" | "--help") show_help ;;
+        "-h" | "--help") show_help ;;
 
-    "-l" | "--label")
-        shift
-        tar_name="$1"
-        if [ -z "$tar_name" ]; then
-            echo "ERROR: label needs name as additional param!"
-            exit 1
-        fi
-        ;;
+        "-l" | "--label")
+            shift
+            tar_name="$1"
+            if [ -z "$tar_name" ]; then
+                echo "ERROR: label needs name as additional param!"
+                exit 1
+            fi
+            ;;
 
-    "-v" | "--verbose") verbose=true ;;
+        "-v" | "--verbose") verbose=true ;;
 
-    *)
-        error_msg "bad param, try -h"
-        ;;
+        *)
+            error_msg "bad param, try -h"
+            ;;
     esac
     shift
 done
@@ -103,29 +103,29 @@ else
     #  If no tarball name was given, try to identify what is prepared
     #  and give it a name  based on this with versions added.
     case "$(destfs_detect)" in
-    "$destfs_select")
-        tarball_fn="SelectDistro-AOK-${AOK_VERSION}"
-        ;;
-    "$distro_alpine")
-        msg_3 "Getting release details for Alpine"
-        if get_lsb_release; then
-            tarball_fn="${lsb_DistributorID}-${lsb_Release}-AOK-${AOK_VERSION}"
-        else
-            msg_4 "lsb_release unavailable, manually naming tar"
-            tarball_fn="Alpine-$(cat "$d_build_root"/etc/alpine-release)-AOK-${AOK_VERSION}"
-        fi
-        ;;
-    "$distro_debian" | "$distro_devuan")
-        msg_3 "Getting release details for Debian/Devuan"
-        if get_lsb_release; then
-            tarball_fn="${lsb_DistributorID}-${lsb_Release}-AOK-${AOK_VERSION}"
-        else
-            msg_4 "lsb_release unavailable, manually naming tar"
-            tarball_fn="Debian-$(cat "$d_build_root"/etc/debian_version)-AOK-${AOK_VERSION}"
-        fi
-        ;;
+        "$destfs_select")
+            tarball_fn="SelectDistro-AOK-${AOK_VERSION}"
+            ;;
+        "$distro_alpine")
+            msg_3 "Getting release details for Alpine"
+            if get_lsb_release; then
+                tarball_fn="${lsb_DistributorID}-${lsb_Release}-AOK-${AOK_VERSION}"
+            else
+                msg_4 "lsb_release unavailable, manually naming tar"
+                tarball_fn="Alpine-$(cat "$d_build_root"/etc/alpine-release)-AOK-${AOK_VERSION}"
+            fi
+            ;;
+        "$distro_debian" | "$distro_devuan")
+            msg_3 "Getting release details for Debian/Devuan"
+            if get_lsb_release; then
+                tarball_fn="${lsb_DistributorID}-${lsb_Release}-AOK-${AOK_VERSION}"
+            else
+                msg_4 "lsb_release unavailable, manually naming tar"
+                tarball_fn="Debian-$(cat "$d_build_root"/etc/debian_version)-AOK-${AOK_VERSION}"
+            fi
+            ;;
 
-    *) error_msg "Could not detext FS type" ;;
+        *) error_msg "Could not detext FS type" ;;
     esac
     deploy_state_is_it "$deploy_state_pre_build" && tarball_fn="$tarball_fn-pb"
 fi

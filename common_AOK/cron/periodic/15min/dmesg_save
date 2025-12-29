@@ -34,11 +34,11 @@ _prepare_locking
 # PUBLIC
 exlock_now() { _lock xn; } # obtain an exclusive lock immediately or fail
 # shellcheck disable=SC2329
-exlock() { _lock x; }      # obtain an exclusive lock
+exlock() { _lock x; } # obtain an exclusive lock
 # shellcheck disable=SC2329
-shlock() { _lock s; }      # obtain a shared lock
+shlock() { _lock s; } # obtain a shared lock
 # shellcheck disable=SC2329
-unlock() { _lock u; }      # drop a lock
+unlock() { _lock u; } # drop a lock
 
 # Simplest example is avoiding running multiple instances of script.
 exlock_now || exit 1

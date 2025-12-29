@@ -19,11 +19,11 @@ replace_std_bin() {
         error_msg "replace_std_bin($f_bin,) - missing 2nd param"
     }
     case "$upgrade" in
-    "" | "upgrade") ;;
-    *)
-        _s="replace_std_bin() - Invalid upgrade option: [$upgrade]"
-        error_msg "$_s"
-        ;;
+        "" | "upgrade") ;;
+        *)
+            _s="replace_std_bin() - Invalid upgrade option: [$upgrade]"
+            error_msg "$_s"
+            ;;
     esac
 
     # Check if it is done already

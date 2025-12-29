@@ -26,13 +26,13 @@ tmux_mod_arrow() {
 
     case $mod in
 
-    ctrl) t_mod="C" ;;
-    shift) t_mod="S" ;;
-    alt) t_mod="M" ;;
+        ctrl) t_mod="C" ;;
+        shift) t_mod="S" ;;
+        alt) t_mod="M" ;;
 
-    *)
-        error_msg "arrow_mod - param must be shift/ctrl"
-        ;;
+        *)
+            error_msg "arrow_mod - param must be shift/ctrl"
+            ;;
     esac
 
     echo "$mod" >"$f_tmux_nav_key"
@@ -190,35 +190,35 @@ Not handled by this - in that case this is left to be configured manually.
 
     case "$selection" in
 
-    0)
-        echo "Do not use a nav-key work-arround"
-        ;;
+        0)
+            echo "Do not use a nav-key work-arround"
+            ;;
 
-    1)
-        echo "Use Escape as arrow prefix for nav-keys"
-        select_esc_key
-        ;;
-    2)
-        echo "Use <prefix> arrow for nav-keys"
-        select_esc_key
-        ;;
-    3)
-        echo "Use Shift-Arrows for nav-keys"
-        tmux_mod_arrow "shift"
-        ;;
-    4)
-        echo "Use Ctrl-Arrows for nav-keys"
-        tmux_mod_arrow "ctrl"
-        ;;
-    5)
-        echo "Use Alt-Arrows for nav-keys"
-        tmux_mod_arrow "alt"
-        ;;
-    *)
-        echo "*****   Invalid selection   *****"
-        sleep 1
-        select_nav_key_type
-        ;;
+        1)
+            echo "Use Escape as arrow prefix for nav-keys"
+            select_esc_key
+            ;;
+        2)
+            echo "Use <prefix> arrow for nav-keys"
+            select_esc_key
+            ;;
+        3)
+            echo "Use Shift-Arrows for nav-keys"
+            tmux_mod_arrow "shift"
+            ;;
+        4)
+            echo "Use Ctrl-Arrows for nav-keys"
+            tmux_mod_arrow "ctrl"
+            ;;
+        5)
+            echo "Use Alt-Arrows for nav-keys"
+            tmux_mod_arrow "alt"
+            ;;
+        *)
+            echo "*****   Invalid selection   *****"
+            sleep 1
+            select_nav_key_type
+            ;;
     esac
 }
 

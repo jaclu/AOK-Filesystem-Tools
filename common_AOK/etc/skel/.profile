@@ -40,20 +40,20 @@ if [ -f /proc/$$/exe ]; then
         CURRENT_SHELL="" # unknown
     }
     case "$CURRENT_SHELL" in
-    ash | busybox | dash)
-        use_ash_env
-        ;;
-    *) ;;
+        ash | busybox | dash)
+            use_ash_env
+            ;;
+        *) ;;
     esac
 else
     # /proc/$$/exe not found, fall back to $0 check
     case "$0" in
-    "-ash" | "ash" | "/bin/ash" | "-dash" | "dash")
-        #
-        #  If ENV is defined  ash & dash will use it
-        #
-        use_ash_env
-        ;;
-    *) ;;
+        "-ash" | "ash" | "/bin/ash" | "-dash" | "dash")
+            #
+            #  If ENV is defined  ash & dash will use it
+            #
+            use_ash_env
+            ;;
+        *) ;;
     esac
 fi

@@ -146,9 +146,9 @@ get_battery_info() {
     fi
 
     case "$_shell_name" in
-    "bash" | "ash") _bat_color="\[\e[38;5;${_chrg_color}m\]" ;;
-    "zsh") _bat_color="%F{$_chrg_color}" ;;
-    *) _bat_color="" ;;
+        "bash" | "ash") _bat_color="\[\e[38;5;${_chrg_color}m\]" ;;
+        "zsh") _bat_color="%F{$_chrg_color}" ;;
+        *) _bat_color="" ;;
     esac
     unset _chrg_color
     unset _shell_name
@@ -157,10 +157,10 @@ get_battery_info() {
         echo "Battery not found " >/dev/stderr
     else
         case $chrg_stat in
-        "Full") _bat_state="${capacity}F" ;;
-        "Charging") _bat_state="${capacity}+" ;;
-        "Unplugged") _bat_state="${capacity}-" ;;
-        *) _bat_state="${capacity}" ;;
+            "Full") _bat_state="${capacity}F" ;;
+            "Charging") _bat_state="${capacity}+" ;;
+            "Unplugged") _bat_state="${capacity}-" ;;
+            *) _bat_state="${capacity}" ;;
         esac
         printf ' %s%s' "$_bat_color" "$_bat_state"
         unset _bat_state
@@ -191,9 +191,9 @@ get_sysload_lvl() {
     fi
 
     case "$CURRENT_SHELL" in
-    zsh) printf '%s' "%F{$_load_color}$_sysload" ;;
-    bash | ash) printf '%s' "\[\e[38;5;${_load_color}m\]$_sysload" ;;
-    *) ;;
+        zsh) printf '%s' "%F{$_load_color}$_sysload" ;;
+        bash | ash) printf '%s' "\[\e[38;5;${_load_color}m\]$_sysload" ;;
+        *) ;;
     esac
 
     unset _sysload

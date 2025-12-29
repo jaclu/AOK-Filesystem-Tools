@@ -33,11 +33,11 @@ ensure_not_chrooted() {
     [ ! -d "$d_fs" ] && return # nothing to check
 
     if fs_is_alpine; then
-        chs_procs="$(lsof -l +d "$d_fs" |
-            awk '{print $1 }' | sort | uniq | tr '\n' ' ')"
+        chs_procs="$(lsof -l +d "$d_fs" \
+            | awk '{print $1 }' | sort | uniq | tr '\n' ' ')"
     else
-        chs_procs="$(lsof -l +d "$d_fs" |
-            awk '{print $2 }' | sort | uniq | tr '\n' ' ')"
+        chs_procs="$(lsof -l +d "$d_fs" \
+            | awk '{print $2 }' | sort | uniq | tr '\n' ' ')"
     fi
     [ -n "$chs_procs" ] && {
         error_msg "it seems a chroot is active at: $d_fs"

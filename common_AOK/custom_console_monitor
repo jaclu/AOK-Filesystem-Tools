@@ -37,8 +37,8 @@ initial_log_entries() {
             continue # not a text file
         }
         case "$log_basename" in
-        rc.log) continue ;; # no time stamps
-        *) ;;
+            rc.log) continue ;; # no time stamps
+            *) ;;
         esac
         a="$(awk -v start="$boot_time" '
     {

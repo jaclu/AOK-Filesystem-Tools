@@ -41,13 +41,13 @@ hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
 
 _s="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
 case "$_s" in
--h | --help)
-    show_help
-    exit 0
-    ;;
-debian | deb) img_type="Debian" ;;
-devuan | devu | dev) img_type="Devuan" ;;
-*) error_msg "Bad param: $_s" ;;
+    -h | --help)
+        show_help
+        exit 0
+        ;;
+    debian | deb) img_type="Debian" ;;
+    devuan | devu | dev) img_type="Devuan" ;;
+    *) error_msg "Bad param: $_s" ;;
 esac
 
 #

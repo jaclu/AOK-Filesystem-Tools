@@ -9,34 +9,34 @@
 check_for_option() {
     case "$1" in
 
-    "" | "-h" | "--help")
-        echo "usage: $prog_name [-h] | [-g] | [-l] | | group1 group2 -group3 ..."
-        echo
-        echo "This is a tool to install/uninstall groups of packages"
-        echo "prefixing a group name with - means uninstall that group"
-        echo
-        echo "options:"
-        echo "  -h, --help   show this help message and exit"
-        echo "  -g           list available groups and exit"
-        echo "  -l           list groups and items and exit"
-        echo
-        exit 0
-        ;;
+        "" | "-h" | "--help")
+            echo "usage: $prog_name [-h] | [-g] | [-l] | | group1 group2 -group3 ..."
+            echo
+            echo "This is a tool to install/uninstall groups of packages"
+            echo "prefixing a group name with - means uninstall that group"
+            echo
+            echo "options:"
+            echo "  -h, --help   show this help message and exit"
+            echo "  -g           list available groups and exit"
+            echo "  -l           list groups and items and exit"
+            echo
+            exit 0
+            ;;
 
-    "-g")
-        task="groups"
-        process_items
-        echo
-        exit 0
-        ;;
+        "-g")
+            task="groups"
+            process_items
+            echo
+            exit 0
+            ;;
 
-    "-l")
-        task="list"
-        process_items
-        exit 0
-        ;;
+        "-l")
+            task="list"
+            process_items
+            exit 0
+            ;;
 
-    *) ;;
+        *) ;;
 
     esac
 }
@@ -47,10 +47,10 @@ create_aok_groups() {
     #  changing the rest of the code.
     #
     package_groups="$(
-        set |
-            grep _APKS |
-            sed -e s/_APKS// -e s/BLOAT// -e "s/'//g" -e s/=/\|/ |
-            awk '{ print ":" $0 }'
+        set \
+            | grep _APKS \
+            | sed -e s/_APKS// -e s/BLOAT// -e "s/'//g" -e s/=/\|/ \
+            | awk '{ print ":" $0 }'
     )"
 }
 
@@ -58,12 +58,12 @@ pkg_handling() {
     action="$1"
     case "$action" in
 
-    "add" | "del") ;;
+        "add" | "del") ;;
 
-    *)
-        echo "ERROR: pkg_handling() - incorrect param: $action"
-        exit 1
-        ;;
+        *)
+            echo "ERROR: pkg_handling() - incorrect param: $action"
+            exit 1
+            ;;
     esac
 
     #
@@ -98,56 +98,56 @@ process_items() {
 
         case "$task" in
 
-        "groups") printf "%s" "$name " ;;
+            "groups") printf "%s" "$name " ;;
 
-        "list")
-            #
-            #  For pretty printing, first get all the group names
-            #  and figure out the longest. To keep the code simple
-            #  this is done on the first run of list,
-            #
-            if [ -z "$max_len" ]; then
-                # first get a list of names, in order to find longest
-                task="groups"
-                group_lst="$(process_items)"
-                task="list" # back to expected processing
+            "list")
+                #
+                #  For pretty printing, first get all the group names
+                #  and figure out the longest. To keep the code simple
+                #  this is done on the first run of list,
+                #
+                if [ -z "$max_len" ]; then
+                    # first get a list of names, in order to find longest
+                    task="groups"
+                    group_lst="$(process_items)"
+                    task="list" # back to expected processing
 
-                max_len=0
-                while true; do
-                    g="${group_lst%% *}"
-                    group_lst="${group_lst#* }"
+                    max_len=0
+                    while true; do
+                        g="${group_lst%% *}"
+                        group_lst="${group_lst#* }"
 
-                    g_len="${#g}"
-                    [ "$g_len" -gt "$max_len" ] && max_len="$g_len"
+                        g_len="${#g}"
+                        [ "$g_len" -gt "$max_len" ] && max_len="$g_len"
 
-                    [ "$group_lst" = "$g" ] && break # list done
-                done
-            fi
-            printf "[%${max_len}s]  %s\n" "$name" "$packages"
-            ;;
+                        [ "$group_lst" = "$g" ] && break # list done
+                    done
+                fi
+                printf "[%${max_len}s]  %s\n" "$name" "$packages"
+                ;;
 
-        "install")
-            if [ "$name" = "$item" ]; then
-                pkg_handling add
-                return
-            fi
-            ;;
+            "install")
+                if [ "$name" = "$item" ]; then
+                    pkg_handling add
+                    return
+                fi
+                ;;
 
-        "uninstall")
-            if [ "$item" = "core" ]; then
-                echo "ERROR: group core can not be deleted!"
+            "uninstall")
+                if [ "$item" = "core" ]; then
+                    echo "ERROR: group core can not be deleted!"
+                    exit 1
+                fi
+                if [ "$name" = "$item" ]; then
+                    pkg_handling del
+                    return
+                fi
+                ;;
+
+            *)
+                echo "ERROR: Unknown task: $task"
                 exit 1
-            fi
-            if [ "$name" = "$item" ]; then
-                pkg_handling del
-                return
-            fi
-            ;;
-
-        *)
-            echo "ERROR: Unknown task: $task"
-            exit 1
-            ;;
+                ;;
 
         esac
         [ "$lst" = "$section" ] && break # we have processed last group

@@ -550,8 +550,8 @@ alpine_apk_update() {
     # Do an update if last update was more than 60 mins ago
     # First check is weather apk update has been run ever
     #
-    [ "$(find /var/cache/apk | wc -l)" -gt 1 ] &&
-        [ -n "$(find /var/cache/apk -mmin -60)" ] && return 1
+    [ "$(find /var/cache/apk | wc -l)" -gt 1 ] \
+        && [ -n "$(find /var/cache/apk -mmin -60)" ] && return 1
     msg_1 "Doing apk update"
     apk update || error_msg "apk update issue"
 }
@@ -627,10 +627,10 @@ rsync_chown() {
         unset rsync_output
 
         case "$?" in
-        0 | 1) ;; # 0=something found 1=nothing found
-        *)        # actual error
-            error_msg "filtering output of rsync_chown() failed"
-            ;;
+            0 | 1) ;; # 0=something found 1=nothing found
+            *)        # actual error
+                error_msg "filtering output of rsync_chown() failed"
+                ;;
         esac
     fi
     unset src
@@ -972,10 +972,10 @@ deploy_state_check_param() {
     [ -z "$_state" ] && error_msg "deploy_state_check_param() - no deploy state param!"
 
     case "$_state" in
-    "$deploy_state_na" | "$deploy_state_initializing" | \
-        "$deploy_state_pre_build" | "$deploy_state_dest_build" | \
-        "$deploy_state_finalizing") ;;
-    *) error_msg "${_func}($_state) - invalid param!" ;;
+        "$deploy_state_na" | "$deploy_state_initializing" | \
+            "$deploy_state_pre_build" | "$deploy_state_dest_build" | \
+            "$deploy_state_finalizing") ;;
+        *) error_msg "${_func}($_state) - invalid param!" ;;
     esac
 
     unset _func

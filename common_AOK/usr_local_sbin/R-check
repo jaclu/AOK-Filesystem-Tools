@@ -13,7 +13,7 @@
 log_it() {
     echo "$(date +"%Y-%m-%d %H:%M:%S") $1" >>"$f_recovery_log_file"
 }
-    
+
 f_recovery_mode=/etc/opt/AOK/recovery-mode
 f_recovery_log_file=/var/log/recovery-mode.log
 

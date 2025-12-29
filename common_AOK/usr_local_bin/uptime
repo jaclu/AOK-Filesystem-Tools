@@ -93,9 +93,9 @@ calculate_ios_uptime() {
 calculate_uptime() {
     startup_notice="===  System startup  ==="
     $dbg && echo ">calculate_uptime()" >/dev/stderr
-    time_stamp_boot_up="$(grep "$startup_notice" /var/log/syslog |
-        tail -n 1 |
-        awk '{print $1" "$2}')"
+    time_stamp_boot_up="$(grep "$startup_notice" /var/log/syslog \
+        | tail -n 1 \
+        | awk '{print $1" "$2}')"
     if [ -n "$time_stamp_boot_up" ] && ! $force_ios_uptime; then
         calculate_ish_uptime
     else
@@ -192,17 +192,17 @@ test -f "$f_aok_fs_release" || {
 
 while [ -n "$1" ]; do
     case "$1" in
-    -h | --help) show_help ;;
-    -d) dbg=true ;;
-    -i | --ios) force_ios_uptime=true ;;
-    -l | --load) display_mode="load" ;;
-    -p | --pretty) display_mode="pretty" ;;
-    -s | --since) display_mode="since" ;;
-    -V | --version) display_mode="version" ;;
-    *)
-        echo "uptime: invalid option -- '$1'"
-        show_help
-        ;;
+        -h | --help) show_help ;;
+        -d) dbg=true ;;
+        -i | --ios) force_ios_uptime=true ;;
+        -l | --load) display_mode="load" ;;
+        -p | --pretty) display_mode="pretty" ;;
+        -s | --since) display_mode="since" ;;
+        -V | --version) display_mode="version" ;;
+        *)
+            echo "uptime: invalid option -- '$1'"
+            show_help
+            ;;
     esac
     shift
 done
@@ -210,12 +210,12 @@ done
 calculate_uptime
 
 case "$display_mode" in
-version) show_version ;;
-default) default_view ;;
-pretty) show_pretty ;;
-since) show_since ;;
-load) display_sysload ;;
-*)
-    echo "Invalid display_mode [$display_mode]"
-    ;;
+    version) show_version ;;
+    default) default_view ;;
+    pretty) show_pretty ;;
+    since) show_since ;;
+    load) display_sysload ;;
+    *)
+        echo "Invalid display_mode [$display_mode]"
+        ;;
 esac

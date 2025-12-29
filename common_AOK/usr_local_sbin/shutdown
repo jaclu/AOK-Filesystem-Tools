@@ -20,8 +20,8 @@
 
 is_int() {
     case $1 in
-    '' | *[!0-9]*) return 1 ;; # Contains non-numeric characters
-    *) return 0 ;;             # Contains only digits
+        '' | *[!0-9]*) return 1 ;; # Contains non-numeric characters
+        *) return 0 ;;             # Contains only digits
     esac
 }
 
@@ -106,29 +106,29 @@ while [ -n "$1" ]; do
         continue
     }
     case "$1" in
-    # most default options are ignored
-    now) ;;
-    --help)
-        show_help
-        ;;
-    -H | --halt) ;;
-    -P | --poweroff) ;;
-    -r | --reboot) ;;
-    -h) ;;
-    -k) do_shutdown=false ;;
-    --no-wall) do_wall=false ;;
-    -c)
-        # kill all but me
-        pgrep -f shutdown | grep -v $$ | xargs kill -9
-        shutdown_cancelled
-        exit 0
-        ;;
-    --show) ;;
-    *)
-        # use rest of options as additional shutdown notice
-        notification_extra="$*"
-        break
-        ;;
+        # most default options are ignored
+        now) ;;
+        --help)
+            show_help
+            ;;
+        -H | --halt) ;;
+        -P | --poweroff) ;;
+        -r | --reboot) ;;
+        -h) ;;
+        -k) do_shutdown=false ;;
+        --no-wall) do_wall=false ;;
+        -c)
+            # kill all but me
+            pgrep -f shutdown | grep -v $$ | xargs kill -9
+            shutdown_cancelled
+            exit 0
+            ;;
+        --show) ;;
+        *)
+            # use rest of options as additional shutdown notice
+            notification_extra="$*"
+            break
+            ;;
     esac
     shift
 done

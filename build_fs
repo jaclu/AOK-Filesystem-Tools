@@ -84,18 +84,18 @@ ensure_real_wget_is_installed() {
     msg_1 "In order for this to work wget will be installed"
 
     case "$(detect_fs)" in
-    "$distro_alpine")
-        #  shellcheck disable=SC2086 # in this case it should expand
-        apk add $_deps
-        ;;
-    "$distro_debian" | "$distro_devuan")
-        #  shellcheck disable=SC2086 # in this case it should expand
-        apt install $_deps
-        ;;
-    *)
-        echo "Platform not recognized, can not suggest how to install"
-        error_msg "You need the following packages: $_deps"
-        ;;
+        "$distro_alpine")
+            #  shellcheck disable=SC2086 # in this case it should expand
+            apk add $_deps
+            ;;
+        "$distro_debian" | "$distro_devuan")
+            #  shellcheck disable=SC2086 # in this case it should expand
+            apt install $_deps
+            ;;
+        *)
+            echo "Platform not recognized, can not suggest how to install"
+            error_msg "You need the following packages: $_deps"
+            ;;
     esac
 
     msg_3 "Dependencies resolved"
@@ -106,77 +106,77 @@ parse_arguments() { # Multi OK 1
 
         case "$1" in
 
-        "-h" | "--help") show_help ;;
+            "-h" | "--help") show_help ;;
 
-        "-v" | "--verbose") verbose=true ;;
+            "-v" | "--verbose") verbose=true ;;
 
-        "-d" | "--debian")
-            if [ "$build_target" = "$destfs_select" ]; then
-                echo "Can not be combined: -d and -s"
+            "-d" | "--debian")
+                if [ "$build_target" = "$destfs_select" ]; then
+                    echo "Can not be combined: -d and -s"
+                    exit 1
+                fi
+                build_target="$distro_debian"
+                ;;
+
+            -g | --gentoo)
+                if [ "$build_target" = "$destfs_select" ]; then
+                    echo "Can not be combined: -g and -s"
+                    exit 1
+                fi
+                build_target="$distro_gentoo"
+                ;;
+
+            #"-D" | "--devuan")
+            #    if [ "$build_target" = "$destfs_select" ]; then
+            #        echo "Can not be combined: -D and -s"
+            #        exit 1
+            #    fi
+            #    build_target="$distro_devuan"
+            #    ;;
+
+            "-s" | "--select")
+                if [ "$build_target" = "$distro_debian" ] \
+                    || [ "$build_target" = "$distro_devuan" ]; then
+                    echo "Can not be combined: -d/-D and -s"
+                    exit 1
+                fi
+                if $pre_build_FS; then
+                    echo "Can not be combined: -p and -s"
+                    exit 1
+                fi
+                build_target="$destfs_select"
+                ;;
+
+            "-p" | "--prebuilt")
+                if [ "$build_target" = "$destfs_select" ]; then
+                    echo "Can not be combined: -p and -s"
+                    exit 1
+                fi
+                pre_build_FS=true
+                ;;
+
+            "-f" | "--force")
+                force_chroot="-f"
+                ;;
+
+            "-c" | "--clear")
+                do_clear
+                exit 0
+                ;;
+
+            "-C" | "--full_clear")
+                do_full_clear
+                exit 0
+                ;;
+
+            "-N" | "--no_compress")
+                aok_FS_do_compress=false
+                ;;
+
+            *)
+                echo "ERROR: bad param, try -h"
                 exit 1
-            fi
-            build_target="$distro_debian"
-            ;;
-
-        -g | --gentoo)
-            if [ "$build_target" = "$destfs_select" ]; then
-                echo "Can not be combined: -g and -s"
-                exit 1
-            fi
-            build_target="$distro_gentoo"
-            ;;
-
-        #"-D" | "--devuan")
-        #    if [ "$build_target" = "$destfs_select" ]; then
-        #        echo "Can not be combined: -D and -s"
-        #        exit 1
-        #    fi
-        #    build_target="$distro_devuan"
-        #    ;;
-
-        "-s" | "--select")
-            if [ "$build_target" = "$distro_debian" ] ||
-                [ "$build_target" = "$distro_devuan" ]; then
-                echo "Can not be combined: -d/-D and -s"
-                exit 1
-            fi
-            if $pre_build_FS; then
-                echo "Can not be combined: -p and -s"
-                exit 1
-            fi
-            build_target="$destfs_select"
-            ;;
-
-        "-p" | "--prebuilt")
-            if [ "$build_target" = "$destfs_select" ]; then
-                echo "Can not be combined: -p and -s"
-                exit 1
-            fi
-            pre_build_FS=true
-            ;;
-
-        "-f" | "--force")
-            force_chroot="-f"
-            ;;
-
-        "-c" | "--clear")
-            do_clear
-            exit 0
-            ;;
-
-        "-C" | "--full_clear")
-            do_full_clear
-            exit 0
-            ;;
-
-        "-N" | "--no_compress")
-            aok_FS_do_compress=false
-            ;;
-
-        *)
-            echo "ERROR: bad param, try -h"
-            exit 1
-            ;;
+                ;;
 
         esac
         shift
@@ -284,13 +284,13 @@ cache_fs_image() {
         #  Ensure basename for tar ball is used
         case "$build_target" in
 
-        "$distro_alpine" | "$destfs_select") ;; # cmd="$cmd -O $alpine_src_tb" ;;
-        "$distro_debian") ;;                    # cmd="$cmd -O $debian_src_tb" ;;
-        "$distro_devuan") ;;                    # cmd="$cmd -O $devuan_src_tb" ;;
-        "$distro_gentoo") ;;                    #cmd="wget '$src_image' -O $gentoo_src_tb" ;;
-        *)
-            error_msg "Invalid build_target: $build_target"
-            ;;
+            "$distro_alpine" | "$destfs_select") ;; # cmd="$cmd -O $alpine_src_tb" ;;
+            "$distro_debian") ;;                    # cmd="$cmd -O $debian_src_tb" ;;
+            "$distro_devuan") ;;                    # cmd="$cmd -O $devuan_src_tb" ;;
+            "$distro_gentoo") ;;                    #cmd="wget '$src_image' -O $gentoo_src_tb" ;;
+            *)
+                error_msg "Invalid build_target: $build_target"
+                ;;
         esac
 
         ensure_real_wget_is_installed

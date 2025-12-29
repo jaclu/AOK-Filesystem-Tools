@@ -54,13 +54,13 @@ check_tz_dependencies() {
 }
 
 get_tz_regions_lst() {
-    regions=$(find /usr/share/zoneinfo/. -maxdepth 1 -type d |
-        cut -d "/" -f6 | sed '/^$/d' | awk '{print $0 ""}' | sort)
+    regions=$(find /usr/share/zoneinfo/. -maxdepth 1 -type d \
+        | cut -d "/" -f6 | sed '/^$/d' | awk '{print $0 ""}' | sort)
 }
 
 get_tz_options_lst() {
-    options=$(cd /usr/share/zoneinfo/"$1" && find . | sed 's|^\./||' |
-        sed 's/^\.//' | sed '/^$/d' | sort)
+    options=$(cd /usr/share/zoneinfo/"$1" && find . | sed 's|^\./||' \
+        | sed 's/^\.//' | sed '/^$/d' | sort)
 }
 
 main() {
