@@ -9,9 +9,9 @@ dependency.
 Rather than doing the usual `pip install xxx` which often fails on iSH
 especially if the package needs to compile something, first try
 
-```apk search py3- | grep xxx```
+`apk search py3- | grep xxx`
 
-and if found do the matching  `apk add` for that package.
+and if found do the matching `apk add` for that package.
 If what you are looking for is available as an apk package it will work,
 and it will install all dependencies.
 So this is the preferred way to meet dependencies.

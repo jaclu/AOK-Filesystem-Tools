@@ -27,7 +27,7 @@ ish-Debian missing 24-02-19
 ## remote aok -e off crashes ssh session
 
 Not sure what happens, seems to create at least 3
- /bin/sh /usr/local/bin/aok -e off
+/bin/sh /usr/local/bin/aok -e off
 processes, ending up non responsive
 in most cases new ssh sessions can be created. existing sessions
 tends to survive as long as they didn't generate any output whilst
@@ -71,7 +71,7 @@ an improvement would be to make it a generic tool, then just keep
 something like .shellchecker in the top dir of a project, defining
 exclusions
 
-## Seems to be issues with latest  mdcat on 3.18
+## Seems to be issues with latest mdcat on 3.18
 
 investigate and if confirmed, try to find latest version that can be used,
 and add it to set of custom apks
@@ -89,7 +89,7 @@ ish is started and offensive login BEFORE init is run, but still ensure
 `/bin/sleep infinity`
 
 2 Replace console with this alternate content in /usr/local/sbin/fix_dev
-if you use it via inittab, otherwise  run it in a shell as root, in order
+if you use it via inittab, otherwise run it in a shell as root, in order
 to ensure anything can print to
 /dev/console, without being restricted when agetty locks down /dev/pts/0
 With this normal boot up console output can be seen!
@@ -102,13 +102,13 @@ rm -f /dev/console && mknod -m 222 /dev/console c 136 0
 3a Add this towards end of /etc/inittab if you want a login prompt for
 console screen
 
-``` inittab
+```inittab
 pts0::respawn:/sbin/agetty pts/0 linux
 ```
 
 3b Alternatively use this if you want to use -a to login as a user without
 prompting for password, be aware that in this case logout / exit will
-instantly automatically log you back in again 🙂  You will have to use
+instantly automatically log you back in again 🙂 You will have to use
 shutdown to terminate the iSH app
 
 pts0::respawn:/sbin/agetty -a root pts/0 linux
@@ -130,12 +130,12 @@ It needs to be cheap enough to not noticeably delay future login shells
 Here are my current ideas
 
 - Simplest, but assumes runbg is an active service...
-Check if /run/openrc/options/runbg/pidfile exists and is newer than
-/run/runlevel
+  Check if /run/openrc/options/runbg/pidfile exists and is newer than
+  /run/runlevel
 - If AOK_HOSTNAME_SUFFIX="Y" and ish-AOK this is quite cheap and quick
-`while ! hostname | grep -q '\-aok' ; do`
+  `while ! hostname | grep -q '\-aok' ; do`
 - Uses ps ax, so has a crash risk, probably not ideal
-`while ! ps ax | grep [i]nit | grep -q '\[2\]'; do`
+  `while ! ps ax | grep [i]nit | grep -q '\[2\]'; do`
 
 rest of this code block
 
@@ -165,7 +165,7 @@ it seems a respawn process only is run once
 ## /usr/local/sbin/dynamic_login
 
 When used as a Launch cmd, and autologins to a zsh user
-the console session is logged out after a copple of minutes  - investigate
+the console session is logged out after a copple of minutes - investigate
 
 - ensure NavKey.md has correct paths
 

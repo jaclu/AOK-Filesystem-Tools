@@ -23,7 +23,7 @@ Add this line
 SendEnv ISH_NAV_KEY
 ```
 
-### Server end:  /etc/ssh/sshd_config
+### Server end: /etc/ssh/sshd_config
 
 Add this line
 
