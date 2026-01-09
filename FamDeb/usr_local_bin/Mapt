@@ -46,7 +46,7 @@ mapt_time_start="$(date +%s)"
 
 echo "===  Mapt - apt maintenance  ==="
 
-apt --fix-broken install && apt update && apt autoremove -y \
+apt --fix-broken install && apt update && apt autoremove -y --purge \
     && apt autoclean && apt -y upgrade
 
 #
