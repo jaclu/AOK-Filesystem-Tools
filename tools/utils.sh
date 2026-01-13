@@ -1096,7 +1096,7 @@ be_linux="Build env x86 Linux"
 be_other="Build env other"
 if this_is_ish; then
     build_env="$be_ish" # 1
-elif uname -a | grep -qi linux && uname -a | grep -q -e x86 -e i686 -e aarch64; then
+elif uname -a | grep -qi linux && uname -a | grep -q -e x86 -e i686; then
     build_env="$be_linux" # 2
 else
     build_env="$be_other" # chroot not possible 0
