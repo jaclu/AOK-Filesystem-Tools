@@ -368,6 +368,8 @@ env_prepare() {
     # msg_3 "copying current /etc/resolv.conf"
     cp /etc/resolv.conf "$CHROOT_TO/etc"
 
+    touch "$chrooted_ish_hint"
+
     [ "$_fnc_calls" = 2 ] && msg_3 "env_prepare() - done"
 }
 
@@ -396,6 +398,8 @@ env_restore() {
     }
 
     unmount_systen_folders
+
+    [ -n "$chrooted_ish_hint" ] && rm -f "$chrooted_ish_hint"
 
     [ "$_fnc_calls" = 2 ] && msg_3 "env_restore() - done"
 }
@@ -567,6 +571,8 @@ else
         fi
     fi
 fi
+
+chrooted_ish_hint="$CHROOT_TO"/etc/opt/chrooted_ish
 
 env_prepare
 
