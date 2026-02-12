@@ -46,8 +46,14 @@ mapt_time_start="$(date +%s)"
 
 echo "===  Mapt - apt maintenance  ==="
 
-apt --fix-broken install && apt update && apt autoremove -y --purge \
-    && apt autoclean && apt -y upgrade
+if command -v apt >/dev/null; then
+    apt --fix-broken install && apt update && apt autoremove -y --purge \
+        && apt autoclean && apt -y upgrade
+else
+    echo "---  apt not found, using apt-get  ---"
+    apt-get update && apt-get autoremove -y --purge \
+        && apt-get clean && apt-get -y upgrade
+fi
 
 #
 #  Check if reboot is required
