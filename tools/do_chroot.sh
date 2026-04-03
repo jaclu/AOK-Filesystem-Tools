@@ -485,7 +485,7 @@ while [ -n "$1" ]; do
 
         "-c" | "--cleanup")
             show_unmounts=true
-            cleanup_sleep=2
+            # cleanup_sleep=2
             #region cleanup explanation
             echo "
 
@@ -497,10 +497,10 @@ to clean up the right things.
 
 $cmd_line -p /custom/path -c
 
-This will continue in $cleanup_sleep secnods,hit Ctrl-C if you want to abort
 "
             #endregion
-            sleep "$cleanup_sleep"
+            # This will continue in $cleanup_sleep secnods,hit Ctrl-C if you want to abort
+            # sleep "$cleanup_sleep"
 
             define_chroot_env
             env_restore
