@@ -11,6 +11,8 @@
 #  Common environment for aok_fs-save & aok_fs-replace
 #
 
+[ -z "$d_aok_etc" ] && . /opt/AOK/tools/utils.sh
+
 d_aok_completed="$TMPDIR"/aok_completed
 f_tar_tmp_save="$TMPDIR"/saving.tgz
 d_aok_fs_save="$TMPDIR"/tmp_save
@@ -27,19 +29,7 @@ mkdir -p "$d_aok_completed" || {
 }
 
 ensure_not_chrooted() {
-    d_fs="$1"
-    [ -z "$d_fs" ] && error_msg "ensure_not_chrooted() - no param"
-    [ -f "$d_fs" ] && error_msg "Not a folder: $d_fs"
-    [ ! -d "$d_fs" ] && return # nothing to check
-
-    if fs_is_alpine; then
-        chs_procs="$(lsof -l +d "$d_fs" \
-            | awk '{print $1 }' | sort | uniq | tr '\n' ' ')"
-    else
-        chs_procs="$(lsof -l +d "$d_fs" \
-            | awk '{print $2 }' | sort | uniq | tr '\n' ' ')"
-    fi
-    [ -n "$chs_procs" ] && {
+    is_chroot_mounted "$1" && {
         error_msg "it seems a chroot is active at: $d_fs"
     }
 }

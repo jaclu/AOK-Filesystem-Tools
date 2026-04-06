@@ -333,12 +333,7 @@ unmount_systen_folders() {
 is_chroot_being_used() {
     [ "$_fnc_calls" -gt 0 ] && msg_2 "is_chroot_being_used()"
     [ -z "$CHROOT_TO" ] && error_msg "is_chroot_being_used() CHROOT_TO not defined!"
-    _d="${CHROOT_TO}"/proc
-    [ ! -d "$_d" ] && error_msg "Folder: $_d does not exist!"
-
-    [ "$(find "$_d" 2>/dev/null | wc -l)" -gt 1 ] && {
-        error_msg "it seems a chroot is active at: $CHROOT_TO"
-    }
+    is_chroot_mounted "$CHROOT_TO" && error_msg "it seems a chroot is active at: $CHROOT_TO"
 }
 
 #use_root_shell_as_default_cmd
@@ -503,6 +498,12 @@ $cmd_line -p /custom/path -c
             # sleep "$cleanup_sleep"
 
             define_chroot_env
+            is_chroot_mounted "$CHROOT_TO" && {
+                echo "Be aware: $CHROOT_TO  is currently used as a chroot"
+                echo "in 3 s this chroot will be forcefully terminated!"
+                echo "Press Ctrl-C to abort"
+                sleep 3
+            }
             env_restore
             exit 0
             ;;

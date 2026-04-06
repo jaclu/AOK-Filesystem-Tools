@@ -1075,6 +1075,18 @@ check_if_host_or_dest_fs() {
     fi
 }
 
+is_chroot_mounted() {
+    [ -z "$1" ] && error_msg "is_chroot_mounted() - no param"
+    d_fs="$(realpath "$1")"
+    [ -d "$d_fs" ] || error_msg "Not a folder: $1"
+
+    for p in /proc/[0-9]*; do
+        r=$(readlink "$p/root" 2>/dev/null) || continue
+        [ "$r" != "/" ] && [ "$r" = "$d_fs" ] && return 0
+    done
+    return 1
+}
+
 #===============================================================
 #
 #   Main
