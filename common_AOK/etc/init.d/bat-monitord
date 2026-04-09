@@ -19,7 +19,6 @@ pidfile="/run/bat-monitord.pid"
 
 log_file=/var/log/services.log
 
-
 start_post() {
     LOGGER_FILE="$log_file" /usr/local/bin/logger "$RC_SVCNAME" started
 }
