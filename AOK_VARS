@@ -147,7 +147,8 @@ AOK_HOSTNAME_SUFFIX="Y"
 # ALPINE_VERSION=3.19.7  # End of Alpine support 2025-11-01 # TestFlight iSH
 # ALPINE_VERSION=3.20.6  # End of Alpine support 2026-04-01
 # ALPINE_VERSION=3.21.3    # End of Alpine support 2026-11-01
-ALPINE_VERSION=3.22.1 # End of Alpine support 2027-05-01
+# ALPINE_VERSION=3.22.1 # End of Alpine support 2027-05-01
+ALPINE_VERSION=3.23.3 # End of Alpine support 
 
 #
 #  For edge releases - Current development tree
