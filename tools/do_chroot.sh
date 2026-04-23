@@ -478,7 +478,13 @@ while [ -n "$1" ]; do
             exit 0
             ;;
 
-        "-c" | "--cleanup")
+        -c | --check)
+            is_chroot_being_used
+            echo "Currently not used"
+            exit 0
+            ;;
+
+        -C | --cleanup)
             show_unmounts=true
             # cleanup_sleep=2
             #region cleanup explanation
