@@ -111,12 +111,12 @@ show_help() {
 
     #region help text
     echo "
-Usage: $prog_name [-h] [-c] [-p dir] [-f] [command]
+Usage: $prog_name [-h] [--check] [--cleanup] [-p dir] [-f] [command]
 
 Available options:
 
 -h  --help      Print this help and exit
--c  --cleanup   Cleanup env if something crashed whilst sudoed
+--cleanup   Cleanup env if something crashed whilst sudoed
 -f, --force     Run this despite a warning indicating it will likely
                 not work.
 -p, --path      What dir to chroot into, defaults to: $d_build_root
@@ -127,7 +127,7 @@ chroot with env setup so this works on both Linux & iSH
 
 Normally this will clear up the env even if the chroot crashes.
 If it does  fail to clean up, and a custom path was used.
--p must be given BEFORE -c in order for this to know what mount point
+-p must be given BEFORE --cleanup in order for this to know what mount point
 to clean up!
 
 "
@@ -168,9 +168,9 @@ can_chroot_run_now() {
         echo
         echo "This chroot and all its processes can be cleaned up by running:"
         if [ "$CHROOT_TO" = "$d_build_root" ]; then
-            echo "$cmd_line -c"
+            echo "$cmd_line --cleanup"
         else
-            echo "$cmd_line -p $CHROOT_TO -c"
+            echo "$cmd_line -p $CHROOT_TO --cleanup"
         fi
         echo
         exit 1
@@ -478,13 +478,13 @@ while [ -n "$1" ]; do
             exit 0
             ;;
 
-        -c | --check)
+        --check)
             is_chroot_being_used
             echo "Currently not used"
             exit 0
             ;;
 
-        -C | --cleanup)
+        --cleanup)
             show_unmounts=true
             # cleanup_sleep=2
             #region cleanup explanation
@@ -496,7 +496,7 @@ Please be aware that if an attempt is made to clean up after a chroot to a
 non-standard path with -p, this notation must be used in order to attempt
 to clean up the right things.
 
-$cmd_line -p /custom/path -c
+$cmd_line -p /custom/path --cleanup
 
 "
             #endregion
