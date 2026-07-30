@@ -117,7 +117,7 @@ setup_cron_env() {
     #  if USE_CRON_SERVICE="Y >$f_hostname_org"
     #
     msg_3 "Setting cron periodic files"
-    rsync_chown /opt/AOK/common_AOK/cron/periodic /etc silent
+    rsync_chown /opt/AOK/combined/common_AOK/cron/periodic /etc silent
     #msg_3 "setup_cron_env() - done"
 }
 

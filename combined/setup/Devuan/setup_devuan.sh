@@ -16,7 +16,7 @@ setup_cron_env() {
 
     msg_3 "Adding root crontab running periodic content"
     mkdir -p /var/spool/cron/crontabs
-    rsync_chown /opt/AOK/common_AOK/cron/crontab-root /var/spool/cron/crontabs/root
+    rsync_chown /opt/AOK/combined/common_AOK/cron/crontab-root /var/spool/cron/crontabs/root
 
     #  shellcheck disable=SC2154
     if [ "$USE_CRON_SERVICE" = "Y" ]; then

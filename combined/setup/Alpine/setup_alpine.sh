@@ -172,7 +172,7 @@ setup_cron_env() {
 
     msg_3 "Adding root crontab running periodic content"
     mkdir -p /etc/crontabs
-    cp -a /opt/AOK/common_AOK/cron/crontab-root /etc/crontabs/root
+    cp -a /opt/AOK/combined/common_AOK/cron/crontab-root /etc/crontabs/root
 
     #  shellcheck disable=SC2154
     if [ "$USE_CRON_SERVICE" = "Y" ]; then

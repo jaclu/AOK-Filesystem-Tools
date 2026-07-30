@@ -275,8 +275,8 @@ set_new_etc_profile "$next_etc_profile"
 #
 #  Handling custom files
 #
-/opt/AOK/common_AOK/custom/custom_files.sh || {
-    error_msg "common_AOK/custom/custom_files.sh failed"
+/opt/AOK/combined/common_AOK/custom/custom_files.sh || {
+    error_msg "combined/common_AOK/custom/custom_files.sh failed"
 }
 
 replace_home_dirs
