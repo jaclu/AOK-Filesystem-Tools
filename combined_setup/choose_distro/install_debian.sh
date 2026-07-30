@@ -8,7 +8,7 @@
 . /opt/AOK/tools/utils.sh
 
 # shellcheck source=/dev/null
-. /opt/AOK/FamDeb/deb_utils.sh
+. /opt/AOK/combined_setup/FamDeb/deb_utils.sh
 
 t_choose_distro_debian_start="$(date +%s)"
 
@@ -117,7 +117,7 @@ msg_3 "Copying Alpine lib (musl) to /usr/lib"
 #  replace /lib with soft-link to /usr/lib
 # /busybox echo "> Replacing /lib with a soft-link to /usr/lib"
 msg_3 "Replacing /lib with a soft-link to /usr/lib"
-/opt/AOK/choose_distro/bin/lib_fix
+/opt/AOK/combined_build/choose_distro/bin/lib_fix
 
 #  From now on Debian should be fully available
 

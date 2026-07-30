@@ -54,7 +54,7 @@ esac
 #  Read config settings
 #
 # shellcheck source=/dev/null
-. /opt/AOK/"$img_type"/img_build.conf || {
+. /opt/AOK/combined_build/"$img_type"/img_build.conf || {
     error_msg "Failed to read img_build conf for Debian"
 }
 #  shellcheck disable=SC2154
@@ -95,7 +95,7 @@ _f="$d_ish_FS"/opt/AOK/.AOK_VARS
 }
 
 msg_3 "Copying img_build -> $d_ish_FS/root"
-rsync_chown /opt/AOK/FamDeb/img_build "$d_ish_FS"/root
+rsync_chown /opt/AOK/combined_build/FamDeb/img_build "$d_ish_FS"/root
 msg_4 "Copying Mapt to img_build/bin"
 rsync_chown /opt/AOK/combined/usr_local_bin/Mapt "$d_ish_FS"/root/img_build/bin
 
