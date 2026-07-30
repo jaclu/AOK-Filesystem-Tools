@@ -1,0 +1,55 @@
+#!/bin/sh
+#
+#  Part of https://github.com/jaclu/AOK-Filesystem-Tools
+#
+#  License: MIT
+#
+#  Copyright (c) 2023-2024: Jacob.Lundqvist@gmail.com
+#
+#  this is called by 'shutdown' and does the actual shutdown procedure.
+#
+#  For normall shutdown, do: shutdown
+#
+#  This is the second stage, actual shutdown, it will be called with
+#  exec from shutdown, in order to make sure any services stopping
+#  will not interrupt this script
+#
+
+display_msg() {
+    dm_msg="$1"
+
+    echo "$dm_msg"
+    echo "$dm_msg" >/dev/console
+    /usr/local/bin/logger do-shutdown "$dm_msg"
+    unset dm_msg
+}
+
+#===============================================================
+#
+#   Main
+#
+#===============================================================
+
+prog_name=$(basename "$0")
+
+[ "$(whoami)" != "root" ] && {
+    echo "$prog_name must be run by root!"
+    exit 1
+}
+
+echo
+display_msg "Commencing shutdown..."
+
+#
+#  Terminates all running services, not completing until all are done.
+#  During this, most remote sessions will be terminated...
+#
+if [ -f /etc/alpine-release ]; then
+    display_msg "Will do openrc shutdown"
+    openrc shutdown
+    display_msg "Completed openrc shutdown"
+    display_msg "Will shutdown system"
+    /sbin/poweroff
+elif [ -f /etc/debian_version ]; then
+    init 0
+fi
