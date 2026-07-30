@@ -1,0 +1,72 @@
+# inittab
+# Modified by: Jacob.Lundqvist@gmail.com 2022-2024
+
+#
+# R-check checks if recovery mode has been selected, if so that action
+# is not done, and it is logged as skipped in /var/log/recovery-mode.log
+#
+# recovery-mode is a feature of aok_launcher, allowing safe recovery if
+# something is messed up in the environment
+#
+
+#
+# Allow for console to be setup and ready to log bootup.
+# Returns immeditally if console mode is not used
+#
+::sysinit:/usr/local/sbin/inittab_waiting_for_console
+
+# Indicate bootup in the syslog
+::sysinit:/usr/local/sbin/R-check /usr/local/bin/logger inittab "===  System startup  ==="
+
+#
+#  Regular iSH doesn't clear /run at startup, so it needs to
+#  Clear /run/ to an initial state with no services running
+#  This is not needed on iSH-AOK, and for such can be commented out
+#
+::sysinit:/usr/local/sbin/R-check /usr/local/sbin/reset-run-dir
+
+#  rotates logfiles > 20k
+::sysinit:/usr/local/sbin/R-check /usr/local/sbin/rotate-logs.sh
+
+#
+# If you've configured your hostname to be updated through an iOS Shortcut,
+# this ensures that the hostname reflects what the Shortcut provides.
+# If you maintain a static hostname in /etc/hosts, this may not be necessary,
+# but keeping it enables quick updates in case you decide to switch to
+# a hostname fed by the Shortcut in the future.
+# For more about this, see: /opt/AOK/Docs/hostname-shortcut.md
+#
+::sysinit:/usr/local/sbin/R-check /usr/local/bin/hostname -U
+
+#
+#  Update motd (in case iSH has been updated)
+#  On iSH we get console before this is executed despite the fact that
+#  sysinit actions are supposed to happen before conssole is activated
+#  This means first boot after new iSH will show outdated version
+#  on bootup
+#
+::sysinit:/usr/local/sbin/R-check /usr/local/sbin/update-motd
+
+#
+#  iSH typically does no cleanup at shutdown, it just suddenly terminates.
+#  When starting up openrc in default it often finds state of services as
+#  already running thus leaving them as is, ie wont try to start them at all
+#  since according to the states openrc finds is that default is already
+#  the current runlevel.
+#  Workaround is to toggle between runlevels.
+#  This leads to services first being stoped and then started, ensuring
+#  they start up regardless of logged runstate at startup.
+#
+# ::sysinit:/sbin/openrc sysinit
+# ::sysinit:/sbin/openrc boot
+::sysinit:/usr/local/sbin/R-check /usr/local/bin/logger inittab doing openrc default
+::wait:/usr/local/sbin/R-check /sbin/openrc default
+
+#
+#  I highly doubt these states can be triggered in iSH
+#
+# Stuff to do for the 3-finger salute
+# ::ctrlaltdel:/sbin/reboot
+
+# Stuff to do before rebooting
+# ::shutdown:/sbin/openrc shutdown
