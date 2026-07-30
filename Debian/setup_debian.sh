@@ -60,7 +60,8 @@ initiate_deploy Debian "$(cat /etc/debian_version)"
 
 $setup_famdeb_scr || error_msg "in $setup_famdeb_scr"
 
-rsync_chown /opt/AOK/Debian/etc/update-motd.d /etc
+rsync_chown /opt/AOK/combined/etc/update-motd.d/25-deb-vers \
+    /etc/update-motd.d/25-deb-vers
 
 # setup_login
 debian_services

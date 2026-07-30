@@ -118,10 +118,10 @@ prepare_env_etc() {
     msg_2 "prepare_env_etc() - Replacing a few /etc files"
 
     msg_3 "AOK inittab"
-    cp /opt/AOK/Alpine/etc/inittab /etc
+    cp /opt/AOK/combined/etc/alpine-inittab /etc/inittab
 
     msg_3 "iOS interfaces file"
-    cp /opt/AOK/Alpine/etc/interfaces /etc/network
+    cp /opt/AOK/combined/etc/interfaces /etc/network
 
     if [ -f /etc/init.d/devfs ]; then
         msg_3 "Linking /etc/init.d/devfs <- /etc/init.d/dev"
@@ -148,19 +148,21 @@ prepare_env_etc() {
     testing_repo="https://dl-cdn.alpinelinux.org/alpine/edge/testing"
     if [ "$alpine_release" = "edge" ]; then
         msg_2 "Adding apk repository - testing"
-        #    cp /opt/AOK/Alpine/etc/repositories-edge /etc/apk/repositories
+        #    cp /opt/AOK/combined/etc/repositories-edge /etc/apk/repositories
         echo "$testing_repo" >>/etc/apk/repositories
-    elif min_release 3.19; then
-        #
-        #  Only works for fairly recent releases, otherwise dependencies won't
-        #  work.
-        #
-        msg_2 "Adding apk repository - @testing"
-        msg_3 "  edge/testing is setup as a restricted repo, in order"
-        msg_3 "  to install testing apks do apk add foo@testing"
-        msg_3 "  In case of incompatible dependencies an error will"
-        msg_3 "  be displayed, and nothing bad will happen."
-        echo "@testing $testing_repo" >>/etc/apk/repositories
+    else
+        if min_release "3.19"; then
+            #
+            #  Only works for fairly recent releases, otherwise dependencies won't
+            #  work.
+            #
+            msg_2 "Adding apk repository - @testing"
+            msg_3 "  edge/testing is setup as a restricted repo, in order"
+            msg_3 "  to install testing apks do apk add foo@testing"
+            msg_3 "  In case of incompatible dependencies an error will"
+            msg_3 "  be displayed, and nothing bad will happen."
+            echo "@testing $testing_repo" >>/etc/apk/repositories
+        fi
     fi
     # msg_3 "replace_key_etc_files() done"
 }
@@ -222,10 +224,10 @@ if ! "$setup_common_aok"; then
 fi
 
 msg_2 "Copy /etc/motd_template"
-cp -a /opt/AOK/Alpine/etc/motd_template /etc
+cp -a /opt/AOK/combined/etc/motd_template /etc
 
 msg_2 "Copy iSH compatible pam base-session"
-cp -a /opt/AOK/Alpine/etc/pam.d/base-session /etc/pam.d
+cp -a /opt/AOK/combined/etc/pam.d/base-session /etc/pam.d
 
 #
 #  Extra sanity check, only continue if there is a runable /bin/login

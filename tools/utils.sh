@@ -469,25 +469,54 @@ copy_local_bins() {
     if [ -z "$_clb_base_dir" ]; then
         error_msg "call to copy_local_bins() without param!"
     fi
+    case "$_clb_base_dir" in
+    common_AOK)
+        _clb_bin_files="\
+            aok aok-versions check-env-compatible disable-sshd dmesg \
+            enable-sshd hostname ipad-tmux iphone-tmux logger myip nav-keys.sh \
+            network-check pbcopy set-timezone uptime version wall whereami \
+            whereisthis"
+        _clb_sbin_files="\
+            aok_launcher bat-monitord do-shutdown ensure-hostname-in-host-file \
+            halt inittab_waiting_for_console R-check reset-run-dir rotate-logs.sh \
+            shutdown"
+        ;;
+    Alpine)
+        _clb_bin_files="\
+            aok-groups apk-find-pkg apt disable-vnc enable-vnc \
+            alpine-idev_ip:idev_ip installed Mapk alpine-update:update \
+            vnc-start vnc-stop what-owns"
+        _clb_sbin_files="update-motd"
+        ;;
+    FamDeb)
+        _clb_bin_files="\
+            console-restart famdeb-idev_ip:idev_ip Mapt famdeb-update:update"
+        _clb_sbin_files="kill_tail_logging"
+        ;;
+    *)
+        error_msg "Unsupported local bin source: $_clb_base_dir"
+        ;;
+    esac
 
-    # msg_1 "Copying /usr/local stuff from $_clb_base_dir"
-    _clb_src_dir=/opt/AOK/"$_clb_base_dir"
+    mkdir -p /usr/local/bin /usr/local/sbin
 
-    _clb_rel_src=usr_local_bin
-    _clb_dest=/usr/local/bin
-    if find "$_clb_src_dir" | grep -q "$_clb_rel_src"; then
-        mkdir -p "$_clb_dest"
-        rsync_chown "$_clb_src_dir/$_clb_rel_src/*" "$_clb_dest" silent
-    fi
+    for _clb_item in $_clb_bin_files; do
+        _clb_src="${_clb_item%%:*}"
+        _clb_dst="${_clb_item#*:}"
+        [ "$_clb_src" = "$_clb_dst" ] && _clb_dst="$_clb_src"
+        rsync_chown "/opt/AOK/combined/usr_local_bin/$_clb_src" \
+            "/usr/local/bin/$_clb_dst" silent
+    done
 
-    _clb_rel_src=usr_local_sbin
-    _clb_dest=/usr/local/sbin
-    if find "$_clb_src_dir" | grep -q "$_clb_rel_src"; then
-        mkdir -p "$_clb_dest"
-        rsync_chown "$_clb_src_dir/$_clb_rel_src/*" "$_clb_dest" silent
-    fi
+    for _clb_item in $_clb_sbin_files; do
+        _clb_src="${_clb_item%%:*}"
+        _clb_dst="${_clb_item#*:}"
+        [ "$_clb_src" = "$_clb_dst" ] && _clb_dst="$_clb_src"
+        rsync_chown "/opt/AOK/combined/usr_local_sbin/$_clb_src" \
+            "/usr/local/sbin/$_clb_dst" silent
+    done
 
-    unset _clb_base_dir _clb_src_dir _clb_rel_src _clb_dest
+    unset _clb_base_dir _clb_bin_files _clb_sbin_files _clb_item _clb_src _clb_dst
     # echo "^^^ copy_local_bins() - done"
 }
 
@@ -1109,6 +1138,8 @@ setup_devuan_scr=/opt/AOK/Devuan/setup_devuan.sh
 setup_select_distro_prepare=/opt/AOK/choose_distro/select_distro_prepare.sh
 setup_select_distro=/opt/AOK/choose_distro/select_distro.sh
 setup_final=/opt/AOK/common_AOK/setup_final_tasks.sh
+
+d_combined=/opt/AOK/combined
 
 #
 #  When reported what distro is used on Host or Dest FS uses this

@@ -135,7 +135,7 @@ deploy_bat_monitord() {
     }
 
     msg_3 "Adding $s_name service"
-    cp -a /opt/AOK/common_AOK/etc/init.d/bat-monitord /etc/init.d
+    cp -a /opt/AOK/combined/etc/init.d/bat-monitord /etc/init.d
     rc-update add "$s_name" default
     msg_3 "Not starting it during deploy, it will start on next boot"
     #rc-service "$s_name" restart
@@ -260,9 +260,9 @@ fi
 hostfs_is_alpine && aok_kernel_consideration
 
 if hostfs_is_alpine; then
-    next_etc_profile="/opt/AOK/Alpine/etc/profile"
+    next_etc_profile="/opt/AOK/combined/etc/alpine-profile"
 elif hostfs_is_debian || hostfs_is_devuan; then
-    next_etc_profile="/opt/AOK/FamDeb/etc/profile"
+    next_etc_profile="/opt/AOK/combined/etc/famdeb-profile"
 else
     error_msg "Undefined Distro, cant set next_etc_profile"
 fi

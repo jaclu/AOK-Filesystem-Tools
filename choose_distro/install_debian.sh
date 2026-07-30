@@ -57,7 +57,7 @@ msg_3 "maintaining /etc/opt"
 cp -a /etc/opt "$distro_tmp_dir"/etc
 
 msg_2 "Moving Debian /etc/profile into place"
-cp /opt/AOK/FamDeb/etc/profile "$distro_tmp_dir"/etc/profile
+cp /opt/AOK/combined/etc/famdeb-profile "$distro_tmp_dir"/etc/profile
 rm -rf "$debian_download_location"
 
 #

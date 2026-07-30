@@ -33,7 +33,11 @@ prepare_env_etc() {
 
     msg_3 "Adding env versions & AOK Logo to /etc/update-motd.d"
     mkdir -p /etc/update-motd.d
-    rsync_chown /opt/AOK/FamDeb/etc/update-motd.d /etc
+    for _motd_file in 14-aok-logo 24-set-color 26-ish-release 27-aok-release 28-clear-color; do
+        rsync_chown "/opt/AOK/combined/etc/update-motd.d/$_motd_file" \
+            "/etc/update-motd.d/$_motd_file"
+    done
+    unset _motd_file
 
     _f=/etc/skel/.bash_logout
     [ -f "$_f" ] && {
@@ -128,7 +132,7 @@ Mapt || error_msg "Mapt reported error"
 #
 #  Our
 #
-rsync_chown /opt/AOK/FamDeb/etc/init.d/rc /etc/init.d silent
+rsync_chown /opt/AOK/combined/etc/init.d/rc /etc/init.d silent
 
 #  Ensure that login is required
-rsync_chown /opt/AOK/FamDeb/etc/pam.d/common-auth /etc/pam.d silent
+rsync_chown /opt/AOK/combined/etc/pam.d/common-auth /etc/pam.d silent

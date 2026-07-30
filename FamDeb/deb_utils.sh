@@ -20,7 +20,7 @@ initial_fs_prep_fam_deb() {
     #
     msg_3 "FamDeb AOK inittab"
     #  shellcheck disable=SC2154
-    cp -a /opt/AOK/FamDeb/etc/inittab "$d_build_root"/etc
+    cp -a /opt/AOK/combined/etc/famdeb-inittab "$d_build_root"/etc/inittab
 
     # msg_3 "initial_fs_prep_fam_deb() - done"
 }

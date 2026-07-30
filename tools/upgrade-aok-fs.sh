@@ -67,10 +67,10 @@ restore_configs() {
     _s="===  Upgrade of configs is requested, will update"
     _s="$_s /etc/inittab and similar configs"
     echo "$_s"
-    restore_to_aok_state /opt/AOK/common_AOK/etc/environment /etc
-    restore_to_aok_state /opt/AOK/common_AOK/etc/profile-hints /etc
+    restore_to_aok_state /opt/AOK/combined/etc/environment /etc
+    restore_to_aok_state /opt/AOK/combined/etc/profile-hints /etc
 
-    restore_to_aok_state /opt/AOK/common_AOK/etc/init.d/runbg /etc/init.d/runbg
+    restore_to_aok_state /opt/AOK/combined/etc/init.d/runbg /etc/init.d/runbg
     _f=/etc/runlevels/default/runbg
     [ ! -f "$_f" ] && {
         msg_3 "Soft-linking $_f"
@@ -79,19 +79,28 @@ restore_configs() {
         }
     }
 
-    restore_to_aok_state /opt/AOK/common_AOK/etc/login.defs /etc/login.defs
-    restore_to_aok_state "$distro_fam_prefix"/etc/inittab /etc/inittab
-    restore_to_aok_state "$distro_fam_prefix"/etc/profile /etc/profile
-    restore_to_aok_state /opt/AOK/common_AOK/etc/skel /etc
+    restore_to_aok_state /opt/AOK/combined/etc/login.defs /etc/login.defs
+    restore_to_aok_state "$distro_inittab" /etc/inittab
+    restore_to_aok_state "$distro_profile" /etc/profile
+    restore_to_aok_state /opt/AOK/combined/etc/skel /etc
     if hostfs_is_alpine; then
-        restore_to_aok_state "$distro_prefix"/etc/motd_template /etc/motd_template
+        restore_to_aok_state /opt/AOK/combined/etc/motd_template /etc/motd_template
     elif hostfs_is_debian; then
-        restore_to_aok_state "$distro_fam_prefix"/etc/pam.d /etc
-        restore_to_aok_state "$distro_fam_prefix"/etc/update-motd.d /etc
-        restore_to_aok_state "$distro_prefix"/etc/update-motd.d /etc
+        restore_to_aok_state /opt/AOK/combined/etc/pam.d /etc
+        restore_to_aok_state /opt/AOK/combined/etc/update-motd.d/14-aok-logo /etc/update-motd.d/14-aok-logo
+        restore_to_aok_state /opt/AOK/combined/etc/update-motd.d/24-set-color /etc/update-motd.d/24-set-color
+        restore_to_aok_state /opt/AOK/combined/etc/update-motd.d/25-deb-vers /etc/update-motd.d/25-deb-vers
+        restore_to_aok_state /opt/AOK/combined/etc/update-motd.d/26-ish-release /etc/update-motd.d/26-ish-release
+        restore_to_aok_state /opt/AOK/combined/etc/update-motd.d/27-aok-release /etc/update-motd.d/27-aok-release
+        restore_to_aok_state /opt/AOK/combined/etc/update-motd.d/28-clear-color /etc/update-motd.d/28-clear-color
     elif hostfs_is_devuan; then
-        restore_to_aok_state "$distro_fam_prefix"/etc/pam.d /etc
-        restore_to_aok_state "$distro_prefix"/etc/update-motd.d /etc
+        restore_to_aok_state /opt/AOK/combined/etc/pam.d /etc
+        restore_to_aok_state /opt/AOK/combined/etc/update-motd.d/14-aok-logo /etc/update-motd.d/14-aok-logo
+        restore_to_aok_state /opt/AOK/combined/etc/update-motd.d/24-set-color /etc/update-motd.d/24-set-color
+        restore_to_aok_state /opt/AOK/combined/etc/update-motd.d/25-devu-vers /etc/update-motd.d/25-devu-vers
+        restore_to_aok_state /opt/AOK/combined/etc/update-motd.d/26-ish-release /etc/update-motd.d/26-ish-release
+        restore_to_aok_state /opt/AOK/combined/etc/update-motd.d/27-aok-release /etc/update-motd.d/27-aok-release
+        restore_to_aok_state /opt/AOK/combined/etc/update-motd.d/28-clear-color /etc/update-motd.d/28-clear-color
     fi
     echo
 }
@@ -137,10 +146,7 @@ general_upgrade() {
     #  Always copy common stuff
     #
     msg_2 "Common stuff"
-    msg_3 "/usr/local/bin"
-    rsync_chown /opt/AOK/common_AOK/usr_local_bin/ /usr/local/bin
-    msg_3 "/usr/local/sbin"
-    rsync_chown /opt/AOK/common_AOK/usr_local_sbin/ /usr/local/sbin
+    copy_local_bins common_AOK
     echo
     msg_3 "alternate hostname related"
     [ -f /etc/init.d/hostname ] && rsync_chown /opt/AOK/common_AOK/hostname_handling/aok-hostname-service /etc/init.d/hostname
@@ -153,21 +159,13 @@ general_upgrade() {
     #
     if hostfs_is_alpine; then
         msg_2 "Alpine specifics"
-        msg_3 "/usr/local/bin"
-        rsync_chown /opt/AOK/Alpine/usr_local_bin/ /usr/local/bin
-        msg_3 "/usr/local/sbin"
-        rsync_chown /opt/AOK/Alpine/usr_local_sbin/ /usr/local/sbin
+        copy_local_bins Alpine
 
     elif hostfs_is_debian || hostfs_is_devuan; then
         msg_2 "Debian/Devuan specifics"
-        msg_3 "/usr/local/bin"
-        rsync_chown "$distro_fam_prefix"/usr_local_bin/ /usr/local/bin
-        msg_3 "/usr/local/sbin"
-        # kill_tail_logging is updated on each boot by aok_launcher
-        _s="--exclude=kill_tail_logging $distro_fam_prefix/usr_local_sbin/"
-        rsync_chown "$_s" /usr/local/sbin
+        copy_local_bins FamDeb
         msg_3 "/etc/init.d/rc"
-        rsync_chown "$distro_fam_prefix"/etc/init.d/rc /etc/init.d
+        rsync_chown /opt/AOK/combined/etc/init.d/rc /etc/init.d
     else
         error_msg "Failed to recognize Distro, aborting."
     fi
@@ -355,14 +353,14 @@ done
 ensure_ish_or_chrooted ""
 
 if hostfs_is_alpine; then
-    distro_prefix="/opt/AOK/Alpine"
-    distro_fam_prefix="/opt/AOK/Alpine"
+    distro_inittab="/opt/AOK/combined/etc/alpine-inittab"
+    distro_profile="/opt/AOK/combined/etc/alpine-profile"
 elif hostfs_is_devuan; then
-    distro_prefix="/opt/AOK/Devuan"
-    distro_fam_prefix="/opt/AOK/FamDeb"
+    distro_inittab="/opt/AOK/combined/etc/famdeb-inittab"
+    distro_profile="/opt/AOK/combined/etc/famdeb-profile"
 elif hostfs_is_debian; then
-    distro_prefix="/opt/AOK/Debian"
-    distro_fam_prefix="/opt/AOK/FamDeb"
+    distro_inittab="/opt/AOK/combined/etc/famdeb-inittab"
+    distro_profile="/opt/AOK/combined/etc/famdeb-profile"
 else
     error_msg "cron service not available for this FS"
 fi

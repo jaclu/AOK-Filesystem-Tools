@@ -69,7 +69,7 @@ handle_hardcoded_tz() {
 adding_runbg_service() {
     if command -v openrc >/dev/null; then
         msg_2 "Adding runbg service"
-        rsync_chown /opt/AOK/common_AOK/etc/init.d/runbg /etc/init.d silent
+        rsync_chown /opt/AOK/combined/etc/init.d/runbg /etc/init.d silent
         # openrc_might_trigger_errors
         rc-update add runbg default
     else
@@ -169,18 +169,18 @@ setup_environment() {
     fi
 
     msg_3 "Installing /etc/environment"
-    cp /opt/AOK/common_AOK/etc/environment /etc
+    cp /opt/AOK/combined/etc/environment /etc
 
     msg_3 "Installing profile-hints file"
-    cp /opt/AOK/common_AOK/etc/profile-hints /etc
+    cp /opt/AOK/combined/etc/profile-hints /etc
 
     disabling_default_services
 
     msg_3 "Populate /etc/skel"
-    rsync_chown /opt/AOK/common_AOK/etc/skel /etc silent
+    rsync_chown /opt/AOK/combined/etc/skel /etc silent
 
     msg_3 "Activating group sudo for no passwd sudo"
-    cp /opt/AOK/common_AOK/etc/sudoers.d/sudo_no_passwd /etc/sudoers.d
+    cp /opt/AOK/combined/etc/sudoers.d/sudo_no_passwd /etc/sudoers.d
     chmod 440 /etc/sudoers.d/sudo_no_passwd
 
     echo "This is an iSH node, running $(destfs_detect)" >/etc/issue
