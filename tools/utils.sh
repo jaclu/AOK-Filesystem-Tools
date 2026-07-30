@@ -1130,14 +1130,14 @@ f_aok_fs_release="$d_build_root"/etc/aok-fs-release
 #  Either run this script chrooted if the host OS supports it, or run it
 #  inside iSH-AOK once it has booted this FS
 #
-setup_common_aok=/opt/AOK/combined_setup/common_AOK/setup_common_env.sh
-setup_alpine_scr=/opt/AOK/combined_setup/Alpine/setup_alpine.sh
-setup_famdeb_scr=/opt/AOK/combined_setup/FamDeb/setup_famdeb.sh
-setup_debian_scr=/opt/AOK/combined_setup/Debian/setup_debian.sh
-setup_devuan_scr=/opt/AOK/combined_setup/Devuan/setup_devuan.sh
-setup_select_distro_prepare=/opt/AOK/combined_setup/choose_distro/select_distro_prepare.sh
-setup_select_distro=/opt/AOK/combined_setup/choose_distro/select_distro.sh
-setup_final=/opt/AOK/combined_setup/common_AOK/setup_final_tasks.sh
+setup_common_aok=/opt/AOK/combined/setup/common_AOK/setup_common_env.sh
+setup_alpine_scr=/opt/AOK/combined/setup/Alpine/setup_alpine.sh
+setup_famdeb_scr=/opt/AOK/combined/setup/FamDeb/setup_famdeb.sh
+setup_debian_scr=/opt/AOK/combined/setup/Debian/setup_debian.sh
+setup_devuan_scr=/opt/AOK/combined/setup/Devuan/setup_devuan.sh
+setup_select_distro_prepare=/opt/AOK/combined/setup/choose_distro/select_distro_prepare.sh
+setup_select_distro=/opt/AOK/combined/setup/choose_distro/select_distro.sh
+setup_final=/opt/AOK/combined/setup/common_AOK/setup_final_tasks.sh
 
 d_combined=/opt/AOK/combined
 

@@ -296,8 +296,8 @@ setup_Alpine_on_1st_boot() {
 setup_Debian_on_1st_boot() {
     msg_2 "setup_Debian_on_1st_boot()"
 
-    # shellcheck source=/opt/AOK/combined_setup/FamDeb/deb_utils.sh
-    . /opt/AOK/combined_setup/FamDeb/deb_utils.sh
+    # shellcheck source=/opt/AOK/combined/setup/FamDeb/deb_utils.sh
+    . /opt/AOK/combined/setup/FamDeb/deb_utils.sh
     initial_fs_prep_fam_deb
 
     # buildtype_set "$distro_debian"
@@ -309,8 +309,8 @@ setup_Debian_on_1st_boot() {
 setup_Devuan_on_1st_boot() {
     msg_2 "setup_Devuan_on_1st_boot()"
 
-    # shellcheck source=/opt/AOK/combined_setup/FamDeb/deb_utils.sh
-    . /opt/AOK/combined_setup/FamDeb/deb_utils.sh
+    # shellcheck source=/opt/AOK/combined/setup/FamDeb/deb_utils.sh
+    . /opt/AOK/combined/setup/FamDeb/deb_utils.sh
     initial_fs_prep_fam_deb
 
     # buildtype_set "$distro_devuan"

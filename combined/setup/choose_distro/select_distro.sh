@@ -40,12 +40,12 @@ Select distro:
 
     2)
         echo "Debian selected"
-        /opt/AOK/combined_setup/choose_distro/install_debian.sh
+        /opt/AOK/combined/setup/choose_distro/install_debian.sh
         ;;
 
     # 3)
     #     echo "Devuan selected"
-    #     /opt/AOK/combined_setup/choose_distro/install_devuan.sh
+    #     /opt/AOK/combined/setup/choose_distro/install_devuan.sh
     #     ;;
 
     *)

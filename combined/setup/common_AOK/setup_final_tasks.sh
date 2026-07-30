@@ -222,7 +222,7 @@ ensure_path_items_are_available
 set_hostname # it might have changed since pre-build...
 
 hostfs_name="$(hostfs_detect)"
-f_fs_final_tasks=/opt/AOK/combined_setup/"$hostfs_name"/setup_final_tasks.sh
+f_fs_final_tasks=/opt/AOK/combined/setup/"$hostfs_name"/setup_final_tasks.sh
 [ -f "$f_fs_final_tasks" ] && {
     msg_1 "Running $hostfs_name final tasks"
     "$f_fs_final_tasks" || error_msg "$f_fs_final_tasks failed"

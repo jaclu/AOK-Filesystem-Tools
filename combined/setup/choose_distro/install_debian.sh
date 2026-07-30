@@ -8,7 +8,7 @@
 . /opt/AOK/tools/utils.sh
 
 # shellcheck source=/dev/null
-. /opt/AOK/combined_setup/FamDeb/deb_utils.sh
+. /opt/AOK/combined/setup/FamDeb/deb_utils.sh
 
 t_choose_distro_debian_start="$(date +%s)"
 
