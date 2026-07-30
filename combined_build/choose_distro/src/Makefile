@@ -11,4 +11,4 @@ lib_fix:  lib_fix.c
 	gcc -o lib_fix lib_fix.c
 
 install:  all
-	cp lib_fix ../bin
+	cp lib_fix ../../bin

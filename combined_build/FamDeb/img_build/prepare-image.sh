@@ -96,6 +96,21 @@ _f="$d_ish_FS"/opt/AOK/.AOK_VARS
 
 msg_3 "Copying img_build -> $d_ish_FS/root"
 rsync_chown /opt/AOK/combined_build/FamDeb/img_build "$d_ish_FS"/root
+
+mkdir -p "$d_ish_FS"/root/img_build/bin
+for _img_build_tool in \
+    aok_img_cleanup.sh \
+    aok_img_populate.sh \
+    aok_img_prepare.sh \
+    img_build_utils.sh \
+    minim_img_cleanup.sh \
+    minim_img_prepare.sh \
+    package_info_to_db.sh; do
+    rsync_chown "/opt/AOK/combined/bin/$_img_build_tool" \
+        "$d_ish_FS"/root/img_build/bin
+done
+unset _img_build_tool
+
 msg_4 "Copying Mapt to img_build/bin"
 rsync_chown /opt/AOK/combined/usr_local_bin/Mapt "$d_ish_FS"/root/img_build/bin
 

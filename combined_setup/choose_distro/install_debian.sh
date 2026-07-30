@@ -117,7 +117,7 @@ msg_3 "Copying Alpine lib (musl) to /usr/lib"
 #  replace /lib with soft-link to /usr/lib
 # /busybox echo "> Replacing /lib with a soft-link to /usr/lib"
 msg_3 "Replacing /lib with a soft-link to /usr/lib"
-/opt/AOK/combined_build/choose_distro/bin/lib_fix
+/opt/AOK/combined/bin/lib_fix
 
 #  From now on Debian should be fully available
 
