@@ -8,8 +8,35 @@
 #  Updates apt status of a Debian based box
 #
 
+err_msg() {
+    msg="$1"
+    exit_code="${2:-1}"
+
+    [ -n "$msg" ] || {
+        printf '\n\nERROR: err_msg() - no param\n' >&2
+        exit 99
+    }
+    printf '\n\nERROR: %s\n' "$msg" >&2
+    exit "$exit_code"
+}
+
+lbl_1() {
+    [ -n "$1" ] || err_msg "lbl_1() no param"
+    printf '\n===  %s  ===\n\n' "$1"
+}
+
+lbl_2() {
+    [ -n "$1" ] || err_msg "lbl_2() no param"
+    printf -- '---  %s\n' "$1"
+}
+
+lbl_3() {
+    [ -n "$1" ] || err_msg "lbl_3() no param"
+    printf -- ' --  %s\n' "$1"
+}
+
 display_time_elapsed() {
-    dte_duration=$(($(date +%s) - mapt_time_start))
+    dte_duration=$(($(date +%s) - t_start))
 
     if [ "$dte_duration" -gt 59 ]; then
         dte_hours=$((dte_duration / 3600))
@@ -22,6 +49,12 @@ display_time_elapsed() {
     echo
     printf 'Time elapsed: %s - %s\n' "$dte_elapsed" "$prog_name"
     echo
+}
+
+apt_task() {
+    [ -n "$1" ] || err_msg "apt_task() - no params"
+    lbl_3 "apt-get $*"
+    apt-get "$@" || err_msg "Failed task: apt-get $*"
 }
 
 #===============================================================
@@ -41,19 +74,18 @@ if [ "$(uname -o)" != "Android" ] && [ "$(whoami)" != "root" ]; then
     exit "$?"
 fi
 
-mapt_time_start="$(date +%s)"
-[ "$1" = "no_timing" ] && mapt_no_timing=1
+t_start="$(date +%s)"
 
-echo "===  Mapt - apt maintenance  ==="
+lbl_1 "Mapt - apt maintenance"
 
-if command -v apt >/dev/null; then
-    apt --fix-broken install && apt update && apt autoremove -y --purge \
-        && apt autoclean && apt -y upgrade
-else
-    echo "---  apt not found, using apt-get  ---"
-    apt-get update && apt-get autoremove -y --purge \
-        && apt-get clean && apt-get -y upgrade
-fi
+command -v apt >/dev/null || err_msg "apt not found - should NOT happen"
+apt_task --fix-broken install
+apt_task update
+apt_task check
+apt_task autoremove -y --purge
+apt_task autoclean
+apt_task -y full-upgrade
+apt_task check
 
 #
 #  Check if reboot is required
@@ -65,15 +97,18 @@ if [ -f /var/run/reboot-required ]; then
     exit 1
 fi
 
+#
+#  Any pending purges?
+#
 purge_candidates="$(dpkg -l | grep '^rc' | awk '{print $2}')"
 if [ -n "$purge_candidates" ]; then
     echo
-    echo "---  In need of purging  ---"
+    lbl_2 "In need of purging"
     echo "$purge_candidates"
     exit 1
 else
-    echo "---  No  purges needed  ---"
+    lbl_2 "No  purges needed"
 fi
 
-[ -z "$mapt_no_timing" ] && display_time_elapsed
+[ "$1" != "no_timing" ] && display_time_elapsed
 return 0

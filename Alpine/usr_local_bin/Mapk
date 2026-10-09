@@ -8,8 +8,34 @@
 #  Updates apk status of an Alpine based box
 #
 
+err_msg() {
+    msg="$1"
+    exit_code="${2:-1}"
+
+    [ -n "$msg" ] || {
+        printf '\n\nERROR: err_msg() - no param\n' >&2
+        exit 99
+    }
+    printf '\n\nERROR: %s\n' "$msg" >&2
+    exit "$exit_code"
+}
+
+lbl_1() {
+    [ -n "$1" ] || err_msg "lbl_1() no param"
+    printf '\n===  %s  ===\n\n' "$1"
+}
+
+lbl_2() {
+    [ -n "$1" ] || err_msg "lbl_2() no param"
+    printf -- '---  %s\n' "$1"
+}
+
+lbl_3() {
+    [ -n "$1" ] || err_msg "lbl_3() no param"
+    printf -- ' --  %s\n' "$1"
+}
+
 display_time_elapsed() {
-    dte_label="$1"
     dte_duration=$(($(date +%s) - t_start))
 
     if [ "$dte_duration" -gt 59 ]; then
@@ -21,8 +47,14 @@ display_time_elapsed() {
         dte_elapsed=$(printf '%ss' "$dte_duration")
     fi
     echo
-    printf 'Time elapsed: %s - %s\n' "$dte_elapsed" "$dte_label"
+    printf 'Time elapsed: %s - %s\n' "$dte_elapsed" "$prog_name"
     echo
+}
+
+apk_task() {
+    [ -n "$1" ] || err_msg "apk_task() - no params"
+    lbl_3 "apk $*"
+    apk "$@" || err_msg "Failed task: apk $*"
 }
 
 #===============================================================
@@ -32,6 +64,7 @@ display_time_elapsed() {
 #===============================================================
 
 prog_name=$(basename "$0")
+
 if [ "$(whoami)" != "root" ]; then
     echo "Executing $prog_name as root"
 
@@ -45,16 +78,16 @@ fi
 
 t_start="$(date +%s)"
 
-echo "===  Mapk - apk maintenance  ==="
-
-if ! apk fix || ! apk upgrade; then
-    echo "ERROR detected by Mapk"
-    exit 1
-fi
+lbl_1 "Mapk - apk maintenance"
+apk_task update
+apk_task upgrade
+apk_task fix
+# apk_task audit
 
 #
 #  Check if reboot is required
 #
 # /usr/lib/update-notifier/update-motd-reboot-required
 
-display_time_elapsed "Mapk"
+[ "$1" != "no_timing" ] && display_time_elapsed
+return 0
