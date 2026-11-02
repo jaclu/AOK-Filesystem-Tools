@@ -22,8 +22,8 @@ thus now unmaintained except for security updates.
 It should be fine for testing Debian with the AOK FS extensions under iSH-AOK.
 
 Select distro:
- 1 - Alpine $ALPINE_VERSION
- 2 - Debian 10
+    1 - Alpine $ALPINE_VERSION
+    2 - Debian 10
 "
     echo "$text"
     read -r selection
