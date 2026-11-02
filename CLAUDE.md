@@ -1,0 +1,1 @@
+/Users/jaclu/cloud/Dropbox/Preferences/multi-os-apps/Claude/proj_template/CLAUDE.md

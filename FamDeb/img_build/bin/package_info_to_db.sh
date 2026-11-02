@@ -67,7 +67,7 @@ for package in $(dpkg-query -f '${Package}\n' -W); do
 
     # Store the package in the appropriate array
     sqlite3 "$database" "INSERT INTO packages (priority, section, name, is_leaf) \
-	VALUES ('$priority', '$section', '$package', '$is_leaf');"
+        VALUES ('$priority', '$section', '$package', '$is_leaf');"
 
     print_progress_dot
 done

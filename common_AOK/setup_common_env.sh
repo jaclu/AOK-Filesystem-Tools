@@ -225,7 +225,9 @@ setup_root_env() {
     #  Extra sanity check, if this is undefined, the rest of this would
     #  ruin the build host root env...
     #
-    [ ! -f "$f_host_deploy_state" ] && error_msg "setup_root_env() - This doesn't look like a FS during deploy!"
+    [ ! -f "$f_host_deploy_state" ] && {
+        error_msg "setup_root_env() - This doesn't look like a FS during deploy!"
+    }
     [ -z "$d_build_root" ]
 
     #
@@ -336,5 +338,3 @@ setup_root_env
 create_user
 
 msg_1 "setup_common_env.sh done"
-
-exit 0 # indicate no error
