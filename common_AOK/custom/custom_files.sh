@@ -5,7 +5,9 @@ process_custom_file_list() {
     files_template="$1"
 
     [[ -z "$files_template" ]] && error_msg "process_custom_file_list() no param"
-    [[ -f "$files_template" ]] || error_msg "CUSTOM_FILES_TEMPLATE [$files_template] does not point to a file"
+    [[ -f "$files_template" ]] || {
+        error_msg "CUSTOM_FILES_TEMPLATE [$files_template] does not point to a file"
+    }
 
     msg_2 "process_custom_file_list($files_template)"
     #  shellcheck disable=SC1090

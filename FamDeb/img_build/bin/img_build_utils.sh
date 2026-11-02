@@ -32,7 +32,8 @@ update_aok_fs_releae() {
     fi
 
     while [ -z "$rel_vers" ]; do
-        echo "Enter $f_aok_fs_release vers, what follows $lsb_DistributorID${lsb_Release}-${aok_fs_type}-"
+        printf '%s %s\n' "Enter $f_aok_fs_release vers," \
+            "what follows $lsb_DistributorID${lsb_Release}-${aok_fs_type}-"
         read -r rel_vers
     done
 

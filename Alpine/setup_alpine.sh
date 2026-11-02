@@ -135,7 +135,9 @@ setup_cron_env() {
     #  shellcheck disable=SC2154
     if [ "$USE_CRON_SERVICE" = "Y" ]; then
         msg_3 "Activating dcron service, but not starting it now"
-        [ "$(command -v crond)" != /usr/sbin/crond ] && error_msg "cron service requested, dcron does not seem to be installed"
+        [ "$(command -v crond)" != /usr/sbin/crond ] && {
+            error_msg "cron service requested, dcron does not seem to be installed"
+        }
         rc-update add dcron default
     else
         msg_3 "Inactivating cron service"

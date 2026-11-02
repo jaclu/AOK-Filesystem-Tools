@@ -197,7 +197,9 @@ ensure_dev_paths_are_defined() {
             #  preparational checks will need to handle /dev/pts as a special case.
             #  At that point all that can be done is to verify that it has been set
             #
-            [ -z "$d_dev_pts" ] && error_msg "ensure_dev_paths_are_defined() - d_dev_pts undefined"
+            [ -z "$d_dev_pts" ] && {
+                error_msg "ensure_dev_paths_are_defined() - d_dev_pts undefined"
+            }
         else
             folder_exits "$d_dev_pts"
         fi
@@ -210,7 +212,9 @@ define_chroot_env() {
     [ "$_fnc_calls" -gt 0 ] && msg_2 "define_chroot_env()"
 
     [ -z "$CHROOT_TO" ] && error_msg "define_chroot_env() CHROOT_TO not defined!"
-    [ ! -d "$CHROOT_TO" ] && error_msg "define_chroot_env() - path does not exist: $CHROOT_TO"
+    [ ! -d "$CHROOT_TO" ] && {
+        error_msg "define_chroot_env() - path does not exist: $CHROOT_TO"
+    }
 
     # f_is_chrooted="${CHROOT_TO}$f_host_fs_is_chrooted"
 
@@ -245,7 +249,9 @@ find_default_cmd() {
     else
         [ "$_fnc_calls" -gt 0 ] && msg_2 "Trying to use root shell as default cmd"
         _f="${CHROOT_TO}/etc/passwd"
-        [ ! -f "$_f" ] && error_msg "Trying to find chrooted root shell in its /etc/passwd failed"
+        [ ! -f "$_f" ] && {
+            error_msg "Trying to find chrooted root shell in its /etc/passwd failed"
+        }
         cmd_w_params="$(awk -F: '/^root:/ {print $NF" -l"}' "$_f")"
         [ "$_fnc_calls" -gt 0 ] && msg_3 "use_root_shell_as_default_cmd() - done"
     fi
@@ -540,7 +546,8 @@ is_chroot_being_used
 
 if this_is_ish && fs_is_debian && [ "$force_this" != "1" ]; then
     echo "************"
-    echo "ish running Debian - this does not seem able to do chroot. You have been warned..."
+    echo "ish running Debian - this does not seem able to do chroot."
+    echo "You have been warned..."
     echo "                     Run this with -f if you still want to go ahead"
     echo "************"
     exit 1

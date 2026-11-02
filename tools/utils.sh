@@ -236,7 +236,7 @@ set_hostname() {
             hname="$(cat "$f_hostname_initial")"
         else
             hname="$(hostname)"
-            _s="Could not find: $f_hostname_initial - reading hostname as fallback: [$hname]"
+            _s="Could not find: $f_hostname_initial - reading hostname as fallback: $hname"
             error_msg "$_s" -1
         fi
 
@@ -762,7 +762,9 @@ set_kernel_default() {
     [ -n "$_lbl" ] && msg_3 "$_lbl"
     echo "$_param" >"$_f" || error_msg "Failed to set $_f as $_param"
     [ -n "$_silent" ] && [ "$_silent" != "silent" ] && {
-        error_msg "set_kernel_default($_fname,v$_param, $_lbl) - param 4 ($_silent) must be unset or silent"
+        msg="set_kernel_default($_fname,v$_param, $_lbl) -"
+        msg="$msg param 4 ($_silent) must be unset or silent"
+        error_msg "$msg"
     }
 
     _setting="$(tr -d '\n' <"$_f" | sed 's/  \+/ /g' | sed 's/"]/" ]/')"
@@ -1007,7 +1009,8 @@ min_release_simple() {
     [ "$ALPINE_VERSION" = "edge" ] && return 0
 
     rel_this="$(echo "$ALPINE_VERSION" | cut -d"." -f 1,2)"
-    _result=$(awk -v x="$rel_min" -v y="$rel_this" 'BEGIN{if (x > y) print 1; else print 0}')
+    _result=$(awk -v x="$rel_min" -v y="$rel_this" \
+        'BEGIN{if (x > y) print 1; else print 0}')
 
     if [ "$_result" -eq 1 ]; then
         return 1 # false
@@ -1123,12 +1126,14 @@ gentoo_src_tb="$(echo "$GENTOO_SRC_IMAGE" | cut -d'?' -f1 | grep -oE '[^/]+$')"
 alpine_src_tb="alpine-minirootfs-${ALPINE_VERSION}-x86.tar.gz"
 if echo "$ALPINE_VERSION" | grep -Eq '^[0-9]{8}$'; then
     alpine_release="edge"
-    alpine_src_image="https://dl-cdn.alpinelinux.org/alpine/edge/releases/x86/$alpine_src_tb"
+    alpine_src_image="https://dl-cdn.alpinelinux.org"
+    alpine_src_image="${alpine_src_image}/alpine/edge/releases/x86/$alpine_src_tb"
 else
     #  Extract the release/branch/major version, from the requested
     #  Alpine, gives something like 3.19
     alpine_release="$(echo "$ALPINE_VERSION" | cut -d"." -f 1,2)"
-    alpine_src_image="https://dl-cdn.alpinelinux.org/alpine/v${alpine_release}/releases/x86/$alpine_src_tb"
+    alpine_src_image="https://dl-cdn.alpinelinux.org/alpine"
+    alpine_src_image="${alpine_src_image}/v${alpine_release}/releases/x86/$alpine_src_tb"
 fi
 
 #  Location for downloaded tarballs

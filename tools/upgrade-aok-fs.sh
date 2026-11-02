@@ -183,7 +183,9 @@ mv_no_over_write() {
     [ -z "$_f_src" ] && error_msg "mv_no_over_write() - no first param"
     [ -f "$_f_src" ] || return # if src isn't there, nothing to move
     [ -z "$_f_dst" ] && error_msg "mv_no_over_write() - no destination"
-    [ -f "$_f_dst" ] && error_msg "can't move $_f_src to $_f_dst - destination occupied: $_f_dst"
+    [ -f "$_f_dst" ] && {
+        error_msg "can't move $_f_src to $_f_dst - destination occupied: $_f_dst"
+    }
 
     if mv "$_f_src" "$_f_dst"; then
         msg_3 "Moved $_f_src -> $_f_dst"
@@ -312,7 +314,8 @@ update_aok_release() {
     #
     base_rel="$(cut -d'-' -f1 "$f_aok_release")"
     sub_rel="$(cut -d'-' -f2- "$f_aok_release")"
-    new_rel="$(grep AOK_VERSION /opt/AOK/AOK_VARS | head -n 1 | cut -d= -f 2 | sed 's/\"//g' | cut -d'-' -f1)"
+    new_rel="$(grep AOK_VERSION /opt/AOK/AOK_VARS | head -n 1 \
+        | cut -d= -f 2 | sed 's/\"//g' | cut -d'-' -f1)"
     [ "$base_rel" != "$sub_rel" ] && new_rel="$new_rel-$sub_rel"
 
     [ "$(cat "$f_aok_release")" != "$new_rel" ] && {
