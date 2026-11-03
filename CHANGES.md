@@ -201,7 +201,6 @@ task/do_chroot.sh mostly rewritten
   the only safe bet is to do a `find . > /dev/null` This will print out each file not
   cached as it is cached, and once completed the matching file/files can be assumed
   to be locally available.
-
 - wrap deploy script in outer scr to prevent errors from triggering instant reboot,
   instead dropping the process to a root shell. This makes it possible to actually
   see what went wrong.
