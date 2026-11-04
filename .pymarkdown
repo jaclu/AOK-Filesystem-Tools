@@ -1,0 +1,16 @@
+{
+  "plugins": {
+    "line-length": {
+      "enabled": true,
+      "line_length": 92,
+      "code_block_line_length": 92,
+      "tables": false
+    },
+    "no-duplicate-heading": {
+      "siblings_only": true
+    },
+    "table-column-style": {
+      "enabled": false
+    }
+  }
+}
