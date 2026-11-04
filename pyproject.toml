@@ -1,5 +1,0 @@
-[tool.pymarkdown.plugins.md024]
-enabled = false
-
-#[tool.pymarkdown.plugins.md013]
-#line_length = 92

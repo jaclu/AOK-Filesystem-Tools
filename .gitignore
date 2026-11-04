@@ -1,6 +1,12 @@
 # vscode
 *.code-workspace
 
+# Not hiding I use claude in-it-self, but since these are shared
+# between nodes and projects as softlinks, its kinda pointless
+# to have them in the repo as dead references
+CLAUDE.md
+.claude/
+
 .cache.olint
 
 ### VisualStudioCode ###
